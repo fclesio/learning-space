@@ -1,0 +1,12 @@
+USE [master]
+GO
+
+SELECT df.name FROM sys.database_files AS df WHERE df.type_desc = 'log'
+
+
+ALTER DATABASE BIPricing SET RECOVERY SIMPLE WITH NO_WAIT
+
+DBCC SHRINKFILE(BIPricing_log, 1)
+
+ALTER DATABASE [BIPricing] SET RECOVERY FULL WITH NO_WAIT
+GO
