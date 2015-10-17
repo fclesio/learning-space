@@ -1,0 +1,85 @@
+
+
+from __future__ import division
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+baseball = pd.read_csv("/Users/flavioclesio/Documents/Github/learning-space/baseball.csv")
+
+moneyball = baseball[baseball["Year"] < 2002]
+
+
+team_idx = {v:k for (k, v) in enumerate(moneyball["Team"].unique())}
+moneyball["_TeamID"] = [team_idx[x] for x in moneyball["Team"]]
+
+moneyball_playoff = moneyball[moneyball["Playoffs"]==1]
+plt.scatter(moneyball_playoff["W"], moneyball_playoff["_TeamID"], color="r")
+moneyball_nonplayoff = moneyball[moneyball["Playoffs"]==0]
+plt.scatter(moneyball_nonplayoff["W"], moneyball_nonplayoff["_TeamID"], color="k")
+plt.vlines(95, 0, len(team_idx), colors="b", linestyles="solid")
+plt.yticks([])
+
+
+moneyball["_RDiff"] = moneyball["RS"] - moneyball["RA"]
+plt.scatter(moneyball["_RDiff"], moneyball["W"])
+plt.xlabel("Run Difference")
+plt.ylabel("Wins")
+
+win_model = LinearRegression()
+win_model.fit(np.matrix(moneyball["_RDiff"]).T, moneyball["W"])
+xs = [np.min(moneyball["_RDiff"]), np.max(moneyball["_RDiff"])]
+ys = [win_model.predict(x) for x in xs]
+plt.plot(xs, ys, 'r', linewidth=2.5)
+
+run_diff_to_win = (95 - win_model.intercept_) / win_model.coef_[0]
+print("Run difference: %.2f" % (run_diff_to_win))
+
+
+
+
+
+y = np.array(moneyball["RS"])
+X = np.vstack((np.array(moneyball["OBP"]), 
+               np.array(moneyball["SLG"]),
+               np.array(moneyball["BA"]))).T
+rs_model = LinearRegression()
+rs_model.fit(X, y)
+print("R-squared[RS_1]: %.4f" % (rs_model.score(X, y)))
+print(rs_model.intercept_, rs_model.coef_)
+
+
+
+X = np.vstack((np.array(moneyball["OBP"]), 
+               np.array(moneyball["SLG"]))).T
+rs_model = LinearRegression()
+rs_model.fit(X, y)
+print("R-squared[RS_2]: %.4f" % (rs_model.score(X, y)))
+print(rs_model.intercept_, rs_model.coef_)
+
+
+
+moneyball_ra = pd.DataFrame({"OOBP": moneyball["OOBP"],
+                             "OSLG": moneyball["OSLG"],
+                             "RA": moneyball["RA"]})
+moneyball_ra = moneyball_ra.dropna(axis=0)
+y = np.array(moneyball_ra["RA"])
+X = np.vstack((np.array(moneyball_ra["OOBP"]), 
+               np.array(moneyball_ra["OSLG"]))).T
+ra_model = LinearRegression()
+ra_model.fit(X, y)
+print("R-squared[RA]: %.4f" % (ra_model.score(X, y)))
+print(rs_model.intercept_, ra_model.coef_)
+
+
+
+pred_rs = rs_model.predict(np.matrix([0.339, 0.430]))
+pred_ra = ra_model.predict(np.matrix([0.307, 0.373]))
+pred_rd = pred_rs - pred_ra
+pred_wins = win_model.predict(np.matrix([pred_rd]))
+print("Predicted Runs Scored in 2002: %.2f" % (pred_rs))
+print("Predicted Runs Allowed in 2002: %.2f" % (pred_ra))
+print("Predicted Wins in 2002: %.2f" % (pred_wins))
+
+
