@@ -3,10 +3,7 @@
 #Import packages
 from __future__ import division
 from sklearn.linear_model import LinearRegression
-from sklearn.feature_selection import VarianceThreshold
 import matplotlib.pyplot as plt
-from sklearn.feature_selection import RFE
-from sklearn.linear_model import Lasso
 from sklearn.ensemble import RandomForestClassifier
 import numpy as np
 import pandas as pd
