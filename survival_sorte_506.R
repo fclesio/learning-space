@@ -142,3 +142,8 @@ abline(h=(seq(0,1,.10)), col="gray", lty="dotted")
 survdiff(survival ~ user_plan, data = sorte_506)
 
 
+
+#References
+#http://daynebatten.com/2015/02/customer-churn-survival-analysis/
+#http://daynebatten.com/2015/02/customer-churn-cox-regression/
+
