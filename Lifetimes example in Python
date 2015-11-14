@@ -1,0 +1,101 @@
+
+#Install lifetimes
+pip install lifetimes
+
+#Mandatory Libraries
+import pandas as pd
+import numpy as np
+import scipy as sp
+
+
+#Import dataset
+from lifetimes.datasets import load_cdnow
+
+data = load_cdnow(index_col=[0])
+
+#See RFM of file
+data.head()
+
+#x represents the number of repeat purchases the customer has made (also called frequency). 
+#T represents the age of the customer 
+#t_x represents the age of the customer when they made their most recent purchases (also called recency).
+
+#Use the BG/NBD model. Reference: http://mktg.uni-svishtov.bg/ivm/resources/Counting_Your_Customers.pdf
+from lifetimes import BetaGeoFitter
+
+# similar API to scikit-learn and lifelines.
+bgf = BetaGeoFitter()
+
+bgf.fit(data['frequency'], data['recency'], data['T'])
+
+model = 'This is the model', bgf
+
+str(model)
+
+#Visualizing our Frequency/Recency Matrix
+from lifetimes.plotting import plot_frequency_recency_matrix
+plot_frequency_recency_matrix(bgf)
+
+
+#We can see that if a customer has bought 25 times from you, 
+#and their lastest purchase was when they were 35 weeks old (given the individual is 35 weeks old), 
+#then they are you best customer (bottom-right). 
+#You coldest customers are those that in the top-right corner: they bought a lot quickly, 
+#and we haven't seen them in weeks.
+
+#There's also that beautiful "tail" around (5,25). 
+#That represents the customer who buys infrequently, 
+#but we've seen him or her recently, 
+#so they might buy again - we're not sure if they are dead or just between purchases.
+
+
+#Ranking customers from best to worst
+t = 1
+data['predicted_purchases'] = data.apply(lambda r: bgf.conditional_expected_number_of_purchases_up_to_time(t, r['recency'], r['frequency'], r['T']), axis=1)
+data.sort('predicted_purchases').tail(5)
+
+
+#Assessing model fit
+from lifetimes.plotting import plot_period_transactions
+plot_period_transactions(bgf)
+
+
+#Example using transactional datasets
+from lifetimes.datasets import load_transaction_data
+from lifetimes.utils import summary_data_from_transaction_data
+
+transaction_data = load_transaction_data()
+transaction_data.head()
+
+summary = summary_data_from_transaction_data(transaction_data, 'id', 'date', observation_period_end='2014-12-31')
+
+print summary.head()
+
+bgf.fit(summary['frequency'], summary['recency'], summary['T'])
+# <lifetimes.BetaGeoFitter: fitted with 5000 customers, a: 1.85, alpha: 1.86, r: 0.16, b: 3.18>
+
+#More model fitting
+from lifetimes.utils import calibration_and_holdout_data
+
+summary_cal_holdout = calibration_and_holdout_data(transaction_data, 'id', 'date', 
+                                        calibration_period_end='2014-09-01',
+                                        observation_period_end='2014-12-31' )   
+print summary_cal_holdout.head()
+
+
+
+from lifetimes.plotting import plot_calibration_purchases_vs_holdout_purchases
+
+bgf.fit(summary_cal_holdout['frequency_cal'], summary_cal_holdout['recency_cal'], summary_cal_holdout['T_cal'])
+
+plot_calibration_purchases_vs_holdout_purchases(bgf, summary_cal_holdout)
+
+
+#Customer Predicitions
+t = 10 #predict purchases in 10 periods
+
+individual = summary.iloc[20]
+
+# The below function may be renamed to `predict` in a future version of lifetimes
+bgf.conditional_expected_number_of_purchases_up_to_time(t, individual['frequency'], individual['recency'], individual['T'])
+# 0.0576511

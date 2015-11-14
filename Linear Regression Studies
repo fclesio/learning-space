@@ -1,0 +1,84 @@
+import matplotlib.pyplot as plt
+import pandas as pd
+
+from sklearn. cross_validation import cross_val_score
+from sklearn.linear_model import LinearRegression
+from sklearn.cross_validation import train_test_split
+
+
+#Load CSV using ";" as separator
+df = pd.read_csv('https://raw.githubusercontent.com/zygmuntz/wine-quality/master/winequality/winequality-red.csv', sep=';')
+
+#Describe the dataset
+df.describe()
+
+#See relationships of variables Alcohol and Quality 
+plt.scatter(df['alcohol'], df['quality'])
+plt.xlabel('Alcohol')
+plt.ylabel('Quality')
+plt.title('Alcohol Against Quality')
+plt.show()
+
+#See relationships of variables Volatile Acidity and Quality 
+plt.scatter(df['volatile acidity'], df['quality'])
+plt.xlabel('Volatile Acidity')
+plt.ylabel('Quality')
+plt.title('Volatile Acidity Against Quality')
+plt.show()
+
+
+#See relationships of variables pH and Quality 
+plt.scatter(df['pH'], df['quality'])
+plt.xlabel('pH')
+plt.ylabel('Quality')
+plt.title('pH Against Quality')
+plt.show()
+
+#Correlation between variables
+df.corr()
+
+
+#Implementing the model 
+
+#Load data
+df = pd.read_csv('https://raw.githubusercontent.com/zygmuntz/wine-quality/master/winequality/winequality-red.csv', sep=';')
+
+#Put ther explanatory variables
+X = df[list(df.columns)[:-1]]
+
+#Put dependent variable
+y = df['quality']
+
+#Partition data and split test and train sets, by default 25% is used as test
+X_train, X_test, y_train, y_test = train_test_split(X, y)
+
+#Calls the function
+regressor = LinearRegression()
+
+#Fitting the model 
+regressor.fit(X_train, y_train)
+
+#Made the predctions
+y_predictions = regressor.predict(X_test)
+
+#Put results on string
+results = 'Variance of test and trained sets - R-squared', regressor.score(X_test, y_test)
+
+#Shows the results
+str(results)
+
+#We'll use cross validation to improve performance
+regressor = LinearRegression()
+scores = cross_val_score(regressor, X, y, cv=5)
+
+scores = 'This is the scores for 5 fold Cross Validation', scores.mean(), scores
+
+str(scores)
+
+
+#See predictions
+plt.scatter(df['pH'], df['quality'])
+plt.xlabel('pH')
+plt.ylabel('Quality')
+plt.title('pH Against Quality')
+plt.show()
