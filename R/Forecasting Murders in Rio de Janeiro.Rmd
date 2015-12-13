@@ -1,13 +1,3 @@
----
-title: "Forecasting in R"
-author: "flavioclesio@gmail.com"
-date: "13 de dezembro de 2015"
-output: 
-  html_document: 
-    fig_height: 8
-    fig_width: 10
-    keep_md: yes
----
 Fala pessoal, tudo bem?
 
 Um dos principais problemas em utilizar processadores númericos como o Excel ou mesmo o LibreOffice é que se perde um pouco a flexibilidade de parametrizar os modelos de previsão.
