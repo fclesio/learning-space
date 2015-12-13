@@ -2,7 +2,7 @@ Fala pessoal, tudo bem?
 
 Um dos principais problemas em utilizar processadores númericos como o Excel ou mesmo o LibreOffice é que se perde um pouco a flexibilidade de parametrizar os modelos de previsão.
 
-Além disso, há um problema grave nesses processadores de reprodutibilidade. 
+Além disso, há um problema grave nesses processadores números que é reprodutibilidade. 
 
 Nesse post eu vou utilizar dados reais da quantidade de homicícios que houveram no Rio de Janeiro de 1991 até 2011. 
 
