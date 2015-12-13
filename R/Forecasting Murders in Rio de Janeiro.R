@@ -137,5 +137,4 @@ plot(ahead_rj_murder_interior
 #References
 #[1] - http://www.inside-r.org/packages/cran/forecast/docs/auto.arima
 #[2] - http://www.ucamcesec.com.br/wordpress/wp-content/uploads/2011/04/RJ_2011_evolucao.xls
-
 #[3] - http://www.statmethods.net/advstats/timeseries.html
