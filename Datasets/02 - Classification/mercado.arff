@@ -1,0 +1,22 @@
+@relation Mercado
+
+@attribute leite {1,0}
+@attribute cafe {1,0}
+@attribute cerveja {1,0}
+@attribute pao {1,0}
+@attribute manteiga {1,0}
+@attribute arroz {1,0}
+@attribute feijao {1,0}
+
+@data
+
+0,1,0,1,1,0,0
+1,0,1,1,1,0,0
+0,1,0,1,1,0,0
+1,1,0,1,1,0,0
+0,0,1,0,0,0,0
+0,0,0,0,1,0,0
+0,0,0,1,0,0,0
+0,0,0,0,0,0,1
+0,0,0,0,0,1,1
+0,0,0,0,0,1,0

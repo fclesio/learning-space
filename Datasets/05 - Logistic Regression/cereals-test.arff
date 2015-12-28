@@ -1,0 +1,32 @@
+@relation cereals-train.arff
+@attribute PROTEIN numeric
+@attribute SODIUM numeric
+@attribute FIBER numeric
+@attribute RATING {High,Low}
+
+@data
+3,400,3.000000,High
+3,530,3.000000,High
+3,600,3.000000,High
+3,8,4.000000,High
+4,20,2.000000,High
+3,23,3.000000,High
+4,20,9.000000,High
+3,110,3.000000,High
+2,4,3.000000,High
+2,7,2.000000,High
+3,90,1.000000,High
+2,100,4.000000,High
+2,1320,1.500000,Low
+4,02,3.000000,Low
+2,102,2.000000,Low
+4,905,3.000000,Low
+1,209,0.000000,Low
+2,100,0.000000,Low
+3,109,4.000000,Low
+3,324,2.000000,Low
+2,340,1.000000,Low
+3,120,1.500000,Low
+2,190,1.000000,Low
+1,990,0.000000,Low
+
