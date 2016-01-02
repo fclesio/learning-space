@@ -1,0 +1,23 @@
+
+
+#Load Dataset
+voting <- read.csv("https://raw.githubusercontent.com/fclesio/learning-space/master/Datasets/01%20-%20Association%20Rules/USA_voting_1984.csv")
+
+#See variables
+str(voting)
+
+#See basic statistics
+summary(voting)
+
+model <- apriori(voting
+                 ,parameter = list(minlen=2,maxlen=10, supp=0.45, conf=0.70))
+
+
+quality(model) <- round(quality(model), digits=2)
+
+model.sorted <- sort(model, by="confidence")
+
+inspect(model.sorted)
+
+
+
