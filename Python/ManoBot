@@ -1,0 +1,29 @@
+# Import classes
+import tweepy, time
+ 
+# Consumer keys and access tokens, used for OAuth
+consumer_key = 'OeVNChP86yaMOUcjmWR2qHNJX'
+consumer_secret = 'mOFNF5Sl4IaXbM3lIHUnoTzsx3f7bYrnZ538ik8pe19sg0hN4x'
+access_token = '713725794204454913-FQKf50gCkUlEGCeXULj2WHzbO9vixLR'
+access_token_secret = 'pmY46883fkuZIHgQjs1PdNLsScEFoYPHGzhPPwG6bj4MS'
+ 
+# OAuth process, using the keys and tokens
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+ 
+# Creation of the actual interface, using authentication
+api = tweepy.API(auth)
+
+# File the bot will tweet from
+filename=open('aforismos.txt','r')
+
+f=filename.readlines()
+
+filename.close()
+
+
+#Tweet a line every hour
+for line in f:
+     api.update_status(line)
+     print (line)
+     time.sleep(600)
