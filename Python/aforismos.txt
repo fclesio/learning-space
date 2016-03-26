@@ -9,7 +9,6 @@ A possibilidade de realizarmos um sonho é o que torna a vida interessante (Paul
 You can take the boy out of the country, but you can't take the country out of the boy.
 Aos 20 anos, a vontade é soberana; aos 30, o espírito; aos 40, a razão (Ben Franklin)
 A man with one clock knows what time it is. A man with two clocks is never sure.
-A man with one clock knows what time it is. A man with two clocks is never sure.
 Give a man a fish and he eats for one night. Teach him how and he eats for life.
 There are old soldiers, and bold soldiers, but there are no old, bold soldiers.
 A preguiça anda tão devagar, que a pobreza facilmente a alcança (Ben Franklin)
@@ -30,7 +29,6 @@ Early to bed, early to rise, makes a man healthy, wealthy and wise.
 Quando há casamento sem amor, há amor sem casamento (Ben Franklin)
 When your only tool is a hammer, every problem looks like a nail.
 All we learn from history is that we learn nothing from history.
-All we learn from history is that we learn nothing from history.
 Better to have loved and lost, than never to have loved at all.
 East is East, and West is West, and never the twain shall meet.
 Laugh, and the world laughs with you; weep, and you weep alone.
@@ -49,7 +47,6 @@ Be careful you don't go from the frying pan into the fire.
 Quantas coisas perdemos por medo de perder (Paulo Coelho)
 He who fights and runs away, lives to fight another day.
 A foolish consistency is the hobgoblin of little minds.
-A foolish consistency is the hobgoblin of little minds.
 People who live in glass houses shouldn't throw stones.
 In the country of the blind, the one-eyed man is king.
 It's not the knowing that is difficult, but the doing.
@@ -62,7 +59,6 @@ If you can't stand the heat, get out of the kitchen.
 The more things change, the more they stay the same.
 A place for everything and everything in its place.
 Ask a silly question and you’ll get a silly answer.
-A place for everything and everything in its place.
 Ask a silly question and you'll get a silly answer.
 Better the devil you know than the devil you don't.
 Ignoriance of the law is no excuse for breaking it.
@@ -76,7 +72,6 @@ Be it ever so humble, there's no place like home.
 From the sublime to the ridiculous is but a step.
 He who lives by the sword shall die by the sword.
 What's good for the goose is good for the gander.
-An ounce of prevention is worth a pound of cure.
 An ounce of prevention is worth a pound of cure.
 Lightning never strikes twice in the same place.
 The way to a man's heart is through his stomach.
@@ -92,8 +87,6 @@ When the going gets tough, the tough get going.
 You can't make a silk purse out of a sow's ear.
 You can't make an omelet without breaking eggs.
 A fadiga é o melhor travesseiro (Ben Franklin)
-A chain is only as strong as its weakest link.
-A rose by any other name would smell as sweet.
 A chain is only as strong as its weakest link.
 A rose by any other name would smell as sweet.
 If at first you don't succeed, try, try again.
@@ -112,20 +105,16 @@ Only the wearer knows where the shoe pinches.
 The course of true love never did run smooth.
 The devil can cite Scripture for his purpose.
 A bird in the hand is worth two in the bush.
-A bird in the hand is worth two in the bush.
 Don't count your chickens before they hatch.
 Give him enough rope and he'll hang himself.
 Imitation is the sincerest form of flattery.
 It's the squeaky wheel that gets the grease.
 When all you have are lemons, make lemonade.
 All work and no play makes Jack a dull boy.
-All work and no play makes Jack a dull boy.
 Don't cut off your nose to spite your face.
 The bigger they come, the harder they fall.
 You can't fit a round peg in a square hole.
 You have to take the bitter with the sweet.
-A nod is as good as a wink to a blind man.
-Anything that can go wrong, will go wrong.
 A nod is as good as a wink to a blind man.
 Anything that can go wrong, will go wrong.
 Know which side your bread is buttered on.
@@ -146,9 +135,6 @@ You can't have your cake and eat it too.
 A jack of all trades is master of none.
 A little learning is a dangerous thing.
 A man is known by the company he keeps.
-A jack of all trades is master of none.
-A little learning is a dangerous thing.
-A man is known by the company he keeps.
 Behind every successful man is a woman.
 Discretion is the better part of valor.
 For want of a nail, a kingdom was lost.
@@ -161,7 +147,6 @@ One man's meat is another man's poison.
 There's no defense like a good offense.
 You have to take the good with the bad.
 A job worth doing is worth doing well.
-A job worth doing is worth doing well.
 Children should be seen and not heard.
 Don't bite off more than you can chew.
 Don't make mountains out of molehills.
@@ -173,9 +158,6 @@ There, but for the grace of God, go I.
 We're too soon old and too late smart.
 You can't squeeze blood from a turnip.
 You can't teach an old dog new tricks.
-A fool and his money are soon parted.
-A good beginning makes a good ending.
-An apple a day keeps the doctor away.
 A fool and his money are soon parted.
 A good beginning makes a good ending.
 An apple a day keeps the doctor away.
@@ -194,8 +176,6 @@ The eyes are the windows to the soul.
 The quality of mercy is not strained.
 A friend in need is a friend indeed.
 Absence makes the heart grow fonder.
-A friend in need is a friend indeed.
-Absence makes the heart grow fonder.
 Be not penny wise and pound foolish.
 Don't put the cart before the horse.
 God helps those who help themselves.
@@ -211,7 +191,6 @@ What can't be cured must be endured.
 Where there's a will, there's a way.
 You don't get something for nothing.
 You need to stop to smell the roses.
-A thing of beauty is a joy forever.
 A thing of beauty is a joy forever.
 Don't bite the hand that feeds you.
 Don't burn the candle at both ends.
@@ -239,8 +218,6 @@ Where there's smoke, there's fire.
 Who pays the piper calls the tune.
 A soft answer turneth away wrath.
 A word to the wise is sufficient.
-A soft answer turneth away wrath.
-A word to the wise is sufficient.
 Chickens will come home to roost.
 Cleanliness is next to godliness.
 Don't change horses in midstream.
@@ -254,11 +231,6 @@ There's no disputing about taste.
 There's no fool like an old fool.
 While there's life, there's hope.
 You made your bed, now lie in it.
-A penny saved is a penny earned.
-A rolling stone gathers no moss.
-Actions speak louder than words.
-All things come to he who waits.
-April showers bring May flowers.
 A penny saved is a penny earned.
 A rolling stone gathers no moss.
 Actions speak louder than words.
@@ -279,7 +251,6 @@ There's no accounting for taste.
 A woman’s place is in the home.
 An army marches on its stomach.
 A woman's place is in the home.
-An army marches on its stomach.
 Beware of Greeks bearing gifts.
 Eat to live, don't live to eat.
 Experience is the best teacher.
@@ -299,9 +270,6 @@ Too many cooks spoil the broth.
 Truth is stranger than fiction.
 Two's company, three's a crowd.
 What goes around, comes around.
-A rising tide lifts all boats.
-All that glitters is not gold.
-As you sow, so shall you reap.
 A rising tide lifts all boats.
 All that glitters is not gold.
 As you sow, so shall you reap.
@@ -326,7 +294,6 @@ A woman’s work is never done.
 Appearances can be deceiving.
 A dog is a man's best friend.
 A woman's work is never done.
-Appearances can be deceiving.
 Carpe diem ... seize the day.
 Handsome is as handsome does.
 It's not over till it's over.
@@ -336,10 +303,6 @@ Strike while the iron is hot.
 The early bird gets the worm.
 Variety is the spice of life.
 What goes up, must come down.
-A bad penny always turns up.
-A miss is as good as a mile.
-A stitch in time saves nine.
-All for one and one for all.
 A bad penny always turns up.
 A miss is as good as a mile.
 A stitch in time saves nine.
@@ -377,8 +340,6 @@ You can't take it with you.
 A barking dog never bites.
 A watched pot never boils.
 All’s well that ends well.
-A barking dog never bites.
-A watched pot never boils.
 All's well that ends well.
 Ask and it shall be given.
 Ask and you shall receive.
@@ -393,7 +354,6 @@ Out of sight, out of mind.
 Pride goeth before a fall.
 Water seeks its own level.
 You can't fight city hall.
-A new broom sweeps clean.
 A new broom sweeps clean.
 Barking dogs seldom bite.
 Beauty is only skin deep.
@@ -449,14 +409,12 @@ Still waters run deep.
 Time heals all wounds.
 What will be, will be.
 Always cut the cards.
-Always cut the cards.
 Keep your powder dry.
 Look before you leap.
 Misery loves company.
 No news is good news.
 The more the merrier.
 Turn the other cheek.
-Any port in a storm.
 Any port in a storm.
 No man is an island.
 Old habits die hard.
