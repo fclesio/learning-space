@@ -26,4 +26,4 @@ filename.close()
 for line in f:
      api.update_status(line)
      print (line)
-     time.sleep(1)
+     time.sleep(600)
