@@ -15,15 +15,15 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
 # File the bot will tweet from
-filename=open('aforismos.txt','r')
+filename=open('rap.txt','r')
 
 f=filename.readlines()
 
 filename.close()
 
 
-#Tweet a line every hour
+#Tweet a line every 1 minute
 for line in f:
      api.update_status(line)
      print (line)
-     time.sleep(600)
+     time.sleep(60)
