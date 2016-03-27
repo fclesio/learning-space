@@ -1,9 +1,16 @@
+
+# Tutorial from: http://lifelines.readthedocs.org/en/latest/Quickstart.html
+
+# Import library 
 from lifelines.datasets import load_waltons
-df = load_waltons() # returns a Pandas DataFrame
 
-print df.head()
+# Load data frame
+df = load_waltons()
 
+# Print dataframe
+print (df.head())
 
+# Get separare frame for event and time
 T = df['T']
 E = df['E']
 
