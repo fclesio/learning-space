@@ -1,0 +1,35 @@
+—Running 
+ vw base_movies -b 18 -q ui --rank 10 --l2 0.001 --learning_rate 0.015 --passes 20 --decay_learning_rate 0.97 --power_t 0 -f movielens.reg --cache_file movielens.cache
+
+vw test_movies -i movielens.reg -t -p /dev/stdout --quiet
+
+vw base_movies -b 18 -q ui --rank 10 --l2 0.001 --learning_rate 0.015 --passes 20 --decay_learning_rate 0.97 --power_t 0 -f movielens.reg --cache_file movielens.cache
+
+cat u.item | cut -d "|" -f1-2 |grep "Star"
+
+cat u.item | cut -d "|" -f1-2 |grep "^20|\|^33|\|^61|\|^117|\|^155|\|^160|\|^171|\|^189|\|^202|\|^265"
+
+/dev/stdout = console
+
+cat test_user_1 | sort -u
+
+base 1 = cat test_user_1 | sort -u | wc -l
+
+cat test_user_1 | sort -u > test_user_1_distinct
+
+cat test_user_1 | sort -u > test_user_1_distinct
+
+vw test_movies -i movielens.reg -t -p movies_result.txt --quiet 
+
+cat test_user_1 | sort -u > test_user_1_distinct
+
+vw test_movies -i movielens.reg -t -p /dev/stdout --quiet
+
+vw test_movies -i movielens.reg -t test_p movies_result.txt --quiet 
+
+vw -i movielens.reg -t test_user_1_distinct -p result_user_1_distinct.txt --quiet
+
+vw -i movielens.reg -t test_user_1_distinct -p result_user_1_distinct.txt --quiet
+
+
+
