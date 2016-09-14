@@ -74,3 +74,31 @@ prostate.test = prostate.hex[s > 0.8,]
 prostate.test = h2o.assign(prostate.test, "prostate.test")
 nrow(prostate.train) + nrow(prostate.test)
 
+
+
+# GBM
+library(h2o)
+
+#All cores on
+#h2oServer = h2o.init(nthreads=-1)
+
+localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE,min_mem_size = "3g")
+ausPath = '/Users/flavio.clesio/Desktop/australia.csv'
+australia.hex = h2o.importFile(path = ausPath, destination_frame = "australia.hex")
+
+
+
+
+independent <- c("premax", "salmax","minairtemp", "maxairtemp",
+                 "maxsst", "maxsoilmoist", "Max_czcs")
+
+dependent <- "runoffnew"
+
+
+
+h2o.gbm(y = dependent, x = independent, data = australia.hex,
+        n.trees = 10, interaction.depth = 3, max_depth=10, min_rows=10, learn_rate=0.175,
+        n.minobsinnode = 2, shrinkage = 0.2, distribution= "gaussian")
+
+
+install.packages("h2o", type="source")
