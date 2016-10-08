@@ -60,3 +60,14 @@ inspect(Iluminacao_Sim)
 inspect(Ocorrencia_Atendida_15_Minutos_Sim)
 
 inspect(Policiamento_Ostensivo)
+
+
+
+
+crimes_rulez_2 <- apriori(crimes, parameter = list(minlen=4,maxlen=20, supp=0.2, conf=0.90))
+
+crimes_rulez_2
+
+out <- capture.output(inspect(crimes_rulez_2))
+
+cat("Regras", out, file="regras.txt", sep="n", append=TRUE)
