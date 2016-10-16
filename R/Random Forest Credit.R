@@ -49,50 +49,28 @@ print(model_GS)
 plot(model_GS)
 
 
+## Need some tunning. It's TOO SLOW!
 
+# rf_gridsearch <- train(Class~., data=dataset, method="rf", metric=metric, tuneGrid=tunegrid, trControl=control)
+# print(rf_gridsearch)
+# plot(rf_gridsearch)
 
-rf_gridsearch <- train(Class~., data=dataset, method="rf", metric=metric, tuneGrid=tunegrid, trControl=control)
-print(rf_gridsearch)
-plot(rf_gridsearch)
+#model <- randomForest(DEFAULT ~ ., data=credit_train, importance=TRUE
+#                      ,na.action=na.omit, method="rf", metric=metric
+#                      ,tuneGrid=tunegrid, trControl=control)
 
-
-
-
-
-
-
-
-model <- randomForest(DEFAULT ~ ., data=credit_train, importance=TRUE
-                      ,na.action=na.omit, method="rf", metric=metric
-                      ,tuneGrid=tunegrid, trControl=control)
-
-
-head(credit)
+# head(credit)
 
 # View the forest results.
-print(output.forest) 
+# print(output.forest) 
 
 # Importance of each predictor.
-print(importance(fit,type = 2)) 
-
-
+# print(importance(fit,type = 2)) 
 
 # how important is each variable in the model
-imp <- importance(rf)
-o <- order(imp[,3], decreasing=T)
-imp[o,]
-#             no      yes MeanDecreaseAccuracy MeanDecreaseGini
-#Sex    51.49855 53.30255             55.13458         63.46861
-#PClass 25.48715 24.12522             28.43298         22.31789
-#Age    20.08571 14.07954             24.64607         19.57423
+# imp <- importance(rf)
+# o <- order(imp[,3], decreasing=T)
+# imp[o,]
 
-# confusion matrix [[True Neg, False Pos], [False Neg, True Pos]]
-table(data.test$Survived, predict(rf, data.test), dnn=list("actual", "predicted"))
-#      predicted
-#actual  no yes
-#   no  427  16
-#   yes 117 195
-
-
-
-
+# CMatrix
+# table(data.test$Credit, predict(rf, data.test), dnn=list("actual", "predicted"))
