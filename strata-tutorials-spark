@@ -1,6 +1,0 @@
-export PATH=$PATH:/Users/flavio.clesio/spark-2.0.2-bin-hadoop2.7/bin
-
-Flavios-MacBook-Pro:strata-2016-singapore flavio.clesio$ /Users/flavio.clesio/Downloads/spark-2.0.2-bin-hadoop2.7/bin/./spark-shell --driver-memory 2G --executor-memory 2G --executor-cores 2
-
-#Paste Mode
-:pa
