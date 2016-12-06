@@ -1,0 +1,246 @@
+import org.apache.spark.ml.feature.{HashingTF, IDF, Tokenizer}
+
+val sentenceData = spark.createDataFrame(Seq(
+  (0, "Hi I heard about Spark"),
+  (0, "I wish Java could use case classes"),
+  (1, "Logistic regression models are neat")
+)).toDF("label", "sentence")
+
+val tokenizer = new Tokenizer().setInputCol("sentence").setOutputCol("words")
+val wordsData = tokenizer.transform(sentenceData)
+val hashingTF = new HashingTF()
+  .setInputCol("words").setOutputCol("rawFeatures").setNumFeatures(20)
+val featurizedData = hashingTF.transform(wordsData)
+// alternatively, CountVectorizer can also be used to get term frequency vectors
+
+val idf = new IDF().setInputCol("rawFeatures").setOutputCol("features")
+val idfModel = idf.fit(featurizedData)
+val rescaledData = idfModel.transform(featurizedData)
+rescaledData.select("features", "label").take(3).foreach(println)
+
+
+
+featurizedData.show(false)
+
+
+
+
+
+
+
+
+import org.apache.spark.ml.feature.Word2Vec
+
+// Input data: Each row is a bag of words from a sentence or document.
+val documentDF = spark.createDataFrame(Seq(
+  "Hi I heard about Spark".split(" "),
+  "I wish Java could use case classes".split(" "),
+  "Logistic regression models are neat".split(" ")
+).map(Tuple1.apply)).toDF("text")
+
+// Learn a mapping from words to Vectors.
+val word2Vec = new Word2Vec()
+  .setInputCol("text")
+  .setOutputCol("result")
+  .setVectorSize(3)
+  .setMinCount(0)
+val model = word2Vec.fit(documentDF)
+val result = model.transform(documentDF)
+result.select("result").take(3).foreach(println)
+
+
+
+
+
+
+import org.apache.log4j.{Level, Logger}
+import org.apache.spark.ml.Pipeline
+import org.apache.spark.ml.evaluation.RegressionEvaluator
+import org.apache.spark.ml.feature.{OneHotEncoder, StringIndexer, VectorAssembler}
+import org.apache.spark.ml.regression.LinearRegression
+import org.apache.spark.ml.tuning.{CrossValidator, ParamGridBuilder}
+import org.apache.spark.mllib.evaluation.RegressionMetrics
+import org.apache.spark.sql._
+import org.apache.spark.sql.functions._
+
+
+
+
+case class X(
+                id: String ,price: Double, lotsize: Double, bedrooms: Double,
+                bathrms: Double,stories: Double, driveway: String,recroom: String,
+                fullbase: String, gashw: String, airco: String, garagepl: Double, prefarea: String)
+
+
+
+ var input = "data/Housing.csv"
+
+
+
+import spark.implicits._
+
+  val data = spark.sparkContext.textFile(input)
+      .map(_.split(","))
+      .map( x => ( X(
+                 x(0), x(1).toDouble, x(2).toDouble, x(3).toDouble, x(4).toDouble, x(5).toDouble,
+                 x(6), x(7), x(8), x(9), x(10), x(11).toDouble, x(12) )))
+      .toDF()
+
+   val categoricalVariables = Array("driveway","recroom", "fullbase", "gashw", "airco", "prefarea")
+
+  val categoricalIndexers: Array[org.apache.spark.ml.PipelineStage] =
+            categoricalVariables.map(i => new StringIndexer()
+            .setInputCol(i).setOutputCol(i+"Index"))
+
+  val categoricalEncoders: Array[org.apache.spark.ml.PipelineStage] =
+            categoricalVariables.map(e => new OneHotEncoder()
+            .setInputCol(e + "Index").setOutputCol(e + "Vec"))
+
+  val assembler = new VectorAssembler()
+            .setInputCols( Array(
+             "lotsize", "bedrooms", "bathrms", "stories",
+             "garagepl","drivewayVec", "recroomVec", "fullbaseVec",
+             "gashwVec","aircoVec", "prefareaVec"))
+            .setOutputCol("features")
+
+
+   val lr = new LinearRegression()
+            .setLabelCol("price")
+            .setFeaturesCol("features")
+            .setMaxIter(1000)
+            .setSolver("l-bfgs")
+           // .setRegParam(0.2)
+            //  .setFitIntercept(true)
+
+
+  val paramGrid = new ParamGridBuilder()
+            .addGrid(lr.regParam, Array(0.1, 0.01, 0.001, 0.0001, 1.0))
+            .addGrid(lr.fitIntercept)
+            .addGrid(lr.elasticNetParam, Array(0.0, 1.0))
+            .build()
+
+  val steps = categoricalIndexers ++
+              categoricalEncoders ++
+              Array(assembler, lr)
+
+  val pipeline = new Pipeline()
+            .setStages(steps)
+
+   val cv = new CrossValidator()
+     .setEstimator(pipeline)
+     .setEvaluator(new RegressionEvaluator()
+       .setLabelCol("price") )
+     .setEstimatorParamMaps(paramGrid)
+     .setNumFolds(5)
+
+  /** val tvs = new TrainValidationSplit()
+    * .setEstimator( pipeline )
+    * .setEvaluator( new RegressionEvaluator()
+    * .setLabelCol("price") )
+    * .setEstimatorParamMaps(paramGrid)
+    * .setTrainRatio(0.75)*/
+
+  val Array(training, test) = data.randomSplit(Array(0.75, 0.25), seed = 12345)
+
+  val model = cv.fit {
+    training
+  }
+
+
+  //val holdout = model.transform(test).select("prediction","price")
+   val holdout = model.transform(test).select("prediction", "price").orderBy(abs(col("prediction")-col("price")))
+   holdout.show
+  val rm = new RegressionMetrics(holdout.rdd.map(x => (x(0).asInstanceOf[Double], x(1).asInstanceOf[Double])))
+   println(s"RMSE = ${rm.rootMeanSquaredError}")
+   println(s"R-squared = ${rm.r2}")
+   println(s"Coefficients: ${rm.coefficients} Intercept: ${rm.intercept}")
+
+
+
+
+
+
+
+
+
+
+import org.apache.log4j.{Level, Logger}
+import org.apache.spark.ml.clustering.KMeans
+import org.apache.spark.ml.feature.{StandardScaler, VectorAssembler}
+import org.apache.spark.sql.functions._
+
+// $example off$
+import org.apache.spark.sql.SparkSession
+
+
+
+
+    val ds = spark.read.option("inferSchema", "true").option("header", "true").option("nullValue", "?").csv("data/mtcars.csv")
+
+    ds.printSchema()
+    ds.show()
+
+    // vector assembler
+    val assembler = new VectorAssembler()
+      .setInputCols(Array("mpg", "cyl", "disp", "hp", "drat", "wt"))
+      .setOutputCol("features")
+      
+      val assemdata = assembler.transform(ds)
+       
+     val scaled = new StandardScaler()
+       .setInputCol("features")
+       .setOutputCol("scaledFeatures")
+       .setWithStd(true)
+       .setWithMean(true)
+ 
+     // Compute summary statistics by fitting the StandardScaler.
+     val scalerModel = scaled.fit(assemdata)
+ 
+     // Normalize each feature to have unit standard deviation.
+     val scaledData = scalerModel.transform(assemdata)
+  
+     val clusters = 10
+      // Trains a k-means model
+     val kmeans = new KMeans()
+       .setK(clusters)
+       .setMaxIter(1000)
+       .setFeaturesCol("scaledFeatures")
+       .setPredictionCol("prediction")
+       
+    val model = kmeans.fit(scaledData)
+  
+
+    // Evaluate clustering by computing Within Set Sum of Squared Errors.
+    val WSSSE = model.computeCost(scaledData)
+    println(s"Within Set Sum of Squared Errors = $WSSSE")
+
+    // Shows the result.
+    println("Cluster Centers: ")
+    model.clusterCenters.foreach(println)
+
+    // predict
+    val predict = model.transform(scaledData)
+    predict.show(1000)
+    
+    for (i <- 0 to clusters) { 
+        val predictionsPerCol = predict.filter(col("prediction") === i)
+        println(s"Cluster $i")
+       predictionsPerCol
+       .select(col("_c0"), col("features"), col("prediction"))
+       .collect
+       .foreach(println)
+       println("======================================================")
+    }
+
+
+
+
+
+
+
+spark.stop()
+
+
+:quit
+
+Flavios-MacBook-Pro:strata-2016-singapore flavio.clesio$ /Users/flavio.clesio/Downloads/spark-2.0.2-bin-hadoop2.7/bin/./spark-shell --driver-memory 2G --executor-memory 2G --executor-cores 2
