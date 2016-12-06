@@ -1,0 +1,188 @@
+export PATH=$PATH:/Users/flavio.clesio/spark-2.0.2-bin-hadoop2.7/bin
+
+Flavios-MacBook-Pro:strata-2016-singapore flavio.clesio$ /Users/flavio.clesio/Downloads/spark-2.0.2-bin-hadoop2.7/bin/./spark-shell --driver-memory 2G --executor-memory 2G --executor-cores 2
+
+#Paste Mode
+:pa
+
+scala> 
+
+
+ds.count()
+
+
+
+
+import org.apache.spark.ml.feature.{HashingTF, IDF, Tokenizer}
+
+val sentenceData = spark.createDataFrame(Seq(
+  (0, "Hi I heard about Spark"),
+  (0, "I wish Java could use case classes"),
+  (1, "Logistic regression models are neat")
+)).toDF("label", "sentence")
+
+val tokenizer = new Tokenizer().setInputCol("sentence").setOutputCol("words")
+val wordsData = tokenizer.transform(sentenceData)
+val hashingTF = new HashingTF()
+  .setInputCol("words").setOutputCol("rawFeatures").setNumFeatures(20)
+val featurizedData = hashingTF.transform(wordsData)
+// alternatively, CountVectorizer can also be used to get term frequency vectors
+
+val idf = new IDF().setInputCol("rawFeatures").setOutputCol("features")
+val idfModel = idf.fit(featurizedData)
+val rescaledData = idfModel.transform(featurizedData)
+rescaledData.select("features", "label").take(3).foreach(println)
+
+
+
+featurizedData.show(false)
+
+
+
+# Some example with Stop Words
+# Can we registry some stop words into the list (Legal texts)?
+
+
+
+
+import org.apache.spark.ml.feature.Word2Vec
+
+// Input data: Each row is a bag of words from a sentence or document.
+val documentDF = spark.createDataFrame(Seq(
+  "Hi I heard about Spark".split(" "),
+  "I wish Java could use case classes".split(" "),
+  "Logistic regression models are neat".split(" ")
+).map(Tuple1.apply)).toDF("text")
+
+// Learn a mapping from words to Vectors.
+val word2Vec = new Word2Vec()
+  .setInputCol("text")
+  .setOutputCol("result")
+  .setVectorSize(3)
+  .setMinCount(0)
+val model = word2Vec.fit(documentDF)
+val result = model.transform(documentDF)
+result.select("result").take(3).foreach(println)
+
+
+
+Word to doc
+# Tranning the word (Put the position inside some similarity with the position)
+
+
+
+setHandleInvalid("skip")
+
+
+
+OneHotEncoder
+
+
+Small note: using setHandleInvalid("skip") in the case that will have some missing data or unseen data, you can made some penalty into the label to remove any kind of bias
+
+
+
+Hyperparameter
+
+
+
+
+http://10.191.24.87:4044
+
+
+
+
+/Users/flavio.clesio/Downloads/spark-2.0.2-bin-hadoop2.7/bin/./spark-shell --driver-memory 2G --executor-memory 2G --executor-cores 2
+
+
+
+
+Correct: Users/flavio.clesio/Downloads/spark-2.0.2-bin-hadoop2.7/bin/./spark-shell --driver-memory 2G --executor-memory 2G --executor-cores 2
+
+
+
+import org.apache.log4j.{Level, Logger}
+import org.apache.spark.ml.feature.{CountVectorizer, NGram, RegexTokenizer, StopWordsRemover}
+import org.apache.spark.ml.clustering._
+import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql._
+
+
+    var inputDir = "data/topicmodeling/newsgroup_20/"
+    var stopWordFile = "data/topicmodeling/stopwords.txt"
+
+    
+    val spark = SparkSession
+      .builder
+      .appName("TopicModelingExample")
+      .master("local")
+      .getOrCreate()
+      
+    import spark.implicits._
+
+    val numTopics: Int = 10
+    val maxIterations: Int = 100
+    val vocabSize: Int = 10000
+
+    val rawTextRDD = spark.sparkContext.wholeTextFiles(inputDir).map(_._2)
+    val docDF = rawTextRDD
+                  .zipWithIndex.toDF("text", "docId")
+    val tokens = new RegexTokenizer()
+                  .setGaps(false)
+                  .setPattern("\\w+")
+                  .setMinTokenLength(4)
+                  .setInputCol("text")
+                  .setOutputCol("words")
+                  .transform(docDF)
+
+    val stopwords = spark.sparkContext.textFile(stopWordFile).collect
+    val filteredTokens = new StopWordsRemover()
+                          .setStopWords(stopwords)
+                          .setCaseSensitive(false)
+                          .setInputCol("words")
+                          .setOutputCol("filtered")
+                          .transform(tokens)
+    
+   val ngram = new NGram()
+                  .setInputCol("filtered")
+                  .setOutputCol("ngrams")
+                  .transform(filteredTokens)
+
+
+    val cvModel = new CountVectorizer()
+                    .setInputCol("ngrams")
+                    .setOutputCol("features")
+                    .setVocabSize(vocabSize)
+                    .fit(ngram)
+
+    val countVectors = cvModel
+                        .transform(ngram)
+                        .select("docId", "features")
+
+    val lda = new LDA()
+                  .setOptimizer("online")
+                  .setK(numTopics)
+                  .setMaxIter(maxIterations)
+
+    val startTime = System.nanoTime()
+    val ldaModel = lda.fit(countVectors.repartition(20))
+    val elapsed = (System.nanoTime() - startTime) / 1e9
+
+    println(s"Finished training LDA model.  Summary:")
+    println(s"Training time (sec)\t$elapsed")
+    println(s"==========")
+
+    val topicIndices = ldaModel.describeTopics(maxTermsPerTopic = 10).coalesce(1)
+    val vocabArray = cvModel.vocabulary
+    
+    for(i <- topicIndices) { println(s"Topic ${i(0)}")
+     val a: Array[Int] = i(1).asInstanceOf[scala.collection.mutable.WrappedArray[Int]].toSeq.toArray
+     val b: Array[Double] = i(2).asInstanceOf[scala.collection.mutable.WrappedArray[Double]].toSeq.toArray
+     a.map(vocabArray(_)).zip(b).foreach { case (term, weight) => println(s"$term\t$weight") }
+     println(s"==================")
+    }
+
+
+
+
+    
