@@ -1,3 +1,5 @@
+
+# Hello world in Tensor Flow
 import tensorflow as tf
 
 hello = tf.constant('Hello, TensorFlow!')
@@ -7,3 +9,25 @@ sess.run(hello)
 a = tf.constant(10)
 b = tf.constant(32)
 sess.run(a+b)
+
+
+
+#Example 1 
+import tensorflow as tf 
+
+# Constants 
+a = tf.constant(1)
+b = tf.constant(2)
+
+# Function to add 2 constants
+c = tf.add(a,b)
+
+# Get info about the session
+show = tf.Session()
+
+# Show the 'c' of the session
+show.run(c)
+
+
+
+
