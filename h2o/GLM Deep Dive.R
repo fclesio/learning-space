@@ -37,91 +37,98 @@ airlines.hex = h2o.importFile(path = airlinesURL, destination_frame = "airlines.
 # Let's see the summary
 summary(airlines.hex)
 
-# View quantiles and histograms
-quantile(x = airlines.hex$ArrDelay, na.rm = TRUE)
-
-# See the data through a histogram
-h2o.hist(airlines.hex$ArrDelay)
-
 # Construct test and train sets using sampling
 # A small note is that H2O uses probabilistic splitting, witch means that resulting splits
 # can deviate for the exact number. This is necessary when we're talking about a platform that 
 # deals with big data. If you need a exact sampling, the best way is to do this in your RDBMS
-airlines.split = h2o.splitFrame(data = airlines.hex,ratios = 0.85, seed = -1)
+airlines.split = h2o.splitFrame(data = airlines.hex,ratios = 0.70, seed = -1)
 
+# Get the train dataframe(1st split object)
 airlines.train = airlines.split[[1]]
 
+# Get the test dataframe(2nd split object)
 airlines.test = airlines.split[[2]]
 
 # Display a summary using table-like functions
 h2o.table(airlines.train$Cancelled)
-h2o.table(airlines.test$Cancelled)
+# Cancelled Count
+# 1         0 30085
+# 2         1   742
 
-# Set dependent variable
+h2o.table(airlines.test$Cancelled)
+# Cancelled Count
+# 1         0 12807
+# 2         1   344
+
+
+# Set dependent variable (Is departure delayed)
 Y = "IsDepDelayed"
 
 # Set independent variables
 X = c("Origin", "Dest", "DayofMonth", "Year", "UniqueCarrier", "DayOfWeek", "Month", "DepTime", "ArrTime", "Distance")
 
 # Define the data for the model and display the results
-airlines.glm <- h2o.glm(training_frame=airlines.train, x=X, y=Y, family = "binomial", alpha = 0.5, max_iterations = 50, beta_epsilon = 0, , lambda = 1e-05, lambda_search = FALSE
-                        ,early_stopping = FALSE, nfolds = 0, seed = NULL, intercept = TRUE, gradient_epsilon = -1, remove_collinear_columns = FALSE, max_runtime_secs = 0,
-                        missing_values_handling = c("Skip"))
+airlines.glm <- h2o.glm(training_frame=airlines.train, x=X, y=Y
+                        ,family = "binomial", alpha = 0.5, max_iterations = 300
+                        ,beta_epsilon = 0, lambda = 1e-05, lambda_search = FALSE
+                        ,early_stopping = FALSE, nfolds = 0, seed = NULL
+                        ,intercept = TRUE, gradient_epsilon = -1, remove_collinear_columns = FALSE
+                        ,max_runtime_secs = 10000,missing_values_handling = c("Skip"))
 
-# x A vector containing the names or indices of the predictor variables to use in
-# building the GLM model. If x is missing,then all columns except y are used.
+########################
+# Parameter description
+########################
 
-# y A character string or index that represent the response variable in the model.
+# x: A vector containing the names or indices of the predictor variables to use in
+# building the GLM model. If x is missing, then all columns except y are used.
 
-# training_frame An H2OFrame object containing the variables in the model.
+# y: A character string or index that represent the response variable in the model.
 
-# family A character string specifying the distribution of the model: gaussian, binomial,
+# training_frame: An H2OFrame object containing the variables in the model.
+
+# family: A character string specifying the distribution of the model: gaussian, binomial,
 # poisson, gamma, tweedie.
 
-# alpha A numeric in [0, 1] specifying the elastic-net mixing parameter.
+# alpha: A numeric in [0, 1] specifying the elastic-net mixing parameter.
 # making alpha = 1 the lasso penalty and alpha = 0 the ridge penalty
 
-# max_iterations A non-negative integer specifying the maximum number of iterations.
+# max_iterations: A non-negative integer specifying the maximum number of iterations.
 
-# beta_epsilon A non-negative number specifying the magnitude of the maximum difference
+# beta_epsilon: A non-negative number specifying the magnitude of the maximum difference
 # between the coefficient estimates from successive iterations. Defines the convergence
 # criterion for h2o.glm.
 
-# lambda A non-negative shrinkage parameter for the elastic-net, which multiplies P(α, β)
+# lambda: A non-negative shrinkage parameter for the elastic-net, which multiplies P(α, β)
 # in the objective function. When lambda = 0, no elastic-net penalty is applied
 # and ordinary generalized linear models are fit.
 
-# lambda_search A logical value indicating whether to conduct a search over the space of lambda
+# lambda_search: A logical value indicating whether to conduct a search over the space of lambda
 # values starting from the lambda max, given lambda is interpreted as lambda min.
 
-# early_stopping A logical value indicating whether to stop early when doing lambda search. H2O
+# early_stopping: A logical value indicating whether to stop early when doing lambda search. H2O
 # will stop the computation at the moment when the likelihood stops changing or
 # gets (on the validation data).
 
-# nfolds (Optional) Number of folds for cross-validation.
+# nfolds (Optional): Number of folds for cross-validation.
 
-# seed (Optional) Specify the random number generator (RNG) seed for cross-validation
+# seed (Optional): Specify the random number generator (RNG) seed for cross-validation
 # folds.
 
-# intercept Logical, include constant term (intercept) in the model.
+# intercept: Logical, include constant term (intercept) in the model.
 
-# gradient_epsilon
-# Convergence criteria. Converge if gradient l-infinity norm is below this threshold.
+# gradient_epsilon: Convergence criteria. Converge if gradient l-infinity norm is below this threshold.
 # If lambda_search = FALSE and lambda = 0, the default value of
 # gradient_epsilon is equal to .000001, otherwise the default value is .0001. If
 # lambda_search = TRUE, the conditional values above are 1E-8 and 1E-6 respectively.
 
-# remove_collinear_columns
-# (Optional) Logical, valid only with no regularization. If set, co-linear columns
+# remove_collinear_columns: (Optional) Logical, valid only with no regularization. If set, co-linear columns
 # will be automatically ignored (coefficient will be 0).
 
-# max_runtime_secs
-# Maximum allowed runtime in seconds for model training. Use 0 to disable.
+# max_runtime_secs: Maximum allowed runtime in seconds for model training. Use 0 to disable.
 
-# missing_values_handling
-# (Optional) Controls handling of missing values. Can be either "MeanImputation"
-# or "Skip". MeanImputation replaces missing values with mean for numeric
-# and most frequent level for categorical, Skip ignores observations with
+# missing_values_handling: (Optional) Controls handling of missing values. 
+# Can be either "MeanImputation" or "Skip". MeanImputation replaces missing values with 
+# mean for numeric and most frequent level for categorical, Skip ignores observations with
 # any missing value. Applied both during model training *AND* scoring.
 
 
