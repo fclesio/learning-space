@@ -224,22 +224,112 @@ alpha_opts = c(0,0.05,0.10,0.15,0.20,0.25,0.30,0.35,0.40,0.45,0.50,0.55,0.60,0.6
 hyper_params_opt = list(alpha = alpha_opts)
 
 # Grid object with hyperparameters
-glm_grid <- h2o.grid("glm",grid_id = "glm_grid_1", x=X, y=Y, training_frame=airlines.train,
-                     hyper_params = hyper_params_opt, family = "binomial")
+glm_grid <- h2o.grid("glm", grid_id = "glm_grid_1"
+                     ,x=X, y=Y
+                     ,training_frame=airlines.train, hyper_params = hyper_params_opt
+                     ,family = "binomial")
 
-# Sort grids by best performance (lower MSE)
-glm_sorted_grid <- h2o.getGrid(grid_id = "glm_grid_1", sort_by = "mse")
+# Sort grids by best performance (lower ROC). Little note: As we're dealing with classification
+# in some probabilistc fashion, we'll use ROC as model selection metric.
+# If the nature of the problem are cost sensitive (e.g. A delayed departure plane is much expensive for 
+# the airport service than a delayed arrival) precision and recall can be the best choice
+glm_sorted_grid <- h2o.getGrid(grid_id = "glm_grid_1", sort_by = "roc", decreasing = FALSE)
 
 #Print the models
 print(glm_sorted_grid)
 
+# H2O Grid Details
+# ================
+#   
+#   Grid ID: glm_grid_1 
+# Used hyper parameters: 
+#   -  alpha 
+# Number of models: 21 
+# Number of failed models: 0 
+# 
+# Hyper-Parameter Search Summary: ordered by increasing mse
+# alpha           model_ids                 mse
+# 1 [D@75f57964  glm_grid_1_model_0 0.21262166632762447
+# 2 [D@65e6689c glm_grid_1_model_20 0.21360899385812956
+# 3 [D@19d6b5ff glm_grid_1_model_19 0.21364473662427722
+# 4 [D@4d48d4cd glm_grid_1_model_18  0.2136838773847859
+# 5 [D@1328ba59 glm_grid_1_model_16  0.2136957556406294
+
+
 # Grab the model_id for the top GBM model, chosen by validation AUC
 best_glm_model_id <- glm_grid@model_ids[[1]]
 
+# The best model
 best_glm <- h2o.getModel(best_glm_model_id)
 
-
+# Summary
 summary(best_glm)
+
+# Model Details:
+#   ==============
+#   
+#   H2OBinomialModel: glm
+# Model Key:  glm_grid_1_model_0 
+# GLM Model: summary
+# family  link              regularization number_of_predictors_total number_of_active_predictors
+# 1 binomial logit Ridge ( lambda = 7.514E-5 )                        283                         283
+# number_of_iterations  training_frame
+# 1                    3 RTMP_sid_aa80_4
+# 
+# H2OBinomialMetrics: glm
+# ** Reported on training data. **
+#   
+#   MSE:  0.2126217
+# RMSE:  0.4611092
+# LogLoss:  0.613853
+# Mean Per-Class Error:  0.3854564
+# AUC:  0.7225298
+# Gini:  0.4450597
+# R^2:  0.1475458
+# Null Deviance:  42664.12
+# Residual Deviance:  37846.49
+# AIC:  38414.49
+# 
+# Confusion Matrix for F1-optimal threshold:
+#   NO   YES    Error          Rate
+# NO     4901  9772 0.665985   =9772/14673
+# YES    1695 14459 0.104928   =1695/16154
+# Totals 6596 24231 0.371979  =11467/30827
+# 
+# Maximum Metrics: Maximum metrics at their respective thresholds
+# metric threshold    value idx
+# 1                       max f1  0.369485 0.716058 298
+# 2                       max f2  0.109356 0.846663 388
+# 3                 max f0point5  0.542595 0.682780 196
+# 4                 max accuracy  0.497568 0.665683 226
+# 5                max precision  0.977367 1.000000   0
+# 6                   max recall  0.052774 1.000000 398
+# 7              max specificity  0.977367 1.000000   0
+# 8             max absolute_mcc  0.537425 0.329239 199
+# 9   max min_per_class_accuracy  0.525620 0.662065 207
+# 10 max mean_per_class_accuracy  0.537425 0.664725 199
+# 
+# Gains/Lift Table: Extract with `h2o.gainsLift(<model>, <data>)` or `h2o.gainsLift(<model>, valid=<T/F>, xval=<T/F>)`
+# 
+# 
+# 
+# Scoring History: 
+#   timestamp   duration iteration negative_log_likelihood objective
+# 1 2017-01-05 20:00:27  0.000 sec         0             21332.05911   0.69199
+# 2 2017-01-05 20:00:28  0.083 sec         1             18983.35535   0.61802
+# 3 2017-01-05 20:00:28  0.121 sec         2             18925.08375   0.61669
+# 4 2017-01-05 20:00:28  0.141 sec         3             18923.24540   0.61668
+# 
+# Variable Importances: (Extract with `h2o.varimp`) 
+# =================================================
+#   
+#   Standardized Coefficient Magnitudes: standardized coefficient magnitudes
+# names coefficients sign
+# 1 Origin.MDW     1.672075  POS
+# 2 Origin.LIH     1.652638  NEG
+# 3 Origin.HNL     1.557833  NEG
+# 4 Origin.AUS     1.429479  NEG
+# 5 Origin.ERI     1.274910  POS
 
 
 
