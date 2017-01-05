@@ -135,7 +135,6 @@ airlines.glm <- h2o.glm(training_frame=airlines.train, x=X, y=Y
 # View model information: training statistics, performance, important variables
 summary(airlines.glm)
 
-
 # Model Details:
 #   ==============
 #   
