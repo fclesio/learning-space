@@ -229,11 +229,11 @@ glm_grid <- h2o.grid("glm", grid_id = "glm_grid_1"
                      ,training_frame=airlines.train, hyper_params = hyper_params_opt
                      ,family = "binomial")
 
-# Sort grids by best performance (lower ROC). Little note: As we're dealing with classification
-# in some probabilistc fashion, we'll use ROC as model selection metric.
+# Sort grids by best performance (lower AUC). Little note: As we're dealing with classification
+# in some probabilistc fashion, we'll use AUC as model selection metric.
 # If the nature of the problem are cost sensitive (e.g. A delayed departure plane is much expensive for 
 # the airport service than a delayed arrival) precision and recall can be the best choice
-glm_sorted_grid <- h2o.getGrid(grid_id = "glm_grid_1", sort_by = "roc", decreasing = FALSE)
+glm_sorted_grid <- h2o.getGrid(grid_id = "glm_grid_1", sort_by = "auc", decreasing = FALSE)
 
 #Print the models
 print(glm_sorted_grid)
@@ -247,16 +247,15 @@ print(glm_sorted_grid)
 # Number of models: 21 
 # Number of failed models: 0 
 # 
-# Hyper-Parameter Search Summary: ordered by increasing mse
-# alpha           model_ids                 mse
-# 1 [D@75f57964  glm_grid_1_model_0 0.21262166632762447
-# 2 [D@65e6689c glm_grid_1_model_20 0.21360899385812956
-# 3 [D@19d6b5ff glm_grid_1_model_19 0.21364473662427722
-# 4 [D@4d48d4cd glm_grid_1_model_18  0.2136838773847859
-# 5 [D@1328ba59 glm_grid_1_model_16  0.2136957556406294
+# Hyper-Parameter Search Summary: ordered by increasing auc
+# alpha          model_ids                auc
+# 1 [D@1d4a801e glm_grid_1_model_1 0.7061686754661298
+# 2 [D@5c2258f5 glm_grid_1_model_2 0.7106728695381445
+# 3 [D@2cdfe1b8 glm_grid_1_model_3 0.7128907395534906
+# 4 [D@5e1bbc1b glm_grid_1_model_4 0.7142923714357332
+# 5 [D@bb94205 glm_grid_1_model_5  0.715294604753314
 
-
-# Grab the model_id for the top GBM model, chosen by validation AUC
+# Grab the model_id based in AUC
 best_glm_model_id <- glm_grid@model_ids[[1]]
 
 # The best model
@@ -331,18 +330,22 @@ summary(best_glm)
 # 4 Origin.AUS     1.429479  NEG
 # 5 Origin.ERI     1.274910  POS
 
-
-
-best_glm_perf <- h2o.performance(model = best_glm, 
-                                 newdata = airlines.test)
-h2o.auc(best_glm_perf)  
-
-best_glm_perf
-
+# Get model and put inside a object
 model = best_glm
 
-pred = h2o.predict(object = airlines.glm, newdata = airlines.test)
+# Prediction using the best model
 pred2 = h2o.predict(object = model, newdata = airlines.test)
+
+summary(pred2)
+
+# predict    NO                YES              
+# YES:10402  Min.   :0.02264   Min.   :0.05103  
+# NO : 2917  1st Qu.:0.33018   1st Qu.:0.38914  
+#            Median :0.46728   Median :0.53180  
+#            Mean   :0.47376   Mean   :0.52624  
+#            3rd Qu.:0.60993   3rd Qu.:0.66889  
+#            Max.   :0.94897   Max.   :0.97736  
+
 
 # Shutdown the cluster 
 h2o.shutdown()
