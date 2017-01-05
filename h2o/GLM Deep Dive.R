@@ -135,18 +135,87 @@ airlines.glm <- h2o.glm(training_frame=airlines.train, x=X, y=Y
 # View model information: training statistics, performance, important variables
 summary(airlines.glm)
 
+
+# Model Details:
+#   ==============
+#   
+#   H2OBinomialModel: glm
+# Model Key:  GLM_model_R_1483652109289_5 
+# GLM Model: summary
+# family  link                              regularization number_of_predictors_total
+# 1 binomial logit Elastic Net (alpha = 0.5, lambda = 1.0E-5 )                        283
+# number_of_active_predictors number_of_iterations  training_frame
+# 1                         271                    4 RTMP_sid_aa80_4
+# 
+# H2OBinomialMetrics: glm
+# ** Reported on training data. **
+#   
+#   MSE:  0.2104294
+# RMSE:  0.4587259
+# LogLoss:  0.6088603
+# Mean Per-Class Error:  0.3544838
+# AUC:  0.7296414
+# Gini:  0.4592829
+# R^2:  0.1578258
+# Null Deviance:  41547.63
+# Residual Deviance:  36509.7
+# AIC:  37053.7
+# 
+# Confusion Matrix for F1-optimal threshold:
+#   NO   YES    Error          Rate
+# NO     6575  8067 0.550949   =8067/14642
+# YES    2424 12916 0.158018   =2424/15340
+# Totals 8999 20983 0.349910  =10491/29982
+# 
+# Maximum Metrics: Maximum metrics at their respective thresholds
+# metric threshold    value idx
+# 1                       max f1  0.402173 0.711175 278
+# 2                       max f2  0.138083 0.841055 376
+# 3                 max f0point5  0.548135 0.680223 192
+# 4                 max accuracy  0.511210 0.669435 215
+# 5                max precision  0.984229 1.000000   0
+# 6                   max recall  0.046126 1.000000 396
+# 7              max specificity  0.984229 1.000000   0
+# 8             max absolute_mcc  0.511210 0.338686 215
+# 9   max min_per_class_accuracy  0.512992 0.668840 214
+# 10 max mean_per_class_accuracy  0.511210 0.669375 215
+
+# Get the variable importance of the models
+h2o.varimp(airlines.glm)
+
+# Standardized Coefficient Magnitudes: standardized coefficient magnitudes
+# names coefficients sign
+# 1 Origin.LIH     3.573677  NEG
+# 2 Origin.TLH     3.054208  NEG
+# 3   Dest.LYH     2.520234  POS
+# 4 Origin.KOA     2.455275  NEG
+# 5 Origin.SRQ     2.432524  POS
+# 
+# ---
+#   names coefficients sign
+# 278 Origin.ABE     0.000000  POS
+# 279 Origin.GEG     0.000000  POS
+# 280 Origin.LAN     0.000000  POS
+# 281 Origin.SBN     0.000000  POS
+# 282 Origin.SMF     0.000000  POS
+# 283 Origin.TRI     0.000000  POS
+
+
 # Predict using GLM model
 pred = h2o.predict(object = airlines.glm, newdata = airlines.test)
 
 # Look at summary of predictions: probability of TRUE class (p1)
-summary(pred$p1)
+summary(pred)
 
-
-
-
-airlines.glm <- h2o.glm(training_frame=airlines.train, x=X, y=Y, family = "binomial", alpha = 0.5, max_iterations = 50, beta_epsilon = 0, , lambda = 1e-05, lambda_search = FALSE
-                        ,early_stopping = FALSE, nfolds = 0, seed = NULL, intercept = TRUE, gradient_epsilon = -1, remove_collinear_columns = FALSE, max_runtime_secs = 0,
-                        missing_values_handling = c("Skip"))
+# predict   NO                YES              
+# YES:8903  Min.   :0.01646   Min.   :0.02357  
+# NO :3863  1st Qu.:0.33613   1st Qu.:0.36628  
+# NA : 385  Median :0.48300   Median :0.51604  
+#           Mean   :0.48714   Mean   :0.51286  
+#           3rd Qu.:0.63276   3rd Qu.:0.66291  
+#           Max.   :0.97643   Max.   :0.98354  
+#           NA's   :385       NA's   :385  
+ 
 
 
 # Construct a large Cartesian hyper-parameter space
