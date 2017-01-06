@@ -35,8 +35,13 @@ creditcard.hex = h2o.importFile(path = LaymanBrothersURL, destination_frame = "c
 # Let's see the summary
 summary(creditcard.hex)
 
+creditcard.hex[,25] <- as.factor(creditcard.hex[,25])
 
-creditcard.split = h2o.splitFrame(data = creditcard.hex,ratios = 0.80, seed = 12345)
+
+creditcard.split = h2o.splitFrame(data = creditcard.hex
+                                  ,ratios = c(0.6,0.2)
+                                  ,destination_frames = c("creditcard.train.hex", "creditcard.valid.hex", "creditcard.test.hex")
+                                  ,seed = 12345)
 
 # Get the train dataframe(1st split object)
 creditcard.train = creditcard.split[[1]]
@@ -44,9 +49,14 @@ creditcard.train = creditcard.split[[1]]
 # Get the test dataframe(2nd split object)
 creditcard.test = creditcard.split[[2]]
 
+# Get the test dataframe(3rd split object)
+creditcard.validation = creditcard.split[[3]]
+
 h2o.table(creditcard.train$DEFAULT)
 
 h2o.table(creditcard.test$DEFAULT)
+
+h2o.table(creditcard.validation$DEFAULT)
 
 Y = "DEFAULT"
 
@@ -59,7 +69,7 @@ X = c("LIMIT_BAL","EDUCATION","MARRIAGE","AGE"
 
 creditcard.gbm <- h2o.gbm(y = Y, x = X, training_frame = creditcard.train
                           ,ntrees = 10,max_depth = 3,min_rows = 2
-                          ,learn_rate = 0.2, distribution= "gaussian")
+                          ,learn_rate = 0.2, distribution= "AUTO")
 
 
 # To obtain the Mean-squared Error by tree from the model object:
@@ -74,6 +84,22 @@ pred = h2o.predict(object = creditcard.gbm, newdata = creditcard.test)
 
 pred
 
+
+
+
+
+
+hyper_params = list( max_depth = seq(1,30,1) )
+
+
+grid <- h2o.grid(
+  hyper_params = hyper_params, search_criteria = list(strategy = "Cartesian"), algorithm="gbm"
+  ,grid_id="depth_grid", x = X, y = Y
+  ,training_frame = creditcard.train, validation_frame = creditcard.test, ntrees = 20
+  ,learn_rate = 0.05, learn_rate_annealing = 0.99, sample_rate = 0.8
+  ,col_sample_rate = 0.8, seed = 1234, stopping_rounds = 5
+  ,stopping_tolerance = 1e-4, stopping_metric = "AUC", score_tree_interval = 10
+)
 
 
 
