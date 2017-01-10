@@ -109,7 +109,7 @@ hyper_params = list( max_depth = seq(1,30,1) )
 grid <- h2o.grid(
   hyper_params = hyper_params, search_criteria = list(strategy = "Cartesian"), algorithm="gbm"
   ,grid_id="depth_grid", x = X, y = Y
-  ,training_frame = creditcard.train, validation_frame = creditcard.validation, ntrees = 10000
+  ,training_frame = creditcard.train, validation_frame = creditcard.validation, ntrees = 1000
   ,learn_rate = 0.05, learn_rate_annealing = 0.99, sample_rate = 0.8
   ,col_sample_rate = 0.8, seed = 1234, stopping_rounds = 5
   ,stopping_tolerance = 1e-4, stopping_metric = "AUC", score_tree_interval = 10

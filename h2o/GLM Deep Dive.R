@@ -15,7 +15,6 @@ if (! ("utils" %in% rownames(installed.packages()))) { install.packages("utils")
 # Now we download, install and initialize the H2O package for R.
 install.packages("h2o", type="source", repos=(c("http://h2o-release.s3.amazonaws.com/h2o/rel-turing/8/R")))
 
-
 # Load library
 library(h2o)
 
@@ -43,7 +42,7 @@ h2o.clusterInfo()
 # R Version:                  R version 3.3.2 (2016-10-31) 
 
 
-# GLM Demo
+# GLM Demo Deep Dive
 # Path of normalized archive. Can be a URL or a local path 
 airlinesURL = "https://s3.amazonaws.com/h2o-airlines-unpacked/allyears2k.csv"
 
@@ -67,17 +66,16 @@ airlines.train = airlines.split[[1]]
 # Get the test dataframe(2nd split object)
 airlines.test = airlines.split[[2]]
 
-# Display a summary using table-like functions
+# Display a summary using table-like in some sumarized way
 h2o.table(airlines.train$Cancelled)
 # Cancelled Count
-# 1         0 30085
-# 2         1   742
+# 1         0 29921
+# 2         1   751
 
 h2o.table(airlines.test$Cancelled)
 # Cancelled Count
-# 1         0 12807
-# 2         1   344
-
+# 1         0 12971
+# 2         1   335
 
 # Set dependent variable (Is departure delayed)
 Y = "IsDepDelayed"
@@ -86,12 +84,23 @@ Y = "IsDepDelayed"
 X = c("Origin", "Dest", "DayofMonth", "Year", "UniqueCarrier", "DayOfWeek", "Month", "DepTime", "ArrTime", "Distance")
 
 # Define the data for the model and display the results
-airlines.glm <- h2o.glm(training_frame=airlines.train, x=X, y=Y
-                        ,family = "binomial", alpha = 0.5, max_iterations = 300
-                        ,beta_epsilon = 0, lambda = 1e-05, lambda_search = FALSE
-                        ,early_stopping = FALSE, nfolds = 0, seed = NULL
-                        ,intercept = TRUE, gradient_epsilon = -1, remove_collinear_columns = FALSE
-                        ,max_runtime_secs = 10000,missing_values_handling = c("Skip"))
+airlines.glm <- h2o.glm(training_frame=airlines.train
+                        ,x=X
+                        ,y=Y
+                        ,family = "binomial"
+                        ,alpha = 0.5
+                        ,max_iterations = 300
+                        ,beta_epsilon = 0
+                        ,lambda = 1e-05
+                        ,lambda_search = FALSE
+                        ,early_stopping = FALSE
+                        ,nfolds = 0
+                        ,seed = NULL
+                        ,intercept = TRUE
+                        ,gradient_epsilon = -1
+                        ,remove_collinear_columns = FALSE
+                        ,max_runtime_secs = 10000
+                        ,missing_values_handling = c("Skip"))
 
 ########################
 # Parameter description
@@ -157,65 +166,64 @@ summary(airlines.glm)
 #   ==============
 #   
 #   H2OBinomialModel: glm
-# Model Key:  GLM_model_R_1483652109289_5 
+# Model Key:  GLM_model_R_1484053333586_1 
 # GLM Model: summary
-# family  link                              regularization number_of_predictors_total
-# 1 binomial logit Elastic Net (alpha = 0.5, lambda = 1.0E-5 )                        283
-# number_of_active_predictors number_of_iterations  training_frame
-# 1                         271                    4 RTMP_sid_aa80_4
+# family  link                              regularization number_of_predictors_total number_of_active_predictors number_of_iterations  training_frame
+# 1 binomial logit Elastic Net (alpha = 0.5, lambda = 1.0E-5 )                        283                         272                    5 RTMP_sid_a6c9_1
 # 
 # H2OBinomialMetrics: glm
 # ** Reported on training data. **
 #   
-#   MSE:  0.2104294
-# RMSE:  0.4587259
-# LogLoss:  0.6088603
-# Mean Per-Class Error:  0.3544838
-# AUC:  0.7296414
-# Gini:  0.4592829
-# R^2:  0.1578258
-# Null Deviance:  41547.63
-# Residual Deviance:  36509.7
-# AIC:  37053.7
+#   MSE:  0.2098326
+# RMSE:  0.4580749
+# LogLoss:  0.607572
+# Mean Per-Class Error:  0.3720209
+# AUC:  0.7316312
+# Gini:  0.4632623
+# R^2:  0.1602123
+# Null Deviance:  41328.6
+# Residual Deviance:  36240.45
+# AIC:  36786.45
 # 
 # Confusion Matrix for F1-optimal threshold:
 #   NO   YES    Error          Rate
-# NO     6575  8067 0.550949   =8067/14642
-# YES    2424 12916 0.158018   =2424/15340
-# Totals 8999 20983 0.349910  =10491/29982
+# NO     5418  9146 0.627987   =9146/14564
+# YES    1771 13489 0.116055   =1771/15260
+# Totals 7189 22635 0.366047  =10917/29824
 # 
 # Maximum Metrics: Maximum metrics at their respective thresholds
 # metric threshold    value idx
-# 1                       max f1  0.402173 0.711175 278
-# 2                       max f2  0.138083 0.841055 376
-# 3                 max f0point5  0.548135 0.680223 192
-# 4                 max accuracy  0.511210 0.669435 215
-# 5                max precision  0.984229 1.000000   0
-# 6                   max recall  0.046126 1.000000 396
-# 7              max specificity  0.984229 1.000000   0
-# 8             max absolute_mcc  0.511210 0.338686 215
-# 9   max min_per_class_accuracy  0.512992 0.668840 214
-# 10 max mean_per_class_accuracy  0.511210 0.669375 215
+# 1                       max f1  0.363651 0.711915 294
+# 2                       max f2  0.085680 0.840380 389
+# 3                 max f0point5  0.539735 0.683924 196
+# 4                 max accuracy  0.521518 0.673887 207
+# 5                max precision  0.987571 1.000000   0
+# 6                   max recall  0.040200 1.000000 398
+# 7              max specificity  0.987571 1.000000   0
+# 8             max absolute_mcc  0.521518 0.348709 207
+# 9   max min_per_class_accuracy  0.513103 0.672412 212
+# 10 max mean_per_class_accuracy  0.521518 0.674326 207
+
 
 # Get the variable importance of the models
 h2o.varimp(airlines.glm)
 
 # Standardized Coefficient Magnitudes: standardized coefficient magnitudes
 # names coefficients sign
-# 1 Origin.LIH     3.573677  NEG
-# 2 Origin.TLH     3.054208  NEG
-# 3   Dest.LYH     2.520234  POS
-# 4 Origin.KOA     2.455275  NEG
-# 5 Origin.SRQ     2.432524  POS
+# 1 Origin.TLH     3.233673  NEG
+# 2 Origin.CRP     2.998012  NEG
+# 3 Origin.LIH     2.859198  NEG
+# 4   Dest.LYH     2.766090  POS
+# 5 Origin.KOA     2.461819  NEG
 # 
 # ---
 #   names coefficients sign
-# 278 Origin.ABE     0.000000  POS
-# 279 Origin.GEG     0.000000  POS
-# 280 Origin.LAN     0.000000  POS
-# 281 Origin.SBN     0.000000  POS
-# 282 Origin.SMF     0.000000  POS
-# 283 Origin.TRI     0.000000  POS
+# 278   Dest.JAN     0.000000  POS
+# 279   Dest.LIT     0.000000  POS
+# 280   Dest.SJU     0.000000  POS
+# 281 Origin.LAN     0.000000  POS
+# 282 Origin.SBN     0.000000  POS
+# 283 Origin.SDF     0.000000  POS
 
 
 # Predict using GLM model
@@ -225,13 +233,13 @@ pred = h2o.predict(object = airlines.glm, newdata = airlines.test)
 summary(pred)
 
 # predict   NO                YES              
-# YES:8903  Min.   :0.01646   Min.   :0.02357  
-# NO :3863  1st Qu.:0.33613   1st Qu.:0.36628  
-# NA : 385  Median :0.48300   Median :0.51604  
-#           Mean   :0.48714   Mean   :0.51286  
-#           3rd Qu.:0.63276   3rd Qu.:0.66291  
-#           Max.   :0.97643   Max.   :0.98354  
-#           NA's   :385       NA's   :385  
+# YES:9798  Min.   :0.01186   Min.   :0.02857  
+# NO :3126  1st Qu.:0.33715   1st Qu.:0.37018  
+# NA : 382  Median :0.48541   Median :0.51363  
+#           Mean   :0.48780   Mean   :0.51220  
+#           3rd Qu.:0.62886   3rd Qu.:0.66189  
+#           Max.   :0.97143   Max.   :0.98814  
+#           NA's   :382       NA's   :382 
  
 
 
@@ -242,9 +250,12 @@ alpha_opts = c(0,0.05,0.10,0.15,0.20,0.25,0.30,0.35,0.40,0.45,0.50,0.55,0.60,0.6
 hyper_params_opt = list(alpha = alpha_opts)
 
 # Grid object with hyperparameters
-glm_grid <- h2o.grid("glm", grid_id = "glm_grid_1"
-                     ,x=X, y=Y
-                     ,training_frame=airlines.train, hyper_params = hyper_params_opt
+glm_grid <- h2o.grid("glm"
+                     ,grid_id = "glm_grid_1"
+                     ,x=X
+                     ,y=Y
+                     ,training_frame=airlines.train
+                     ,hyper_params = hyper_params_opt
                      ,family = "binomial")
 
 # Sort grids by best performance (lower AUC). Little note: As we're dealing with classification
@@ -267,11 +278,20 @@ print(glm_sorted_grid)
 # 
 # Hyper-Parameter Search Summary: ordered by increasing auc
 # alpha          model_ids                auc
-# 1 [D@1d4a801e glm_grid_1_model_1 0.7061686754661298
-# 2 [D@5c2258f5 glm_grid_1_model_2 0.7106728695381445
-# 3 [D@2cdfe1b8 glm_grid_1_model_3 0.7128907395534906
-# 4 [D@5e1bbc1b glm_grid_1_model_4 0.7142923714357332
-# 5 [D@bb94205 glm_grid_1_model_5  0.715294604753314
+# 1 [D@4800a43e glm_grid_1_model_1 0.7076911403181928
+# 2 [D@66030470 glm_grid_1_model_2 0.7122987232329416
+# 3 [D@6a4a43d3 glm_grid_1_model_3 0.7145455620514375
+# 4 [D@17604a1a glm_grid_1_model_4  0.715989429818657
+# 5 [D@21e1e99f glm_grid_1_model_5 0.7169797604977775
+#                
+# ---
+# alpha           model_ids                auc
+# 16 [D@78833412 glm_grid_1_model_16  0.720595118360825
+# 17 [D@44d770f2 glm_grid_1_model_17 0.7207086912177467
+# 18 [D@31669527 glm_grid_1_model_18 0.7208228330257134
+# 19 [D@5b376f34 glm_grid_1_model_19 0.7209144533220885
+# 20 [D@6acad45e glm_grid_1_model_20 0.7209885192412766
+# 21 [D@237ad7de  glm_grid_1_model_0 0.7240682725570593
 
 # Grab the model_id based in AUC
 best_glm_model_id <- glm_grid@model_ids[[1]]
@@ -288,43 +308,41 @@ summary(best_glm)
 #   H2OBinomialModel: glm
 # Model Key:  glm_grid_1_model_0 
 # GLM Model: summary
-# family  link              regularization number_of_predictors_total number_of_active_predictors
-# 1 binomial logit Ridge ( lambda = 7.514E-5 )                        283                         283
-# number_of_iterations  training_frame
-# 1                    3 RTMP_sid_aa80_4
+# family  link             regularization number_of_predictors_total number_of_active_predictors number_of_iterations  training_frame
+# 1 binomial logit Ridge ( lambda = 7.29E-5 )                        283                         282                    3 RTMP_sid_a6c9_1
 # 
 # H2OBinomialMetrics: glm
 # ** Reported on training data. **
 #   
-#   MSE:  0.2126217
-# RMSE:  0.4611092
-# LogLoss:  0.613853
-# Mean Per-Class Error:  0.3854564
-# AUC:  0.7225298
-# Gini:  0.4450597
-# R^2:  0.1475458
-# Null Deviance:  42664.12
-# Residual Deviance:  37846.49
-# AIC:  38414.49
+#   MSE:  0.2121424
+# RMSE:  0.4605891
+# LogLoss:  0.612699
+# Mean Per-Class Error:  0.3833898
+# AUC:  0.7240683
+# Gini:  0.4481365
+# R^2:  0.1494395
+# Null Deviance:  42448.59
+# Residual Deviance:  37585.41
+# AIC:  38151.41
 # 
 # Confusion Matrix for F1-optimal threshold:
 #   NO   YES    Error          Rate
-# NO     4901  9772 0.665985   =9772/14673
-# YES    1695 14459 0.104928   =1695/16154
-# Totals 6596 24231 0.371979  =11467/30827
+# NO     4993  9601 0.657873   =9601/14594
+# YES    1751 14327 0.108907   =1751/16078
+# Totals 6744 23928 0.370110  =11352/30672
 # 
 # Maximum Metrics: Maximum metrics at their respective thresholds
 # metric threshold    value idx
-# 1                       max f1  0.369485 0.716058 298
-# 2                       max f2  0.109356 0.846663 388
-# 3                 max f0point5  0.542595 0.682780 196
-# 4                 max accuracy  0.497568 0.665683 226
-# 5                max precision  0.977367 1.000000   0
-# 6                   max recall  0.052774 1.000000 398
-# 7              max specificity  0.977367 1.000000   0
-# 8             max absolute_mcc  0.537425 0.329239 199
-# 9   max min_per_class_accuracy  0.525620 0.662065 207
-# 10 max mean_per_class_accuracy  0.537425 0.664725 199
+# 1                       max f1  0.373247 0.716243 296
+# 2                       max f2  0.105583 0.846435 391
+# 3                 max f0point5  0.551991 0.685249 194
+# 4                 max accuracy  0.513313 0.665949 218
+# 5                max precision  0.980714 1.000000   0
+# 6                   max recall  0.048978 1.000000 399
+# 7              max specificity  0.980714 1.000000   0
+# 8             max absolute_mcc  0.548278 0.332916 196
+# 9   max min_per_class_accuracy  0.524282 0.664324 211
+# 10 max mean_per_class_accuracy  0.548278 0.666166 196
 # 
 # Gains/Lift Table: Extract with `h2o.gainsLift(<model>, <data>)` or `h2o.gainsLift(<model>, valid=<T/F>, xval=<T/F>)`
 # 
@@ -332,21 +350,30 @@ summary(best_glm)
 # 
 # Scoring History: 
 #   timestamp   duration iteration negative_log_likelihood objective
-# 1 2017-01-05 20:00:27  0.000 sec         0             21332.05911   0.69199
-# 2 2017-01-05 20:00:28  0.083 sec         1             18983.35535   0.61802
-# 3 2017-01-05 20:00:28  0.121 sec         2             18925.08375   0.61669
-# 4 2017-01-05 20:00:28  0.141 sec         3             18923.24540   0.61668
+# 1 2017-01-10 11:11:07  0.000 sec         0             21224.29620   0.69198
+# 2 2017-01-10 11:11:07  0.066 sec         1             18857.11178   0.61705
+# 3 2017-01-10 11:11:07  0.094 sec         2             18795.11788   0.61562
+# 4 2017-01-10 11:11:07  0.126 sec         3             18792.70362   0.61559
 # 
 # Variable Importances: (Extract with `h2o.varimp`) 
 # =================================================
 #   
 #   Standardized Coefficient Magnitudes: standardized coefficient magnitudes
 # names coefficients sign
-# 1 Origin.MDW     1.672075  POS
-# 2 Origin.LIH     1.652638  NEG
-# 3 Origin.HNL     1.557833  NEG
-# 4 Origin.AUS     1.429479  NEG
-# 5 Origin.ERI     1.274910  POS
+# 1 Origin.MDW     1.915481  POS
+# 2 Origin.HNL     1.709757  NEG
+# 3 Origin.LIH     1.584259  NEG
+# 4 Origin.HPN     1.476562  POS
+# 5 Origin.AUS     1.439134  NEG
+# 
+# ---
+#   names coefficients sign
+# 278 Origin.PHX     0.009111  POS
+# 279   Dest.PWM     0.008332  POS
+# 280 Origin.GEG     0.008087  POS
+# 281   Dest.BOS     0.005105  POS
+# 282   Dest.MCI     0.003921  NEG
+# 283   Dest.CHA     0.000000  POS
 
 # Get model and put inside a object
 model = best_glm
@@ -354,19 +381,21 @@ model = best_glm
 # Prediction using the best model
 pred2 = h2o.predict(object = model, newdata = airlines.test)
 
+# Summary of the best model
 summary(pred2)
 
 # predict    NO                YES              
-# YES:10402  Min.   :0.02264   Min.   :0.05103  
-# NO : 2917  1st Qu.:0.33018   1st Qu.:0.38914  
-#            Median :0.46728   Median :0.53180  
-#            Mean   :0.47376   Mean   :0.52624  
-#            3rd Qu.:0.60993   3rd Qu.:0.66889  
-#            Max.   :0.94897   Max.   :0.97736  
+# YES:10368  Min.   :0.01708   Min.   :0.05032  
+# NO : 2938  1st Qu.:0.33510   1st Qu.:0.39258  
+#            Median :0.47126   Median :0.52781  
+#            Mean   :0.47526   Mean   :0.52474  
+#            3rd Qu.:0.60648   3rd Qu.:0.66397  
+#            Max.   :0.94968   Max.   :0.98292  
 
 
 # Shutdown the cluster 
 h2o.shutdown()
+
 # Are you sure you want to shutdown the H2O instance running at http://localhost:54321/ (Y/N)? Y
 # [1] TRUE
 
