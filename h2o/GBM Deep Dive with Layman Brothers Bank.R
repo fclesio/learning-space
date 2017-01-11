@@ -27,7 +27,6 @@ h2o.clusterInfo()
 #localH2O <- h2o.init(ip = '10.112.81.210', port =54321, nthreads=-1) # Belo Vale 2
 #localH2O <- h2o.init(ip = '10.112.80.74', port =54321, nthreads=-1) # Belo Vale 1
 
-
 # GBM
 
 # URL with data
