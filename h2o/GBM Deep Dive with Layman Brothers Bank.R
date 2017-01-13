@@ -44,7 +44,7 @@ creditcard.hex[,25] <- as.factor(creditcard.hex[,25])
 # We'll get 3 dataframes Train (60%), Test(20%) and Validation (20%)
 creditcard.split = h2o.splitFrame(data = creditcard.hex
                                   ,ratios = c(0.6,0.2)
-                                  ,destination_frames = c("creditcard.train.hex", "creditcard.valid.hex", "creditcard.test.hex")
+                                  ,destination_frames = c("creditcard.train.hex", "creditcard.test.hex", "creditcard.validation.hex")
                                   ,seed = 12345)
 
 # Get the train dataframe(1st split object)
@@ -53,7 +53,7 @@ creditcard.train = creditcard.split[[1]]
 # Get the test dataframe(2nd split object)
 creditcard.test = creditcard.split[[2]]
 
-# Get the test dataframe(3rd split object)
+# Get the validation dataframe(3rd split object)
 creditcard.validation = creditcard.split[[3]]
 
 
@@ -77,10 +77,25 @@ X = c("LIMIT_BAL","EDUCATION","MARRIAGE","AGE"
 # Intentionally I removed sex variable from the model, to avoid put any gender bias inside the model. Ethics first guys! ;)
 
 # Train model
-creditcard.gbm <- h2o.gbm(y = Y, x = X, training_frame = creditcard.train
-                          ,ntrees = 10,max_depth = 3,min_rows = 2
-                          ,learn_rate = 0.2, distribution= "AUTO")
+creditcard.gbm <- h2o.gbm(y = Y
+                          ,x = X
+                          ,training_frame = creditcard.train
+                          ,ntrees = 50
+                          ,validation_frame = creditcard.validation
+                          ,seed = 12345
+                          ,max_depth = 10
+                          ,min_rows = 10
+                          ,learn_rate = 0.2
+                          ,distribution= "bernoulli"
+                          ,model_id = 'gbm_layman_brothers_model'
+                          ,build_tree_one_node = TRUE
+                          ,balance_classes = TRUE
+                          ,score_each_iteration = TRUE
+                          ,ignore_const_cols = TRUE
+                          )
 
+
+creditcard.gbm@parameters
 
 # To obtain the Mean-squared Error by tree from the model object:
 creditcard.gbm@model$scoring_history
@@ -106,13 +121,25 @@ hyper_params = list( max_depth = seq(1,30,1) )
 
 
 grid <- h2o.grid(
-  hyper_params = hyper_params, search_criteria = list(strategy = "Cartesian"), algorithm="gbm"
-  ,grid_id="depth_grid", x = X, y = Y
-  ,training_frame = creditcard.train, validation_frame = creditcard.validation, ntrees = 1000
-  ,learn_rate = 0.05, learn_rate_annealing = 0.99, sample_rate = 0.8
-  ,col_sample_rate = 0.8, seed = 1234, stopping_rounds = 5
-  ,stopping_tolerance = 1e-4, stopping_metric = "AUC", score_tree_interval = 10
-)
+                  hyper_params = hyper_params
+                  ,search_criteria = list(strategy = "Cartesian")
+                  ,algorithm="gbm"
+                  ,grid_id="depth_grid"
+                  ,x = X
+                  ,y = Y
+                  ,training_frame = creditcard.train
+                  ,validation_frame = creditcard.validation
+                  ,ntrees = 1000
+                  ,learn_rate = 0.05
+                  ,learn_rate_annealing = 0.99
+                  ,sample_rate = 0.8
+                  ,col_sample_rate = 0.8
+                  ,seed = 1234
+                  ,stopping_rounds = 5
+                  ,stopping_tolerance = 1e-6
+                  ,stopping_metric = "AUC"
+                  ,score_tree_interval = 10
+                )
 
 
 grid                                                                       
