@@ -171,14 +171,17 @@ pred
 #hyper_params = list( max_depth = seq(1,30,1) )
 
 max_depth_list <- list( max_depth = seq(1,30,1))
-ntrees_list <- list( ntrees = seq(50,300,50))
+
+#ntrees_list <- list( ntrees = seq(50,300,50))
+ntrees_list <- list(50,100,150,200)
+
 #learnrate_list <- list( learnrate = seq(0.1,0.90,0.1))
 learnrate_list <- list(.10,.20,.30,.40,.50,.60,.70,.80,.90)
 
 
-hyper_parameters <- list(ntrees=ntrees_list)
+hyper_parameters <- list(ntrees=ntrees_list
                          #,max_depth=maxdepth_list)
-                         #,learn_rate=learnrate_list)
+                         ,learn_rate=learnrate_list)
 
 
 
@@ -191,7 +194,7 @@ hyper_params
 
 # Grid Search using GBM
 grid <- h2o.grid(
-                  hyper_params = hyper_params
+                  hyper_params = hyper_parameters
                   ,search_criteria = list(strategy = "Cartesian")
                   ,algorithm="gbm"
                   ,grid_id="depth_grid"
