@@ -1,0 +1,64 @@
+# The following two commands remove any previously installed H2O packages for R.
+if ("package:h2o" %in% search()) { detach("package:h2o", unload=TRUE) }
+if ("h2o" %in% rownames(installed.packages())) { remove.packages("h2o") }
+
+# Next, we download packages that H2O depends on.
+if (! ("methods" %in% rownames(installed.packages()))) { install.packages("methods") }
+if (! ("statmod" %in% rownames(installed.packages()))) { install.packages("statmod") }
+if (! ("stats" %in% rownames(installed.packages()))) { install.packages("stats") }
+if (! ("graphics" %in% rownames(installed.packages()))) { install.packages("graphics") }
+if (! ("RCurl" %in% rownames(installed.packages()))) { install.packages("RCurl") }
+if (! ("jsonlite" %in% rownames(installed.packages()))) { install.packages("jsonlite") }
+if (! ("tools" %in% rownames(installed.packages()))) { install.packages("tools") }
+if (! ("utils" %in% rownames(installed.packages()))) { install.packages("utils") }
+
+# Now we download, install and initialize the H2O package for R.
+install.packages("h2o", type="source", repos=(c("http://h2o-release.s3.amazonaws.com/h2o/rel-turing/8/R")))
+
+# Load library
+library(h2o)
+
+# Start instance with all cores
+h2o.init(nthreads = -1, max_mem_size = "8G")
+
+# Info about cluster
+h2o.clusterInfo()
+
+# Production Cluster (Not applicable because we're using in the same machine)
+#localH2O <- h2o.init(ip = '10.112.81.210', port =54321, nthreads=-1) # Server 1
+#localH2O <- h2o.init(ip = '10.112.80.74', port =54321, nthreads=-1) # Server 2
+
+# Random Forests
+
+# URL with data
+LaymanBrothersURL = "https://raw.githubusercontent.com/fclesio/learning-space/master/Datasets/02%20-%20Classification/default_credit_card.csv"
+
+# Load data 
+creditcard.hex = h2o.importFile(path = LaymanBrothersURL, destination_frame = "creditcard.hex")
+
+# Convert DEFAULT, SEX, EDUCATION, MARRIAGE variables to categorical
+creditcard.hex[,25] <- as.factor(creditcard.hex[,25]) # DEFAULT
+creditcard.hex[,3] <- as.factor(creditcard.hex[,3]) # SEX
+creditcard.hex[,4] <- as.factor(creditcard.hex[,4]) # EDUCATION
+creditcard.hex[,5] <- as.factor(creditcard.hex[,5]) # MARRIAGE
+
+# Let's see the summary
+summary(creditcard.hex)
+
+# We'll get 3 dataframes Train (60%), Test (20%) and Validation (20%)
+creditcard.split = h2o.splitFrame(data = creditcard.hex
+                                  ,ratios = c(0.6,0.2)
+                                  ,destination_frames = c("creditcard.train.hex", "creditcard.test.hex", "creditcard.validation.hex")
+                                  ,seed = 12345)
+
+# Get the train dataframe(1st split object)
+creditcard.train = creditcard.split[[1]]
+
+# Get the test dataframe(2nd split object)
+creditcard.test = creditcard.split[[2]]
+
+# Get the validation dataframe(3rd split object)
+creditcard.validation = creditcard.split[[3]]
+
+
+
