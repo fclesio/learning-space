@@ -79,9 +79,10 @@ creditcard.rf <- h2o.randomForest(
   ,x=X
   ,y=Y
   ,model_id = "credit_card_rf_01"
-  ,ntrees = 200
+  ,ntrees = 250
   ,max_depth = 50
   ,nbins = 10
+  ,mtries = 10
   ,histogram_type = 'AUTO'
   ,min_rows = 10
   ,stopping_rounds = 10
@@ -91,6 +92,8 @@ creditcard.rf <- h2o.randomForest(
   ,nbins_cats = 2
   ,binomial_double_trees = TRUE
   ,seed = 12345)
+
+# AUC: 77.70%
 
 # ntrees (Optional) Number of trees to grow. (Must be a nonnegative integer).
 # max_depth (Optional) Maximum depth to grow the tree.
@@ -115,16 +118,19 @@ ntrees_list <- list(50,100,150,200,250,300)
 
 max_depth_list <- list(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20)
 
+min_rows_list <- list(1,2,3,4,5)
+
+
 # Full list of hyper parameters that will be used
 hyper_parameters <- list(ntrees = ntrees_list
-                         ,max_depth = max_depth_list)
+                         ,max_depth = max_depth_list
+                         ,min_rows = min_rows_list)
 
 rf_grid <- h2o.grid("randomForest" 
                      ,training_frame = creditcard.train
                      ,validation_frame = creditcard.validation
                      ,x=X
                      ,y=Y
-                     ,min_rows = 10
                      ,grid_id="rf_credit_card"
                      ,stopping_metric = "AUTO" 
                      ,stopping_rounds = 2
