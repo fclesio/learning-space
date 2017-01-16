@@ -82,7 +82,7 @@ creditcard.rf <- h2o.randomForest(
   ,ntrees = 250
   ,max_depth = 50
   ,nbins = 10
-  ,mtries = 5
+  ,mtries = 10
   ,histogram_type = 'AUTO'
   ,min_rows = 10
   ,stopping_rounds = 10
