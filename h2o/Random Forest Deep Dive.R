@@ -80,10 +80,16 @@ creditcard.rf <- h2o.randomForest(
   ,y=Y
   ,model_id = "credit_card_rf_01"
   ,ntrees = 200
-  ,max_depth = 30
-  ,stopping_rounds = 2
-  ,stopping_tolerance = 1e-2
+  ,max_depth = 50
+  ,nbins = 10
+  ,histogram_type = 'AUTO'
+  ,min_rows = 10
+  ,stopping_rounds = 10
+  ,stopping_tolerance = 0.0001
   ,score_each_iteration = T
+  ,build_tree_one_node = TRUE
+  ,nbins_cats = 2
+  ,binomial_double_trees = TRUE
   ,seed = 12345)
 
 # ntrees (Optional) Number of trees to grow. (Must be a nonnegative integer).
@@ -118,6 +124,7 @@ rf_grid <- h2o.grid("randomForest"
                      ,validation_frame = creditcard.validation
                      ,x=X
                      ,y=Y
+                     ,min_rows = 10
                      ,grid_id="rf_credit_card"
                      ,stopping_metric = "AUTO" 
                      ,stopping_rounds = 2
