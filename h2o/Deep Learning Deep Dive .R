@@ -28,7 +28,7 @@ h2o.removeAll()
 h2o.clusterInfo()
 
 # Production Cluster (Not applicable because we're using in the same machine)
-#localH2O <- h2o.init(ip = '10.112.81.210', port =54321, nthreads=-1) # Server 1
+localH2O <- h2o.init(ip = '10.112.81.210', port =54321, nthreads=-1) # Server 1
 #localH2O <- h2o.init(ip = '10.112.80.74', port =54321, nthreads=-1) # Server 2
 
 # Random Forests
@@ -79,6 +79,8 @@ help(h2o.deeplearning)
 example(h2o.deeplearning)
 
 
+# Mark Execution time
+start.time <- Sys.time()
 
 model <- h2o.deeplearning(x = X,  # column numbers for predictors
                           y = Y,   # column number for label
@@ -86,58 +88,85 @@ model <- h2o.deeplearning(x = X,  # column numbers for predictors
                           training_frame = creditcard.train, # data in H2O format
                           validation_frame = creditcard.validation,
                           activation = "TanhWithDropout", # or 'Tanh'
-                          input_dropout_ratio = 0.2, # % of inputs dropout
+                          input_dropout_ratio = 0.1, # % of inputs dropout
                           overwrite_with_best_model=F,
                           distribution = "bernoulli",
                           score_duty_cycle=0.025,
-                          hidden_dropout_ratios = c(0.3,0.3,0.3), # % for nodes dropout
+                          hidden_dropout_ratios = c(0.1,0.1,0.1), # % for nodes dropout
                           balance_classes = TRUE, 
-                          hidden = c(100,100,100), # three layers of 50 nodes
-                          epochs = 1000,
+                          hidden = c(250,250,250), #Best: (250,250,250)
+                          epochs = 5000, # Best: 5000
                           variable_importances=T,
                           stopping_metric="AUC",
                           stopping_tolerance=0.01,
                           adaptive_rate=F,                ## manually tuned learning rate
                           rate=0.01, 
                           rate_annealing=2e-6,            
-                          momentum_start=0.2,             ## manually tuned momentum
+                          momentum_start=0.1,             ## manually tuned momentum
                           momentum_stable=0.4, 
-                          momentum_ramp=1e7, 
+                          momentum_ramp=1e7,
+                          seed = 12345,
                           l1=1e-5,                        ## add some L1/L2 regularization
                           l2=1e-5,
                           max_w2=10)
 
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+time.taken
+
+# install.packages("beepr")
+library(beepr)
+beep()
+
+# Time difference of 16.58739 mins
+
+
 summary(model)
 
+
+# AUC: 0.7736885 (Validation)
+
 ## Using the DNN model for predictions
-model_dl <- h2o.predict(model, test_h2o)
+model_dl <- h2o.predict(model, creditcard.validation)
 
 ## Converting H2O format into data frame
 pred_dl <- as.data.frame(model_dl)
 
 
-# Grid Search
 
+
+
+
+# Grid Search
 hyper_params <- list(
-  hidden=list(c(32,32,32),c(64,64)),
-  input_dropout_ratio=c(0,0.05),
-  rate=c(0.01,0.02),
-  rate_annealing=c(1e-8,1e-7,1e-6)
+  hidden=list(c(250,250,250),c(32,32,32)),
+  input_dropout_ratio=c(0.01,0.03,0.05),
+  rate=c(0.01,0.02,0.03,0.04,0.05),
+  rate_annealing=c(1e-9,1e-8,1e-7,1e-6,1e-5)
 )
 
+
 search_criteria = list(strategy = "Cartesian")
-                       
+
+
 hyper_params
+
+
+
+
+
+
+# Mark Execution time
+start.time <- Sys.time()
 
 grid <- h2o.grid(
   algorithm="deeplearning",
-  grid_id="dl_grid", 
-  training_frame=creditcard.train,
-  validation_frame=creditcard.validation, 
+  grid_id="dl_grid",
   x=X, 
   y=Y,
-  epochs=10,
-  stopping_metric="misclassification",
+  training_frame=creditcard.train,
+  validation_frame=creditcard.validation, 
+  stopping_metric="AUC",
   stopping_tolerance=1e-2,        ## stop when misclassification does not improve by >=1% for 2 scoring events
   stopping_rounds=2,
   score_validation_samples=10000, ## downsample validation set for faster scoring
@@ -149,12 +178,36 @@ grid <- h2o.grid(
   l1=1e-5,
   l2=1e-5,
   seed=12345,
-  activation=c("Rectifier"),
   max_w2=10,                      ## can help improve stability for Rectifier
   search_criteria = search_criteria,
-  hyper_params=hyper_params
-)
+  hyper_params=hyper_params,
+  activation = "TanhWithDropout", # or 'Tanh'
+  overwrite_with_best_model=F,
+  distribution = "bernoulli",
+  hidden_dropout_ratios = c(0.1,0.1,0.1), # % for nodes dropout
+  balance_classes = TRUE, 
+  epochs = 5000, # Best: 5000
+  variable_importances=T,
+  adaptive_rate=F                ## manually tuned learning rate
+  )
 
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+time.taken
+
+
+
+# install.packages("beepr")
+library(beepr)
+beep()
+
+
+# Time difference of 1.369454 hours
+
+#Error in .h2o.doSafeREST(h2oRestApiVersion = h2oRestApiVersion, urlSuffix = urlSuffix,  : 
+#                           Unexpected CURL error: Recv failure: Connection reset by peer
+                         
+                         
 
 grid
 
@@ -173,3 +226,34 @@ best_glm <- h2o.getModel(best_glm_model_id)
 
 # Summary
 summary(best_glm)
+
+
+
+
+
+
+
+
+
+
+
+# Saving the model on the disk
+h2o.saveModel(best_glm,"/Users/flavio.clesio/Desktop/model/",force=T)
+
+# Load the model again
+loadedModel = h2o.loadModel(path=paste0("/Users/flavio.clesio/Desktop/model","/","rf_credit_card_model_26"))
+
+# Reload the model again and put it in an object
+modelReloaded <- h2o.predict(object = loadedModel, newdata = creditcard.test)
+
+# See predictions of the reloaded model
+modelReloaded
+
+# See the POJO file of the model
+h2o.download_pojo(best_glm)
+
+# Shutdown the cluster 
+h2o.shutdown()
+
+# Are you sure you want to shutdown the H2O instance running at http://localhost:54321/ (Y/N)? Y
+# [1] TRUE
