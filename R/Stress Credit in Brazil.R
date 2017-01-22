@@ -5,7 +5,6 @@ if(length(new.packages)) install.packages(new.packages)
 
 # Load the lib
 library(forecast)
-library(xts)
 
 # Load dataset of delinquency rate in Brazil (Data from BACEN - Brazilian Central Bank)
 non_performing_loans <- read.csv('https://raw.githubusercontent.com/fclesio/learning-space/master/Datasets/08%20-%20Time%20Series/inadimplencia_non_performing_loans_individuals.csv')
@@ -97,55 +96,43 @@ fore_y$mean
 dates <- seq(as.Date("01/12/2014", format = "%d/%m/%Y"),by = "month", length = length(ts_test))
 
 # Comparison between predicted and realized
-plot(dates,fore_y$mean, col="blue", type='l',lwd=2,ylab="% Deliquency", xlab="Year")
+plot(dates,fore_y$mean, col="red", type='l', lty=2, lwd=3,ylab="% Deliquency", xlab="Year")
 par(new=TRUE)
-plot(ts_test, col="green", lwd=2,xaxt='n', yaxt='n', ann=FALSE)  
-legend("topleft", 9.5, c("Predicted","Realized"),lty=c(1,1),lwd=c(2.5,2.5),col=c("blue","green"))
+plot(ts_test, col="grey", lwd=3,xaxt='n', yaxt='n', ann=FALSE)  
+legend("topleft", 9.5, c("Predicted","Realized"),lty=c(2,1),lwd=c(2.5,2.5),col=c("red","grey"))
 
 
-# Backtesting
-realized <- melt(ts_test)
-forecasting <- melt(fore_y$mean)
+# Holdout testing. We'll create new object to simplify the code.
+# Holdout sample that we'll use for test
+realized <- ts_test 
+
+# Mean of all predictions
+forecasting <- fore_y$mean
+
+# Date series
 month_year <- non_performing_loans$month[(n_70+1):n]
 
+# Binding the values in a single table
 realized_forecasting <- cbind(month_year,realized,forecasting,forecasting-realized)
 
+# Ajustments in some columns
 colnames(realized_forecasting) <- c("date","realized","forecast", "Difference")
 
-realized_forecasting
+# New dataframe
+forecast_series <- as.data.frame(realized_forecasting)
 
-mean(realized_forecasting$Difference)
-# -0.92 %
+# Some cosmetics in date
+forecast_series$date <- as.Date(forecast_series$date)
 
-sd(realized_forecasting$Difference)
-# 0.20 %
+# Serie of difference between realized and forecasting
+forecast_series$Difference
+
+# Some stats to see the dispersion in the difference series
+w <- mean(forecast_series$Difference)
+x <- sd(forecast_series$Difference)
+
+sprintf("The avg of differences was: %s and the std was: %s", w, x)
+# "The avg of differences was: 0.256055162656973 and the std was: 0.223174375574195"
 
 # Forecasting
 plot(forecast(fore_y))  
-
-
-## Another post
-#Decomposition
-decomp_ts_npl <- stl(ts_npl, s.window="period")
-plot(decomp_ts_npl)
-
-
-
-
-# simple exponential - models level
-holt_model <- HoltWinters(ts_train, beta=FALSE, gamma=FALSE)
-
-# double exponential - models level and trend
-holt_model_trend <- HoltWinters(ts_train, gamma=FALSE)
-
-# triple exponential - models level, trend, and seasonal components
-holt_model_trend_seasonal <- HoltWinters(ts_train)
-
-# predict in 20 steps ahead
-plot(forecast(holt_model, 20))
-
-plot(forecast(holt_model_trend, 20))
-
-plot(forecast(holt_model_trend_seasonal, 20))
-
-
