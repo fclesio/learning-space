@@ -16,7 +16,8 @@ non_performing_loans
 # Transform in Date
 non_performing_loans$month <- as.Date(non_performing_loans$month, "%m/%d/%Y") 
 
-# As a want to made some backtesting, I'll split the dataset in two always respecting the original series order.
+# As a want to made some holdout testing, I'll split the dataset in two, always respecting 
+# the original series order.
 
 # First at all I'll take the number of rows in my series (n = 65)
 n = nrow(non_performing_loans)
@@ -34,36 +35,46 @@ non_performing_loans$month[(n_70+1):n]
 percent_70_train <- non_performing_loans$percent[1:n_70] 
 percent_30_test <- non_performing_loans$percent[(n_70+1):n]
 
+# Transformation in time-series object
 ts_train <- ts(percent_70_train, start=c(2011, 3), end=c(2014, 11), frequency=12) 
-ts_test <- ts(percent_70_train, start=c(2014, 12), end=c(2016, 7), frequency=12) 
+ts_test <- ts(percent_30_test, start=c(2014, 12), end=c(2016, 7), frequency=12) 
 
-#As we can see, our series begins in March of 2011 and ends at July of 2016. Let's transform this in an time series object 
+# As we can see, our series begins in March of 2011 and ends at July of 2016.
+# Let's transform this in an time series object 
 ts_npl <- ts(non_performing_loans$percent, start=c(2011, 3), end=c(2016, 7), frequency=12) 
        
 # Some stats and PLOT! (To not to break the habit)
 summary(ts_npl)
 
-#Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#3.650   4.030   4.290   4.505   5.030   5.500 
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 3.650   4.030   4.290   4.505   5.030   5.500 
 
+# PLotting
 plot(ts_npl, type="l", xlab="Year", ylab="% Delinquency")
-#We had a huge drop between 2012 and 2015, and after that we are watching some bouncing
+# We had a huge drop between 2012 and 2015, and after that we are watching some bouncing
 
 # Now we'll use Auto Arima function to predict based in our training set 
 npl_model_train <- auto.arima(ts_train)
 
+# Some stats about the model
+summary(npl_model_train)
+
 # Series: ts_train 
 # ARIMA(0,2,2)(0,1,0)[12]                    
-
+# 
 # Coefficients:
 #   ma1     ma2
 # -0.9255  0.4491
 # s.e.   0.1562  0.1453
-
+# 
 # sigma^2 estimated as 0.006275:  log likelihood=32.38
 # AIC=-58.75   AICc=-57.86   BIC=-54.45
+# 
+# Training set error measures:
+#   ME       RMSE        MAE        MPE      MAPE       MASE       ACF1
+# Training set 0.002734132 0.06359177 0.04264805 0.08402133 0.9485358 0.06858605 -0.0705292
 
-#We'll use full data right now for baseline
+# We'll use full data right now for baseline
 npl_model <- auto.arima(ts_npl)
 
 
