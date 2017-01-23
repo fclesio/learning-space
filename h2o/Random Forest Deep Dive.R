@@ -74,24 +74,24 @@ X = c("LIMIT_BAL","EDUCATION","MARRIAGE","AGE"
 
 # Train a model
 creditcard.rf <- h2o.randomForest(
-  training_frame = creditcard.train
-  ,validation_frame = creditcard.validation
-  ,x=X
-  ,y=Y
-  ,model_id = "credit_card_rf_01"
-  ,ntrees = 250
-  ,max_depth = 50
-  ,nbins = 10
-  ,mtries = 10
-  ,histogram_type = 'AUTO'
-  ,min_rows = 10
-  ,stopping_rounds = 10
-  ,stopping_tolerance = 0.0001
-  ,score_each_iteration = T
-  ,build_tree_one_node = TRUE
-  ,nbins_cats = 2
-  ,binomial_double_trees = TRUE
-  ,seed = 12345)
+                training_frame = creditcard.train
+                ,validation_frame = creditcard.validation
+                ,x=X
+                ,y=Y
+                ,model_id = "credit_card_rf_01"
+                ,ntrees = 500
+                ,max_depth = 50
+                ,nbins = 10
+                ,mtries = 10
+                ,histogram_type = 'AUTO'
+                ,min_rows = 5
+                ,stopping_rounds = 100
+                ,stopping_tolerance = 0.0001
+                ,score_each_iteration = T
+                ,build_tree_one_node = TRUE
+                ,nbins_cats = 3
+                ,binomial_double_trees = TRUE
+                ,seed = 12345)
 
 # AUC: 77.70%
 
