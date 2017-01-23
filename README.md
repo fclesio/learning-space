@@ -12,19 +12,19 @@ Folders
 Here's a high level overview of my repos:
 
 
-*[Datasets](https://github.com/fclesio/learning-space/tree/master/Datasets): Some small datasets for playing with algoritms. There are `.csv`, `.arff`, `.txt` files and so on. 
+* [Datasets](https://github.com/fclesio/learning-space/tree/master/Datasets): Some small datasets for playing with algoritms. There are `.csv`, `.arff`, `.txt` files and so on. 
 
-*[Python](https://github.com/fclesio/learning-space/tree/master/Python): Some scripts in Python for Machine Learning problems and some indistinct sripts. 
+* [Python](https://github.com/fclesio/learning-space/tree/master/Python): Some scripts in Python for Machine Learning problems and some indistinct sripts. 
 
-*[R](https://github.com/fclesio/learning-space/tree/master/R): All of my projects in R. There are a few scripts about Statistics, and a lot scripts about Machine Learning. 
+* [R](https://github.com/fclesio/learning-space/tree/master/R): All of my projects in R. There are a few scripts about Statistics, and a lot scripts about Machine Learning. 
 
-*[T-SQL](https://github.com/fclesio/learning-space/tree/master/T-SQL): Proundly I was (an accidental) Database Administrator (DBA) in some point of my carrer, and there some scripts that saved me.  
+* [T-SQL](https://github.com/fclesio/learning-space/tree/master/T-SQL): Proundly I was (an accidental) Database Administrator (DBA) in some point of my carrer, and there some scripts that saved me.  
 
-*[H2O.ai](https://github.com/fclesio/learning-space/tree/master/h2o): In this folder I store some scripts that I use in H2O.ai platform. This is a misc repo that will contains scripts of R and Python that runs in H2O.ai. 
+* [H2O.ai](https://github.com/fclesio/learning-space/tree/master/h2o): In this folder I store some scripts that I use in H2O.ai platform. This is a misc repo that will contains scripts of R and Python that runs in H2O.ai. 
 
-*[Lightning Talk @Movile - ML with Scikit-Learn](https://github.com/fclesio/learning-space/tree/master/Lightning%20Talk%20%40Movile%20-%20ML%20with%20Scikit-Learn): A notebook of some presentation that I gave in Movile. 
+* [Lightning Talk @Movile - ML with Scikit-Learn](https://github.com/fclesio/learning-space/tree/master/Lightning%20Talk%20%40Movile%20-%20ML%20with%20Scikit-Learn): A notebook of some presentation that I gave in Movile. 
 
-*[Misc](https://github.com/fclesio/learning-space/tree/master/Misc): My CV, and other files. 
+* [Misc](https://github.com/fclesio/learning-space/tree/master/Misc): My CV, and other files. 
 
 
 External Setup
