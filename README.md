@@ -32,9 +32,9 @@ External Setup
 
 I all code here are reproducible but some errors can be found. To avoid some of this errors, I strongly recommend the use of this tools.
 
-* R + R Studio 
-* IPython Notebook
-* Sublime Text 3
-* H2O.ai (Always de last version)
-* InteliJ
+* [R](https://www.r-project.org) + [R Studio](https://www.rstudio.com/products/rstudio/download/) 
+* [IPython Notebook](https://ipython.org/notebook.html)
+* [Sublime Text 3](www.sublimetext.com)
+* [H2O.ai](www.h2o.ai/download) (Always de last version)
+* [InteliJ](https://www.jetbrains.com/idea/)
 
