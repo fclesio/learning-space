@@ -1,17 +1,4 @@
-@relation CrimesNovo.symbolic
-
-@attribute DiaDaSemana {Útil, FinalDeSemana}
-@attribute Região {Centro, Sul, Leste, Oeste, Norte}
-@attribute TurnoDoDia {Manhã, Tarde, Noite, Madrugada}
-@attribute Crime {Homicídio, Roubo, Agressão, TráficoDeDrogas, Estupro, Assalto}
-@attribute Arma {ArmaDeFogo, ArmaBranca, Agressão}
-@attribute IncidênciaDeFavelas {Alta, Média, Baixa}
-@attribute Ilumicacao {TRUE, FALSE}
-@attribute PericiaInvestigacao {sim, não}
-
-
-
-@data
+DiaDaSemana,Região,TurnoDoDia,Crime,Arma,IncidênciaDeFavelas,Ilumicacao,PericiaInvestigacao
 Útil,Sul,Madrugada,Roubo,ArmaDeFogo,Alta,FALSE,não
 FinalDeSemana,Norte,Madrugada,TráficoDeDrogas,ArmaBranca,Alta,FALSE,não
 FinalDeSemana,Centro,Manhã,Estupro,ArmaBranca,Média,TRUE,sim
@@ -517,6 +504,3 @@ FinalDeSemana,Oeste,Madrugada,Assalto,ArmaDeFogo,Alta,FALSE,não
 FinalDeSemana,Oeste,Tarde,Assalto,Agressão,Média,FALSE,sim
 FinalDeSemana,Norte,Tarde,Homicídio,ArmaBranca,Alta,TRUE,sim
 Útil,Leste,Madrugada,Roubo,Agressão,Média,TRUE,não
-
-
-

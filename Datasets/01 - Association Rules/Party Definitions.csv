@@ -1,25 +1,4 @@
-@relation house-votes-84_predicted
-
-@attribute 'predictedClass Name' {republican,democrat}
-@attribute 'Class Name' {republican,democrat}
-@attribute handicapped-infants {n,y}
-@attribute water-project-cost-sharing {y,n}
-@attribute adoption-of-the-budget-resolution {n,y}
-@attribute physician-fee-freeze {y,n}
-@attribute el-salvador-aid {y,n}
-@attribute religious-groups-in-schools {y,n}
-@attribute anti-satellite-test-ban {n,y}
-@attribute aid-to-nicaraguan-contras {n,y}
-@attribute mx-missile {n,y}
-@attribute immigration {y,n}
-@attribute synfuels-corporation-cutback {n,y}
-@attribute education-spending {y,n}
-@attribute superfund-right-to-sue {y,n}
-@attribute crime {y,n}
-@attribute duty-free-exports {n,y}
-@attribute export-administration-act-south-africa {y,n}
-
-@data
+predictedClass,Class,handicapped-infants,water-project-cost-sharing,adoption-of-the-budget-resolution,physician-fee-freeze,el-salvador-aid,religious-groups-in-schools,anti-satellite-test-ban,aid-to-nicaraguan-contras,mx-missile,immigration,synfuels-corporation-cutback,education-spending,superfund-right-to-sue,crime,duty-free-exports,export-administration-act-south-africa
 republican,republican,n,y,n,y,y,y,n,n,n,y,?,y,y,y,n,y
 republican,republican,n,y,n,y,y,y,n,n,n,n,n,y,y,y,n,?
 democrat,democrat,?,y,y,?,y,y,n,n,n,n,y,n,y,y,n,n
