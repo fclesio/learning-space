@@ -147,7 +147,7 @@ head(pred_dl)
 hyper_params <- list(
   hidden=list(c(32,32,32),c(64,64)),
   input_dropout_ratio=c(0,0.05),
-  rate=c(0.01,0.02)
+  rate=c(0.001,0.005)
 )
 
 search_criteria = list(strategy = "Cartesian")
@@ -161,21 +161,20 @@ grid <- h2o.grid(
   validation_frame=creditcard.validation, 
   x=X, 
   y=Y,
-  epochs=10,
-  stopping_metric="misclassification",
-  stopping_tolerance=1e-2,        ## stop when misclassification does not improve by >=1% for 2 scoring events
-  stopping_rounds=2,
-  score_validation_samples=10000, ## downsample validation set for faster scoring
-  score_duty_cycle=0.025,         ## don't score more than 2.5% of the wall time
-  adaptive_rate=F,                ## manually tuned learning rate
-  momentum_start=0.5,             ## manually tuned momentum
+  epochs=1000,
+  stopping_metric="AUC",
+  stopping_tolerance=0.001,
+  stopping_rounds=15,
+  adaptive_rate=F, 
+  momentum_start=0.2,
   momentum_stable=0.9, 
   momentum_ramp=1e7, 
   l1=1e-5,
+  variable_importances=T,
+  rate_annealing=2e-6,
   l2=1e-5,
   seed=12345,
-  activation=c("Rectifier"),
-  max_w2=10,                      ## can help improve stability for Rectifier
+  activation=c("TanhWithDropout"),
   search_criteria = search_criteria,
   hyper_params=hyper_params
 )
