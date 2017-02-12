@@ -86,26 +86,51 @@ model <- h2o.deeplearning(x = X,  # column numbers for predictors
                           training_frame = creditcard.train, # data in H2O format
                           validation_frame = creditcard.validation,
                           activation = "TanhWithDropout", # or 'Tanh'
-                          input_dropout_ratio = 0.2, # % of inputs dropout
+                          input_dropout_ratio = 0.02, # % of inputs dropout
                           overwrite_with_best_model=F,
                           distribution = "bernoulli",
-                          score_duty_cycle=0.025,
                           hidden_dropout_ratios = c(0.3,0.3,0.3), # % for nodes dropout
                           balance_classes = TRUE, 
-                          hidden = c(100,100,100), # three layers of 50 nodes
+                          hidden = c(100,100,500), # three layers of 100 nodes
                           epochs = 1000,
                           variable_importances=T,
                           stopping_metric="AUC",
-                          stopping_tolerance=0.01,
+                          stopping_tolerance=0.001,
                           adaptive_rate=F,                ## manually tuned learning rate
-                          rate=0.01, 
+                          rate=0.001, 
                           rate_annealing=2e-6,            
                           momentum_start=0.2,             ## manually tuned momentum
-                          momentum_stable=0.4, 
                           momentum_ramp=1e7, 
                           l1=1e-5,                        ## add some L1/L2 regularization
-                          l2=1e-5,
-                          max_w2=10)
+                          l2=1e-5)
+
+x = Variável dependente. 
+y = Variáveis independentes usadas para treinamento. 
+model_id = Nome do modelo. 
+training_frame = Dataset usado para treinamento. 
+validation_frame = Dataset usado para validação.
+activation = Função de ativação. 
+input_dropout_ratio = Uma fração de atributos que será omitida durante o treinamento para melhoria da generalização.
+overwrite_with_best_model = Se essa opção estiver como TRUE há uma sobreposição (overwrite) pelo melhor modelo. 
+distribution = O tipo de distribuição das variáveis que estão no conjunto de treinamento.
+hidden_dropout_ratios = Índice do dropout para cada camada escondida. 
+balance_classes = Faz o balanceamento das classes para evitar algum tipo de viés de amostragem no modelo. 
+hidden = Tamanho das camadas escondidas
+epochs = Número de épocas, i.e. quantidade de vezes que o conjunto de treinamento vai passar pela rede.
+variable_importances = Se estiver como TRUE mostra no sumário a importância de cada uma das variáveis no modelo 
+stopping_metric = Métrica usada para checagem de convergência da rede. 
+stopping_tolerance = É o número mínimo de tolerancia para parar o processamento da rede. 
+adaptive_rate = Se estiver como TRUE o H2O faz automaticamente a atribuição da taxa de aprendizado, ou Learning Rate. 
+rate = Learning rate. Se estiver alta, é menos estável, se for menor tem uma convergência mais demorada. 
+rate_annealing = Emula o mecanismo de otimização Simulated Anealing, porém, neste caso a otimização ocorre no Learning Rate. Fórmula: (rate)/(1 + rate_annealing*samples) 
+momentum_start = O momentum inicial do treinamento. 
+momentum_ramp = Número de amostras no qual o momentum aumenta. 
+l1 = Regularização L1 (LASSO) - Pode haver pesos convergindo para zero.  
+l2 = Regularização L2 (Rigde) - Pode haver pesos com um valor muito reduzido. 
+
+
+# AUC:  0.7703728
+
 
 summary(model)
 
