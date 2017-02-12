@@ -135,19 +135,19 @@ l2 = Regularização L2 (Rigde) - Pode haver pesos com um valor muito reduzido.
 summary(model)
 
 ## Using the DNN model for predictions
-model_dl <- h2o.predict(model, test_h2o)
+model_dl <- h2o.predict(model, creditcard.test)
 
 ## Converting H2O format into data frame
 pred_dl <- as.data.frame(model_dl)
 
+head(pred_dl)
 
 # Grid Search
 
 hyper_params <- list(
   hidden=list(c(32,32,32),c(64,64)),
   input_dropout_ratio=c(0,0.05),
-  rate=c(0.01,0.02),
-  rate_annealing=c(1e-8,1e-7,1e-6)
+  rate=c(0.01,0.02)
 )
 
 search_criteria = list(strategy = "Cartesian")
