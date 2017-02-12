@@ -80,28 +80,28 @@ example(h2o.deeplearning)
 
 
 
-model <- h2o.deeplearning(x = X,  # column numbers for predictors
-                          y = Y,   # column number for label
+model <- h2o.deeplearning(x = X,
+                          y = Y,
                           model_id="dl_model_first",
-                          training_frame = creditcard.train, # data in H2O format
+                          training_frame = creditcard.train, 
                           validation_frame = creditcard.validation,
-                          activation = "TanhWithDropout", # or 'Tanh'
-                          input_dropout_ratio = 0.02, # % of inputs dropout
+                          activation = "TanhWithDropout", 
+                          input_dropout_ratio = 0.02,
                           overwrite_with_best_model=F,
                           distribution = "bernoulli",
-                          hidden_dropout_ratios = c(0.3,0.3,0.3), # % for nodes dropout
+                          hidden_dropout_ratios = c(0.3,0.3,0.3),
                           balance_classes = TRUE, 
-                          hidden = c(100,100,500), # three layers of 100 nodes
+                          hidden = c(100,100,500),
                           epochs = 1000,
                           variable_importances=T,
                           stopping_metric="AUC",
                           stopping_tolerance=0.001,
-                          adaptive_rate=F,                ## manually tuned learning rate
+                          adaptive_rate=F,
                           rate=0.001, 
                           rate_annealing=2e-6,            
-                          momentum_start=0.2,             ## manually tuned momentum
+                          momentum_start=0.2,
                           momentum_ramp=1e7, 
-                          l1=1e-5,                        ## add some L1/L2 regularization
+                          l1=1e-5,
                           l2=1e-5)
 
 x = Variável dependente. 
