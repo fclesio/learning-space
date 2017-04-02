@@ -1,0 +1,197 @@
+{
+  "metadata" : {
+    "name" : "Survival Regression",
+    "user_save_timestamp" : "1969-12-31T21:00:00.000Z",
+    "auto_save_timestamp" : "1969-12-31T21:00:00.000Z",
+    "language_info" : {
+      "name" : "scala",
+      "file_extension" : "scala",
+      "codemirror_mode" : "text/x-scala"
+    },
+    "trusted" : true,
+    "customLocalRepo" : null,
+    "customRepos" : null,
+    "customDeps" : null,
+    "customImports" : null,
+    "customArgs" : null,
+    "customSparkConf" : null
+  },
+  "cells" : [ {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "21CA7AE1ADF74A37878C682959A6AF4F"
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.ml.linalg.Vectors\nimport org.apache.spark.ml.regression.AFTSurvivalRegression\nimport org.apache.spark.sql.Row",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.ml.linalg.Vectors\nimport org.apache.spark.ml.regression.AFTSurvivalRegression\nimport org.apache.spark.sql.Row\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 3,
+      "time" : "Took: 2 seconds 635 milliseconds, at 2017-4-2 15:42"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "580A877051A241658B29196070D094F7"
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.sql.SparkSession\n\nval spark = SparkSession\n  .builder()\n  .appName(\"Spark SQL basic example\")\n  .config(\"spark.some.config.option\", \"some-value\")\n  .getOrCreate()\n\n// For implicit conversions like converting RDDs to DataFrames\nimport spark.implicits._",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.sql.SparkSession\nspark: org.apache.spark.sql.SparkSession = org.apache.spark.sql.SparkSession@70618dbd\nimport spark.implicits._\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 6,
+      "time" : "Took: 5 seconds 234 milliseconds, at 2017-4-2 15:44"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "1A9A18DCCD1346CEB48B872106075ABF"
+    },
+    "cell_type" : "code",
+    "source" : "import sqlContext.implicits._",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import sqlContext.implicits._\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 9,
+      "time" : "Took: 4 seconds 138 milliseconds, at 2017-4-2 15:46"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "B30A1CD54FB44093A7A0DC20CEABA7C4"
+    },
+    "cell_type" : "code",
+    "source" : "val training = sqlContext.createDataFrame(Seq(\n  (1.218, 1.0, Vectors.dense(1.560, -0.605)),\n  (2.949, 0.0, Vectors.dense(0.346, 2.158)),\n  (3.627, 0.0, Vectors.dense(1.380, 0.231)),\n  (0.273, 1.0, Vectors.dense(0.520, 1.151)),\n  (4.199, 0.0, Vectors.dense(0.795, -0.226))\n)).toDF(\"label\", \"censor\", \"features\")",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "training: org.apache.spark.sql.DataFrame = [label: double, censor: double ... 1 more field]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 11,
+      "time" : "Took: 5 seconds 443 milliseconds, at 2017-4-2 15:46"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "83742356AEAD47F0870A556498FDF264"
+    },
+    "cell_type" : "code",
+    "source" : "val quantileProbabilities = Array(0.3, 0.6)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "quantileProbabilities: Array[Double] = Array(0.3, 0.6)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 12,
+      "time" : "Took: 1 second 771 milliseconds, at 2017-4-2 15:46"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "00B53C392D724BE581309C971D86EB63"
+    },
+    "cell_type" : "code",
+    "source" : "val aft = new AFTSurvivalRegression()\n  .setQuantileProbabilities(quantileProbabilities)\n  .setQuantilesCol(\"quantiles\")",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "aft: org.apache.spark.ml.regression.AFTSurvivalRegression = aftSurvReg_fa057776e26e\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 13,
+      "time" : "Took: 1 second 838 milliseconds, at 2017-4-2 15:46"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "5173FD2F5C2B4A499B5B3DFBF4FB5A65"
+    },
+    "cell_type" : "code",
+    "source" : "val model = aft.fit(training)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "model: org.apache.spark.ml.regression.AFTSurvivalRegressionModel = aftSurvReg_fa057776e26e\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 14,
+      "time" : "Took: 8 seconds 68 milliseconds, at 2017-4-2 15:46"
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "7C7C0717C5D84479B607E1715A3B841A"
+    },
+    "cell_type" : "code",
+    "source" : "// Print the coefficients, intercept and scale parameter for AFT survival regression\nprintln(s\"Coefficients: ${model.coefficients}\")\nprintln(s\"Intercept: ${model.intercept}\")\nprintln(s\"Scale: ${model.scale}\")\nmodel.transform(training).show(false)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "Coefficients: [-0.4963111466650689,0.19844437699933593]\nIntercept: 2.638094615104007\nScale: 1.547234557436469\n+-----+------+--------------+------------------+---------------------------------------+\n|label|censor|features      |prediction        |quantiles                              |\n+-----+------+--------------+------------------+---------------------------------------+\n|1.218|1.0   |[1.56,-0.605] |5.718979487634987 |[1.1603238947151624,4.9954560102747525]|\n|2.949|0.0   |[0.346,2.158] |18.076521181495476|[3.667545845471768,15.78961186627775]  |\n|3.627|0.0   |[1.38,0.231]  |7.381861804239101 |[1.4977061305190837,6.447962612338965] |\n|0.273|1.0   |[0.52,1.151]  |13.577612501425332|[2.754762148150695,11.859872224069742] |\n|4.199|0.0   |[0.795,-0.226]|9.013097744073875 |[1.828667632129778,7.872826505878409]  |\n+-----+------+--------------+------------------+---------------------------------------+\n\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 15,
+      "time" : "Took: 3 seconds 181 milliseconds, at 2017-4-2 15:47"
+    } ]
+  } ],
+  "nbformat" : 4
+}
