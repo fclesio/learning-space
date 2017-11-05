@@ -1,0 +1,342 @@
+-------------
+--Redis 101--
+-------------
+
+-----------------------------------
+1) Uma breve história no tempo...
+-----------------------------------
+
+1.1) Um pouco sobre o Redis e o que ele resolve...
+ - REmote DIctionary Server
+ - Criado por Salvatore Sanfilippo em 2009
+ - Blog do Saltarore Sanfilippo (antirez.com)
+ - Ele chama o Redis de "Servidor de Estrutura de Dados"
+ - Post lendário sobre o programador que pode fazer 10x mais (antirez. com/news/112)
+ - Banco de dados in-Memory
+ - Com atômicidade e durabilidade de relacional, capacidade granular de um transacional, com velocidade de NoSQL.   
+ - Chave valor (K,V)
+ - Atômico e com Durabilidade
+ - Escrito em C
+ - Criado para arquiteturas para AOF (apend-only file)
+ - Projeto no github: github.com/antirez/redis
+ - Suporta inúmeras abstrações de dados
+ - Usado arquiteturalmente como cache de sessão
+ - Camada de pré-persistência no relacional
+ - Contadores
+ - Sistema de filas (broker)
+ - Real-time em analytics
+ - Listagem do tipo "Top-k" com Full page cache
+ - Full-text search sem as dores de cabeça dos relacionais e engines de otimização
+ - WYSIWYG
+ - Spark + Redis = <3
+ - High Frequency/High Speed Transactions
+ - "Redis é como graxa. Geralmente é usado para lubrificar partes móveis e manter elas trabalhando de forma suave reduzindo a fricção e acelerando a sua função principal. (REDMOND, Eric; WILSON, Jim. Seven Databases in Seven Weeks)
+
+1.2) Estrutura de dados
+O principio é que cada chave terá um número "n" de valores
+Os valores podem ser:
+ - Listas de strings
+ - Conjuntos de strings (ordenados ou não)
+ - Tabelas hash
+
+1.3) Arquitetura básica
+Características para rodar em produção 
+ - Suporta replicação master-slave
+ - Suporta Publicação/Assinaturas (Pub-Sub)
+ - Tem o conceito de TTL nas chaves
+
+--------------
+2) Instalação
+--------------
+
+2.1) Realize o download e faça a extração e compile o Redis 
+$ wget http://download.redis.io/releases/redis-4.0.2.tar.gz
+
+$ tar xzf redis-4.0.2.tar.gz
+
+$ cd redis-4.0.2
+
+$ make
+
+-------------------
+3) Hello Redis!!!
+-------------------
+
+3.1) Com os binários compilados, para instanciar o servidor execute:
+$ src/redis-server
+
+3.2) Agora vamos interagir com o cluster do Redis, usando a sua API cliente
+$ src/redis-cli
+
+3.3) Primeiramente vamos testar em uma outra aba no terminal para ver se o serviço do Redis está online e ativo. 
+$ src/redis-cli ping
+
+3.4) Já com o Redis instanciado, vamos criar uma chave chamada aula e vamos salvar a expressão/string "Hello Redis". 
+redis> SET aula "Hello Redis!"
+
+3.5) Vamos buscar a nossa chave aula e verificar qual valor está atribuída a ela
+redis> GET aula
+
+----------------------------------------
+4) Primeiramente as primeiras coisas...
+----------------------------------------
+4.1) Podemos usar o comando help quando tivermos dúvida em relação a algum comando ou a sua utilização
+redis> help GET
+
+redis> help HSET
+
+4.2) Para sabermos se o servidor do Redis está em pé, basta executar o comando ping e checar se o servidor está ativo. 
+redis> ping
+
+------------------------
+4) Data Types básicos
+------------------------
+4.1) Como o Redis é um banco de dados chave e valor, precisamos apenas indicar a chave para buscar o conjunto de valores. 
+no nosso exemplo, vamos usar o comando SET para armazenar na chave server:name o valor fido
+redis> SET server:name "fido"
+
+4.2) Para buscar o valor, basta usarmos o comando GET
+redis> GET server:name
+
+4.3) Nas operações em bancos NoSQL podemos realizar a deleção de registros usando o comando DEL dado a associação da chave e do valor.
+Neste caso vamos atibuir o valor 10 na chave connections
+redis> SET connections 10
+
+4.4) Agora podemos usar o INCR para aumentar o valor na chave connections da seguinte forma
+redis> INCR connections
+
+redis> INCR connections
+
+Vamos ver o valor do nosso connections 
+redis> GET connections
+
+4.5) Realizaremos a deleção do registro usando o DEL
+redis> DEL connections
+
+Mesmo com o objeto deletado, se utilizarmos o connections, qual número teremos?
+redis> INCR connections
+
+As operações com incremento devem ser utilizadas com o INCR e não com algum tipo de soma em uma variável, pois ele é o mecanismo no qual o redis consegue garantir a persistência em caso de multiplos SET's em uma chave. 
+
+4.6) No Redis podemos usar o conceito de "Time To Live" para controlar a expiração de objetos. Podemos usar os comandos EXPIRE ou TTL para fazer isso. Vejamos. 
+
+Vamos fazer o SET de um valor chamado "Redis Demo" na chave resource:lock
+redis> SET resource:lock "Redis Demo"
+
+Com a nosa chave com o seu valor devidamente atribuído, vamos colocar essa chave para expirar em 120 segundos.
+redis> EXPIRE resource:lock 120
+
+Para monitorar o quanto a chave irá durar, vamos usar o comando TTL para acompanharmos
+redis> TTL resource:lock 
+
+Depois de um tempo...
+redis> TTL resource:lock 
+
+Se usarmos o comando TTL e ele estiver como -2 significa que a chave não existe mais. Caso a chave esteja em -1 significa que ela nunca vai expirar. Caso seja usado o comando SET para a geração de uma chave ou sobre um objeto já existente, o TTL será resetado. 
+redis> SET resource:lock "Redis Demo 1"
+
+redis> EXPIRE resource:lock 120 
+
+redis> TTL resource:lock 
+
+redis> SET resource:lock "Redis Demo 2" 
+
+redis> TTL resource:lock 
+
+
+4.7) Até agora aprendemos algumas características em relação à atribuição de valores usando o Redis, mas no caso vamos em estruturas de dados um pouco mais complexas. Neste caso, vamos para as listas. Os comando que veremos abaixo serão RPUSH, LPUSH, LLEN, LRANGE, LPOP, e RPOP.
+
+O RPUSH coloca um valor no final da lista.
+redis> RPUSH friends "Alice"
+
+redis> RPUSH friends "Bob"
+
+O comando LPUSH coloca um valor no início da lista
+redis> LPUSH friends "Sam"
+
+O comando LRANGE dá um subset de uma lista; e podem ser usados dois parâmetros para buscar o range desejado em que o primeiro parâmetro é o índice do primeiro elemento a ser buscado, e o último parâmetro é o índice do último elemento da lista. Se o valor estiver como -1, significa que precisamos buscar desde o fim da lista.
+redis> LRANGE friends 0 -1 
+
+redis> LRANGE friends 0 1
+
+redis> LRANGE friends 1 2
+
+O comando LLEN retorna o tamanho da lista
+redis>LLEN friends
+
+O comando LPOP remove o primeiro elemento da lista e exibe 
+redis> LPOP friends
+
+O RPOP remove o último elemento da lista e realiza a exibição
+redis> RPOP friends
+
+E como podemos checar agora temos somente um elemento na lista
+redis> LLEN friends
+
+redis> LRANGE friends 0 -1
+
+
+4.8) A próxima estrutura de dados que vamos ver é um conjunto. Um conjunto é parecido com uma lista exeto pelo fato de que o conjunto tem os seus dados desorganizados (não precisa de uma ordem específica) e cada elemento só pode aparecer apenas UMA vez. Os comandos que vamos ver nessa sessão serão SADD, SREM, SISMEMBER, SMEMBERS e SUNION.
+
+O comando SADD adiciona valor para um conjunto(set).
+redis> SADD superpowers "flight"
+
+redis> SADD superpowers "x-ray vision"
+
+redis> SADD superpowers "reflexes"
+
+O comando SREM remove um valor de uma lista
+redis> SREM superpowers "reflexes"
+
+Se utilizarmos o comando SISMEMBER, podemos realizar um teste para saber se o elemento está contido no conjunto ou não
+redis> SISMEMBER superpowers "flight"
+
+redis> SISMEMBER superpowers "reflexes" 
+
+O comando SISMEMBERS apesenta os membros do conjunto
+redis> SMEMBERS superpowers
+
+O comando SUNION realiza a combinação de dois ou mais sets e retorna uma lista de elementos
+redis> SADD birdpowers "pecking"
+
+redis> SADD birdpowers "flight"
+
+redis> SUNION superpowers birdpowers 
+
+4.9) Os conjuntos (sets) são uma estrutura de dados interessante, mas com a sua característica de não haver uma ordem específica dos elementos não é aplicada para alguns use cases. Para resolver isso o Redis introduziu o conceito de Sorted Sets, ou conjuntos ordenados.
+
+O Sorted Set é semelhante à um set normal, com a diferença que cada valor está associado a um score, em que este é usado para realizar a ordenação do Sorted Set. Vejamos. 
+
+redis> ZADD hackers 1940 "Alan Kay"
+
+redis> ZADD hackers 1906 "Grace Hopper"
+
+redis> ZADD hackers 1953 "Richard Stallman"
+
+redis> ZADD hackers 1965 "Yukihiro Matsumoto"
+
+redis> ZADD hackers 1916 "Claude Shannon"
+
+redis> ZADD hackers 1969 "Linus Torvalds"
+
+redis> ZADD hackers 1957 "Sophie Wilson"
+
+redis> ZADD hackers 1912 "Alan Turing"
+
+Nos exemplos acima os scores são representados pelo ano de nascimento e os valores representados pelos nomes
+redis> ZRANGE hackers 2 4
+
+
+4.10) Até o momento já vimos alguns dos data types do Redis como Strings, Sets, Sorted Sets; contudo um data type muito importante no Redis é Hashes.
+
+O Hashes realiza o mapeamento entre campos strng e valores string, então com essa caracteristica ele pode ser o tipo de dados perfeito para representar objetos (e.g. um usuário com diversos campos como nome, sobrenome, idade, et cetera) 
+
+Vamos realizar a atribuição de um Hashes usando o comando HSET
+
+redis> HSET user:1000 name "John Smith"
+
+redis> HSET user:1000 email "john.smith@example.com"
+
+redis> HSET user:1000 password "s3cret"
+
+Para realizar a busca das informações dos usuários salvos, basta usar o comando HGETALL
+redis> HGETALL user:1000
+
+Os campos podem ser atribuídos de uma vez só 
+redis> HMSET user:1001 name "Mary Jones" password "hidden" email "mjones@example.com"
+
+É possível fazer a busca de apenas um valor simples
+redis> HGET user:1001 name
+
+Os valores numéricos em campos hash são operados da mesma maneira do que campos string, e existem operacoes para incrementar os seus valores de forma atômica
+redis> HSET user:1000 visits 10
+
+redis> HINCRBY user:1000 visits 1
+
+redis> HINCRBY user:1000 visits 10
+
+redis> HDEL user:1000 visits
+
+redis> HINCRBY user:1000 visits 1
+
+---------------------------------------------------------------------------------------
+5) Agora que corremos, vamos engatinhar: Gerenciamento e informações do servidor Redis
+---------------------------------------------------------------------------------------
+
+Informações sobre o cluster/stand-alone
+redis> info
+
+Ativar o Snapshot (RDB) e fazer o dump em disco a cada 5 minutos
+redis> config set save "300 1"
+
+Pasa salvar o banco de dados inteiro em background.
+redis> bgsave
+
+Pasa checar se a operação foi feita com sucesso, basta executar o comando abaixo
+redis> lastsave
+
+O arquivo de dump estará no mesmo local da instalação
+$ /Users/flavio.clesio/Downloads/redis-4.0.2
+
+$ cat dump.rdb
+
+Vamos atribuir nome para a nossa conexão. Essa será a nossa identificacão no cluster
+redis> client setname "estudos"
+
+Para checar a conexão no cluster de todos os usuários basta executar o seguinte comando
+redis> client list
+
+Para buscar o nome da nossa conexão vamos executar
+redis> client getname
+
+Para checar o número de chaves no banco
+redis> dbsize
+
+Para dropar todas as chaves de TODOS OS BANCOS
+redis> flushall
+
+Se checarmos podemos ver que as chaves foram zeradas
+redis> dbsize
+
+Para dropar as chaves de um banco específico
+redis> flushdb
+
+Para obter hora do server em microsegundos
+redis> time
+
+Localização do arquivo de configuração
+$ /usr/local/etc/redis.conf
+
+Iniciar o servidor do Redis usando o arquivo de configuração
+$ src/redis-server /usr/local/etc/redis.conf
+
+-----------------------------------------------
+6) Referências, links úteis, coisas divertidas 
+-----------------------------------------------
+http://oldblog.antirez.com/post/take-advantage-of-redis-adding-it-to-your-stack.html
+
+https://news.ycombinator.com/item?id=2705475
+
+https://redis.io/topics/persistence
+
+https://github.com/sripathikrishnan/redis-rdb-tools
+
+https://redislabs.com/blog/connecting-spark-and-redis-a-detailed-look/
+
+https://docs.databricks.com/spark/latest/data-sources/redis.html
+
+https://github.com/RedisLabs/spark-redis
+
+https://medium.com/@petehouston/install-and-config-redis-on-mac-os-x-via-homebrew-eb8df9a4f298
+
+https://redis.io/download
+
+https://redis.io/documentation
+
+https://redis.io/topics/data-types-intro
+
+https://redis.io/topics/twitter-clone
+
+https://github.com/badboy/try.redis
+
+https://github.com/mpneuried/redis-heartbeat
