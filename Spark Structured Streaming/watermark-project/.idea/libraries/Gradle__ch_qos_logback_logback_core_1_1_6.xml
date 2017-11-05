@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: ch.qos.logback:logback-core:1.1.6">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-core/1.1.6/4d1d54165c4d9fcb7b63a7fe4f18e45b47e7645b/logback-core-1.1.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-core/1.1.6/218e30c3ae44e5190a02abef985315b9b667b457/logback-core-1.1.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
