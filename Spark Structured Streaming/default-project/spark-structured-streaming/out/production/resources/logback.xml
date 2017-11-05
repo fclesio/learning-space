@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <jmxConfigurator />
+
+    <property name="DEFAULT_PATTERN"
+              value="%highlight([%-5level]) %magenta([%date{ISO8601}]) %yellow([%X{stamp}]) %magenta([%class->%method]) | %msg%n" />
+    <property name="DEFAULT_MAX_FILE_SIZE" value="500MB" />
+    <property name="DEFAULT_MAX_HISTORY" value="100" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                ${DEFAULT_PATTERN}
+            </Pattern>
+        </layout>
+    </appender>
+
+    <appender name="system-appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>log/system.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>log/system.%d{yyyy-MM}.%i.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${DEFAULT_MAX_FILE_SIZE}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${DEFAULT_MAX_HISTORY}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${DEFAULT_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="spark-appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>log/spark-context.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>log/spark-context.%d{yyyy-MM}.%i.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${DEFAULT_MAX_FILE_SIZE}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${DEFAULT_MAX_HISTORY}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${DEFAULT_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.apache.spark" level="INFO" additivity="false">
+        <appender-ref ref="spark-appender" />
+    </logger>
+
+    <logger name="org.apache.hadoop" level="WARN" additivity="false">
+        <appender-ref ref="spark-appender" />
+    </logger>
+
+    <logger name="org.spark_project.jetty.server" level="WARN" additivity="false">
+        <appender-ref ref="spark-appender" />
+    </logger>
+
+    <logger name="com.movile" level="INFO" additivity="false">
+        <!--appender-ref ref="STDOUT" /-->
+        <appender-ref ref="system-appender" />
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

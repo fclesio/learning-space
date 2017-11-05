@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.json4s:json4s-jackson_2.11:3.2.11">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.json4s/json4s-jackson_2.11/3.2.11/23101cc7e917e2005b8b244dbd2949ca6d8ff107/json4s-jackson_2.11-3.2.11.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.json4s/json4s-jackson_2.11/3.2.11/e3817af5e089bc2c1374a3e4efa4824f6f4ea130/json4s-jackson_2.11-3.2.11-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

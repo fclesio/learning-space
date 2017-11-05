@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spark-structured-streaming.iml" filepath="$PROJECT_DIR$/.idea/modules/spark-structured-streaming.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spark-structured-streaming_main.iml" filepath="$PROJECT_DIR$/.idea/modules/spark-structured-streaming_main.iml" group="spark-structured-streaming" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spark-structured-streaming_test.iml" filepath="$PROJECT_DIR$/.idea/modules/spark-structured-streaming_test.iml" group="spark-structured-streaming" />
+    </modules>
+  </component>
+</project>

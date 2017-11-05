@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.hadoop:hadoop-client:2.6.5">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-client/2.6.5/d7c7537441aa4478cdb086205971b9eeccdf5dd5/hadoop-client-2.6.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-client/2.6.5/e4ccf8e5e9c69f59674b9bc106e020a97b4b0fe8/hadoop-client-2.6.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

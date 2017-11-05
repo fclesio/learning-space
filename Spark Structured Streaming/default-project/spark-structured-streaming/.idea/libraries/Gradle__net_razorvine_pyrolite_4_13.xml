@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: net.razorvine:pyrolite:4.13">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.razorvine/pyrolite/4.13/b71a4668b0c4194486832fe7ce161eed2d0d12cb/pyrolite-4.13.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.razorvine/pyrolite/4.13/7a1e526ecf1ad858ab58ae1dfb89f73d6e11b5dd/pyrolite-4.13-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

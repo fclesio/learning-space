@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.commons:commons-crypto:1.0.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-crypto/1.0.0/7938f66b01f62f03ef8af8a64401e85e45d51c5d/commons-crypto-1.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-crypto/1.0.0/14b5b02e35691d3f0932b14b10e606abd641a371/commons-crypto-1.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
