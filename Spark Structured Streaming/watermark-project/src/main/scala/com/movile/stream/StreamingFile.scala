@@ -16,7 +16,7 @@ object StreamingFile {
 
   def main(args: Array[String]): Unit = {
 
-    val DIR = new java.io.File(".").getCanonicalPath + "/dataset/stream_in"
+    val DIR = new java.io.File(".").getCanonicalPath + "/dataset/stream_in_2"
 
     //setting cluster definition
     val conf = new SparkConf()
@@ -57,6 +57,7 @@ object StreamingFile {
       option("truncate", false).
       outputMode(OutputMode.Complete).
       trigger(Trigger.ProcessingTime("2 seconds")).
+      option("checkpointLocation", DIR + "/transaction-aggregate-sink-checkpoint-complete/").
       format("console").
       start()
 
