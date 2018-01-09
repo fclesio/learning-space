@@ -10,10 +10,10 @@ class Conta {
 	String dataAniversario;
 
 	//Comportamentos, isto e o que a classe pode fazer. 
-	void saca (double valor){
+	void saca(double valor){
 		System.out.println("Saldo anterior (ANTES SAQUE): " + this.saldo);
 		if(this.saldo >= valor){ //O THIS nos usamos quando quiser usar a referencia dentro do mesmo objeto. Ou seja, acessar os atributos da mesma instancia
-			this.saldo = this.saldo - valor
+			this.saldo = this.saldo - valor;
 		}
 		System.out.println("Saldo posterior (DEPOIS SAQUE): " + this.saldo);
 	}
@@ -24,10 +24,8 @@ class Conta {
 		System.out.println("Saldo posterior (DEPOIS DEPOSITO): " + this.saldo);
 	}
 
-	double calculaRendimento(){ //Fica em branco pois ele não recebe nenhum parâmetro
-		System.out.println("Saldo anterior (ANTES RENDIMENTO): " + this.saldo);
+	double calculaRendimento(){ //Fica em branco pois ele não recebe nenhum parâmetro	
 		return this.saldo * 0.1;
-		System.out.println("Saldo posterior (DEPOIS RENDIMENTO): " + this.saldo);
 	}
 
 }
