@@ -34,4 +34,16 @@ class Conta {
 		return dados;
 	}
 
+
+	void transfere(double valor, Conta destino){
+		System.out.println("Saldo anterior (ANTES TRANSFERENCIA): " + this.saldo);
+		this.saca(valor);
+		destino.deposita(valor);
+		System.out.println("Saldo posterior (DEPOIS TRANSFERENCIA): " + this.saldo);
+
+
+
+
+	}
+
 }
