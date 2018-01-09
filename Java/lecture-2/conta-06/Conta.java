@@ -3,11 +3,44 @@ class Conta {
 	//do que e uma conta, entao nao teremos o main{}
 
 	//Atributos, o que a conta tem
-	String titular;
-	int numero;
-	int agencia;
-	Double saldo;
-	Data dataAniversario = new Data(); //Criado o objeto para evitar Null Pointer exception
+	private String titular; // private e um	modificador	de	acesso
+	private int numero;
+	private int agencia;
+	private double saldo;
+	private Data dataAniversario = new Data(); //Criado o objeto para evitar Null Pointer exception
+	private int identificador;
+
+	//Como o nome nao e um atributo que queremos sempre alterar, nesse caso ele nao tera o set; e sim sera determinado no construtor.
+	// public void setTitular(String titular){
+	// 	this.titular = titular;
+	// }	
+	public String getTitular(){
+		return this.titular;
+	}
+	public int getNumero(){
+		return this.numero;	
+	}
+	public int getAgencia(){
+		return this.agencia;
+	}
+	public double getSaldo(){
+		return this.saldo;
+	}
+	public Data getDataAniversario(){
+		return this.dataAniversario;
+	}
+	public int getIdentificador(){
+		return this.identificador;
+	}
+
+	public Conta (String titular, int numero, int agencia, double saldo, int identificador){
+		this.titular = titular;
+		this.numero = numero;
+		this.agencia = agencia;
+		this.saldo = saldo;
+		this.identificador = identificador;
+	}
+
 
 	//Comportamentos, isto e o que a classe pode fazer. 
 	void saca(double valor){
@@ -24,7 +57,7 @@ class Conta {
 		System.out.println("Saldo posterior (DEPOIS DEPOSITO): " + this.saldo);
 	}
 
-	double calculaRendimento(){ //Fica em branco pois ele não recebe nenhum parâmetro	
+	double getRendimento(){ //Fica em branco pois ele nao recebe nenhum parametro	
 		return this.saldo * 0.1;
 	}
 
