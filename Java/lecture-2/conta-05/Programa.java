@@ -13,9 +13,9 @@ class Programa{
 	conta.agencia = 54321;
 
 	//Nesse caso criamos a classe Dia.java e como usamos o atributo dataAniversario da classe Conta e passamos a Data como tipo (linha 10)
-	conta.dataAniversario.dia = "9";
-	conta.dataAniversario.mes = "1";
-	conta.dataAniversario.ano = "2017";
+	conta.dataAniversario.dia = 9;
+	conta.dataAniversario.mes = 1;
+	conta.dataAniversario.ano = 2017;
 
 	conta.saca(100.0);
 	conta.deposita(1000.0);
@@ -35,9 +35,9 @@ class Programa{
 	c1.numero = 54321;
 	c1.agencia = 12345;
 	//c1.dataAniversario = "1900/01/12";
-	c1.dataAniversario.dia = "9";
-	c1.dataAniversario.mes = "1";
-	c1.dataAniversario.ano = "2017";
+	c1.dataAniversario.dia = 9;
+	c1.dataAniversario.mes = 1;
+	c1.dataAniversario.ano = 2017;
 
 
 
@@ -47,9 +47,9 @@ class Programa{
 	c2.numero = 54321;
 	c2.agencia = 12345;
 	//c2.dataAniversario = "1900/01/12";
-	c2.dataAniversario.dia = "9";
-	c2.dataAniversario.mes = "1";
-	c2.dataAniversario.ano = "2017";
+	c2.dataAniversario.dia = 9;
+	c2.dataAniversario.mes = 1;
+	c2.dataAniversario.ano = 2017;
 
 
 	if (c1.titular == c2.titular) {

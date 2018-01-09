@@ -7,7 +7,7 @@ class Conta {
 	int numero;
 	int agencia;
 	Double saldo;
-	Data dataAniversario;
+	Data dataAniversario = new Data(); //Criado o objeto para evitar Null Pointer exception
 
 	//Comportamentos, isto e o que a classe pode fazer. 
 	void saca(double valor){
@@ -30,7 +30,9 @@ class Conta {
 
 	String recuperaDados(){
 		//Acessando o atributo e atribuit
-		String dados = "Nome: " + this.titular + "\nNumero: " + this.numero + "\nAgencia: " + this.agencia;
+		String dados = "Nome: " + this.titular + "\nNumero: " + this.numero + "\nAgencia: " + this.agencia + "\nDia:" + this.dataAniversario.dia + "\nMes:" + this.dataAniversario.mes + "\nAno:" + this.dataAniversario.ano; 
+		
+
 		return dados;
 	}
 
