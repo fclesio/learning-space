@@ -11,7 +11,11 @@ class Programa{
 	conta.saldo = 1000000.0;
 	conta.numero = 12345;
 	conta.agencia = 54321;
-	conta.dataAniversario = "1985/01/12";
+
+	//Nesse caso criamos a classe Dia.java e como usamos o atributo dataAniversario da classe Conta e passamos a Data como tipo (linha 10)
+	conta.dataAniversario.dia = "9";
+	conta.dataAniversario.mes = "1";
+	conta.dataAniversario.ano = "2017";
 
 	conta.saca(100.0);
 	conta.deposita(1000.0);
@@ -30,14 +34,22 @@ class Programa{
 	c1.saldo = 10000.0;
 	c1.numero = 54321;
 	c1.agencia = 12345;
-	c1.dataAniversario = "1900/01/12";
+	//c1.dataAniversario = "1900/01/12";
+	c1.dataAniversario.dia = "9";
+	c1.dataAniversario.mes = "1";
+	c1.dataAniversario.ano = "2017";
+
+
 
 	//Colocando valores na nova conta (cria um objeto novo na memoria com outro registro de memoria)
 	c2.titular = "Flavio";
 	c2.saldo = 10000.0;
 	c2.numero = 54321;
 	c2.agencia = 12345;
-	c2.dataAniversario = "1900/01/12";
+	//c2.dataAniversario = "1900/01/12";
+	c2.dataAniversario.dia = "9";
+	c2.dataAniversario.mes = "1";
+	c2.dataAniversario.ano = "2017";
 
 
 	if (c1.titular == c2.titular) {

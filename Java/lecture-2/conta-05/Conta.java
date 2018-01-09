@@ -7,7 +7,7 @@ class Conta {
 	int numero;
 	int agencia;
 	Double saldo;
-	String dataAniversario;
+	Data dataAniversario;
 
 	//Comportamentos, isto e o que a classe pode fazer. 
 	void saca(double valor){
