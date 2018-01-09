@@ -19,10 +19,28 @@ class Programa{
 	conta.saca(100.0);
 	conta.deposita(1000.0);
 
+	c1.saca(100.0);
+	c1.deposita(1000.0);
+
+	c2.saca(100.0);
+	c2.deposita(1000.0);
+
 	System.out.println("Saldo atual: " + conta.getSaldo());
 	System.out.println("Rendimento atual: " + conta.getRendimento());
 	System.out.println("Saldo atual depois do rendimento: " + conta.getSaldo());
-	System.out.println("Cliente: " + conta.recuperaDados());	
+	System.out.println("Cliente: " + conta.recuperaDados());
+	
+	
+	System.out.println("Saldo atual: " + c1.getSaldo());
+	System.out.println("Rendimento atual: " + c1.getRendimento());
+	System.out.println("Saldo atual depois do rendimento: " + c1.getSaldo());
+	System.out.println("Cliente: " + c1.recuperaDados());
+
+
+	System.out.println("Saldo atual: " + c2.getSaldo());
+	System.out.println("Rendimento atual: " + c2.getRendimento());
+	System.out.println("Saldo atual depois do rendimento: " + c2.getSaldo());
+	System.out.println("Cliente: " + c2.recuperaDados());
 
 	}
 }
