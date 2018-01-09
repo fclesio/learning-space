@@ -35,8 +35,8 @@ class Programa{
 	c1.dataAniversario.ano = 2017;
 
 	//Colocando valores na nova conta (cria um objeto novo na memoria com outro registro de memoria)
-	c2.titular = "Clesio";
-	c2.saldo = 10000.0;
+	c2.titular = c1.titular;
+	c2.saldo = c1.saldo;
 	c2.numero = 54321;
 	c2.agencia = 12345;
 	//c2.dataAniversario = "1900/01/12";
