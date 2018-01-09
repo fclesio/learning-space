@@ -30,12 +30,9 @@ class Conta {
 
 	String recuperaDados(){
 		//Acessando o atributo e atribuit
-		String dados = "Nome: " + this.titular + "\nNumero: " + this.numero + "\nAgencia: " + this.agencia + "\nDia:" + this.dataAniversario.dia + "\nMes:" + this.dataAniversario.mes + "\nAno:" + this.dataAniversario.ano; 
-		
-
+		String dados = "Nome: " + this.titular + "\nNumero: " + this.numero + "\nAgencia: " + this.agencia + "\nDia:" + this.dataAniversario.dia + "\nMes:" + this.dataAniversario.mes + "\nAno:" + this.dataAniversario.ano; 		
 		return dados;
 	}
-
 
 	void transfere(double valor, Conta destino){
 		System.out.println("Saldo anterior (ANTES TRANSFERENCIA): " + this.saldo);

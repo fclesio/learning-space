@@ -1,10 +1,9 @@
 class Programa{
 	public static void main(String[] args) { //Main = onde vamos executar as coisas
 	
-	//Conta minhaConta; //Essa eh a referencia da classe Conta que sera armazenada em um objeto chamado minhaConta
-	//minhaConta = new Conta(); //Para criar uma conta nova basta usar a palavra new()
-	
 	Conta conta = new Conta();	
+	Conta c1 = new Conta();
+	Conta c2 = new Conta();
 
 	//Colocando valores no conta
 	conta.titular = "Duke";
@@ -23,11 +22,7 @@ class Programa{
 	System.out.println("Saldo atual: " + conta.saldo);
 	System.out.println("Rendimento atual: " + conta.calculaRendimento());
 	System.out.println("Saldo atual depois do rendimento: " + conta.saldo);
-	System.out.println("Cliente: " + conta.recuperaDados());
-
-
-	Conta c1 = new Conta();
-	Conta c2 = new Conta();	
+	System.out.println("Cliente: " + conta.recuperaDados());	
 
 	//Colocando valores na nova conta (cria um objeto novo na memoria com outro registro de memoria)
 	c1.titular = "Flavio";
@@ -39,10 +34,8 @@ class Programa{
 	c1.dataAniversario.mes = 1;
 	c1.dataAniversario.ano = 2017;
 
-
-
 	//Colocando valores na nova conta (cria um objeto novo na memoria com outro registro de memoria)
-	c2.titular = "Flavio";
+	c2.titular = "Clesio";
 	c2.saldo = 10000.0;
 	c2.numero = 54321;
 	c2.agencia = 12345;
@@ -51,7 +44,7 @@ class Programa{
 	c2.dataAniversario.mes = 1;
 	c2.dataAniversario.ano = 2017;
 
-
+	//Checa se as contas sao iguais
 	if (c1.titular == c2.titular) {
 		System.out.println("Iguais");		
 	} else {
