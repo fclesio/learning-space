@@ -3,7 +3,7 @@ public class Conta {
 	private String titular;
 	private int numero;
 	private String agencia;
-	private double saldo;
+	protected double saldo;
 	public String getTitular() {
 		return titular;
 	}
@@ -28,12 +28,24 @@ public class Conta {
 	public void deposita(double valor) {
 		this.saldo = this.saldo + valor;		
 	}
-	public boolean saca(double valor) {
-		if (this.saldo >= valor) {
-			this.saldo = this.saldo - valor; 
-			return true;			
-		}			
-		return false;
+//	public boolean saca(double valor) {
+//		if (this.saldo >= valor) {
+//			this.saldo = this.saldo - valor; 
+//			return true;			
+//		}			
+//		return false;
+	public void saca(double valor) {
+//		if (this.saldo >= valor) {
+//			this.saldo = this.saldo - valor; 
+//			return true;			
+//		}			
+//		return false;
+//		
+		this.saldo = this.saldo - valor; 		
+		
+	}
+	public String getTipo() {	
+		return "Conta";
 	}
 
 		
