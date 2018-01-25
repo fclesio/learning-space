@@ -1,0 +1,2297 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Basic Examples On ML\n",
+    "\n",
+    "In this notebook we show you some code snippets. These examples are not by any means exaustive, they are only some commons code templates for Machine Learning tasks.\n",
+    "\n",
+    "Almost all ML algorithms presented here are implemented by SciKitLearn library.\n",
+    "\n",
+    "\n",
+    "\n",
+    "\n",
+    "\n",
+    "`Author: Flávio Clésio (flavio.clésio@movile.com)`\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Basic Input/Output and Data Manipulation\n",
+    "\n",
+    "The most used library to manipulate data in Python is Pandas. We use Pandas to read the data and to do some basic filter/data transformation. Along with Pandas, we use Numpy, a package for scientific computation focused in matrices, and we use MatPlot (with the seaborn wrapper) lib to plot some useful graphs and give us some insights about the data."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "import warnings\n",
+    "warnings.filterwarnings('ignore')\n",
+    "\n",
+    "import numpy as np # Linear algebra\n",
+    "import pandas as pd # Data processing, CSV file I/O (e.g. pd.read_csv)\n",
+    "import seaborn as sns #Data Visualization\n",
+    "import matplotlib.pyplot as plt #Data visualization\n",
+    "from sklearn.model_selection import train_test_split\n",
+    "from sklearn import linear_model\n",
+    "\n",
+    "%matplotlib inline"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# Path where the files are stored\n",
+    "PATH = '/Volumes/PANZER/Github/ml-lab/ICPC-UNICAMP-2018/Notebooks/' #TODO: Change it to your path"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# Now we'll load the data (train and test data) using the read_csv() method of Pandas (pd) and parsing the dates to timestamp\n",
+    "train = pd.read_csv(PATH + \"train.csv\", parse_dates = ['timestamp'])\n",
+    "test = pd.read_csv(PATH + \"test.csv\", parse_dates=['timestamp'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "# Samples in Train Dataframe: 30471\n",
+      "# Samples in Test Dataframe: 7662\n"
+     ]
+    }
+   ],
+   "source": [
+    "# As we need to transform all our data for feature engineering, \n",
+    "# let's join our data to perform the same transformations for all\n",
+    "\n",
+    "num_train = len(train)\n",
+    "num_test = len(test)\n",
+    "print '# Samples in Train Dataframe:', num_train\n",
+    "print '# Samples in Test Dataframe:', num_test"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# Now we'll store the information about the Y (the variable that we need to predict) and the id's to check\n",
+    "# if our prediction are correct\n",
+    "\n",
+    "# Store the dependent variable to a object called y_price_doc_log_train and transform to log\n",
+    "Y = train['price_doc'].values\n",
+    "\n",
+    "# Store the id of test dataframe\n",
+    "id_test = test['id']\n",
+    "\n",
+    "# Remove the ids (no predictive power) in both datasets and the price_doc variable from X dataset\n",
+    "train.drop(['id','price_doc' ], axis=1, inplace=True)\n",
+    "test.drop(['id'], axis=1, inplace=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "# Samples in Test Dataframe: 38133\n",
+      "Shape of our dataset (#Records, #Columns) (38133, 290)\n"
+     ]
+    }
+   ],
+   "source": [
+    "# We bind our dataframes in a single dataframe\n",
+    "df_all = pd.concat([train, test])\n",
+    "\n",
+    "num_df_all = len(df_all)\n",
+    "\n",
+    "print '# Samples in Test Dataframe:', num_df_all\n",
+    "\n",
+    "print 'Shape of our dataset (#Records, #Columns)', (df_all.shape)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['timestamp',\n",
+       " 'full_sq',\n",
+       " 'life_sq',\n",
+       " 'floor',\n",
+       " 'max_floor',\n",
+       " 'material',\n",
+       " 'build_year',\n",
+       " 'num_room',\n",
+       " 'kitch_sq',\n",
+       " 'state',\n",
+       " 'product_type',\n",
+       " 'sub_area',\n",
+       " 'area_m',\n",
+       " 'raion_popul',\n",
+       " 'green_zone_part',\n",
+       " 'indust_part',\n",
+       " 'children_preschool',\n",
+       " 'preschool_quota',\n",
+       " 'preschool_education_centers_raion',\n",
+       " 'children_school',\n",
+       " 'school_quota',\n",
+       " 'school_education_centers_raion',\n",
+       " 'school_education_centers_top_20_raion',\n",
+       " 'hospital_beds_raion',\n",
+       " 'healthcare_centers_raion',\n",
+       " 'university_top_20_raion',\n",
+       " 'sport_objects_raion',\n",
+       " 'additional_education_raion',\n",
+       " 'culture_objects_top_25',\n",
+       " 'culture_objects_top_25_raion',\n",
+       " 'shopping_centers_raion',\n",
+       " 'office_raion',\n",
+       " 'thermal_power_plant_raion',\n",
+       " 'incineration_raion',\n",
+       " 'oil_chemistry_raion',\n",
+       " 'radiation_raion',\n",
+       " 'railroad_terminal_raion',\n",
+       " 'big_market_raion',\n",
+       " 'nuclear_reactor_raion',\n",
+       " 'detention_facility_raion',\n",
+       " 'full_all',\n",
+       " 'male_f',\n",
+       " 'female_f',\n",
+       " 'young_all',\n",
+       " 'young_male',\n",
+       " 'young_female',\n",
+       " 'work_all',\n",
+       " 'work_male',\n",
+       " 'work_female',\n",
+       " 'ekder_all',\n",
+       " 'ekder_male',\n",
+       " 'ekder_female',\n",
+       " '0_6_all',\n",
+       " '0_6_male',\n",
+       " '0_6_female',\n",
+       " '7_14_all',\n",
+       " '7_14_male',\n",
+       " '7_14_female',\n",
+       " '0_17_all',\n",
+       " '0_17_male',\n",
+       " '0_17_female',\n",
+       " '16_29_all',\n",
+       " '16_29_male',\n",
+       " '16_29_female',\n",
+       " '0_13_all',\n",
+       " '0_13_male',\n",
+       " '0_13_female',\n",
+       " 'raion_build_count_with_material_info',\n",
+       " 'build_count_block',\n",
+       " 'build_count_wood',\n",
+       " 'build_count_frame',\n",
+       " 'build_count_brick',\n",
+       " 'build_count_monolith',\n",
+       " 'build_count_panel',\n",
+       " 'build_count_foam',\n",
+       " 'build_count_slag',\n",
+       " 'build_count_mix',\n",
+       " 'raion_build_count_with_builddate_info',\n",
+       " 'build_count_before_1920',\n",
+       " 'build_count_1921-1945',\n",
+       " 'build_count_1946-1970',\n",
+       " 'build_count_1971-1995',\n",
+       " 'build_count_after_1995',\n",
+       " 'ID_metro',\n",
+       " 'metro_min_avto',\n",
+       " 'metro_km_avto',\n",
+       " 'metro_min_walk',\n",
+       " 'metro_km_walk',\n",
+       " 'kindergarten_km',\n",
+       " 'school_km',\n",
+       " 'park_km',\n",
+       " 'green_zone_km',\n",
+       " 'industrial_km',\n",
+       " 'water_treatment_km',\n",
+       " 'cemetery_km',\n",
+       " 'incineration_km',\n",
+       " 'railroad_station_walk_km',\n",
+       " 'railroad_station_walk_min',\n",
+       " 'ID_railroad_station_walk',\n",
+       " 'railroad_station_avto_km',\n",
+       " 'railroad_station_avto_min',\n",
+       " 'ID_railroad_station_avto',\n",
+       " 'public_transport_station_km',\n",
+       " 'public_transport_station_min_walk',\n",
+       " 'water_km',\n",
+       " 'water_1line',\n",
+       " 'mkad_km',\n",
+       " 'ttk_km',\n",
+       " 'sadovoe_km',\n",
+       " 'bulvar_ring_km',\n",
+       " 'kremlin_km',\n",
+       " 'big_road1_km',\n",
+       " 'ID_big_road1',\n",
+       " 'big_road1_1line',\n",
+       " 'big_road2_km',\n",
+       " 'ID_big_road2',\n",
+       " 'railroad_km',\n",
+       " 'railroad_1line',\n",
+       " 'zd_vokzaly_avto_km',\n",
+       " 'ID_railroad_terminal',\n",
+       " 'bus_terminal_avto_km',\n",
+       " 'ID_bus_terminal',\n",
+       " 'oil_chemistry_km',\n",
+       " 'nuclear_reactor_km',\n",
+       " 'radiation_km',\n",
+       " 'power_transmission_line_km',\n",
+       " 'thermal_power_plant_km',\n",
+       " 'ts_km',\n",
+       " 'big_market_km',\n",
+       " 'market_shop_km',\n",
+       " 'fitness_km',\n",
+       " 'swim_pool_km',\n",
+       " 'ice_rink_km',\n",
+       " 'stadium_km',\n",
+       " 'basketball_km',\n",
+       " 'hospice_morgue_km',\n",
+       " 'detention_facility_km',\n",
+       " 'public_healthcare_km',\n",
+       " 'university_km',\n",
+       " 'workplaces_km',\n",
+       " 'shopping_centers_km',\n",
+       " 'office_km',\n",
+       " 'additional_education_km',\n",
+       " 'preschool_km',\n",
+       " 'big_church_km',\n",
+       " 'church_synagogue_km',\n",
+       " 'mosque_km',\n",
+       " 'theater_km',\n",
+       " 'museum_km',\n",
+       " 'exhibition_km',\n",
+       " 'catering_km',\n",
+       " 'ecology',\n",
+       " 'green_part_500',\n",
+       " 'prom_part_500',\n",
+       " 'office_count_500',\n",
+       " 'office_sqm_500',\n",
+       " 'trc_count_500',\n",
+       " 'trc_sqm_500',\n",
+       " 'cafe_count_500',\n",
+       " 'cafe_sum_500_min_price_avg',\n",
+       " 'cafe_sum_500_max_price_avg',\n",
+       " 'cafe_avg_price_500',\n",
+       " 'cafe_count_500_na_price',\n",
+       " 'cafe_count_500_price_500',\n",
+       " 'cafe_count_500_price_1000',\n",
+       " 'cafe_count_500_price_1500',\n",
+       " 'cafe_count_500_price_2500',\n",
+       " 'cafe_count_500_price_4000',\n",
+       " 'cafe_count_500_price_high',\n",
+       " 'big_church_count_500',\n",
+       " 'church_count_500',\n",
+       " 'mosque_count_500',\n",
+       " 'leisure_count_500',\n",
+       " 'sport_count_500',\n",
+       " 'market_count_500',\n",
+       " 'green_part_1000',\n",
+       " 'prom_part_1000',\n",
+       " 'office_count_1000',\n",
+       " 'office_sqm_1000',\n",
+       " 'trc_count_1000',\n",
+       " 'trc_sqm_1000',\n",
+       " 'cafe_count_1000',\n",
+       " 'cafe_sum_1000_min_price_avg',\n",
+       " 'cafe_sum_1000_max_price_avg',\n",
+       " 'cafe_avg_price_1000',\n",
+       " 'cafe_count_1000_na_price',\n",
+       " 'cafe_count_1000_price_500',\n",
+       " 'cafe_count_1000_price_1000',\n",
+       " 'cafe_count_1000_price_1500',\n",
+       " 'cafe_count_1000_price_2500',\n",
+       " 'cafe_count_1000_price_4000',\n",
+       " 'cafe_count_1000_price_high',\n",
+       " 'big_church_count_1000',\n",
+       " 'church_count_1000',\n",
+       " 'mosque_count_1000',\n",
+       " 'leisure_count_1000',\n",
+       " 'sport_count_1000',\n",
+       " 'market_count_1000',\n",
+       " 'green_part_1500',\n",
+       " 'prom_part_1500',\n",
+       " 'office_count_1500',\n",
+       " 'office_sqm_1500',\n",
+       " 'trc_count_1500',\n",
+       " 'trc_sqm_1500',\n",
+       " 'cafe_count_1500',\n",
+       " 'cafe_sum_1500_min_price_avg',\n",
+       " 'cafe_sum_1500_max_price_avg',\n",
+       " 'cafe_avg_price_1500',\n",
+       " 'cafe_count_1500_na_price',\n",
+       " 'cafe_count_1500_price_500',\n",
+       " 'cafe_count_1500_price_1000',\n",
+       " 'cafe_count_1500_price_1500',\n",
+       " 'cafe_count_1500_price_2500',\n",
+       " 'cafe_count_1500_price_4000',\n",
+       " 'cafe_count_1500_price_high',\n",
+       " 'big_church_count_1500',\n",
+       " 'church_count_1500',\n",
+       " 'mosque_count_1500',\n",
+       " 'leisure_count_1500',\n",
+       " 'sport_count_1500',\n",
+       " 'market_count_1500',\n",
+       " 'green_part_2000',\n",
+       " 'prom_part_2000',\n",
+       " 'office_count_2000',\n",
+       " 'office_sqm_2000',\n",
+       " 'trc_count_2000',\n",
+       " 'trc_sqm_2000',\n",
+       " 'cafe_count_2000',\n",
+       " 'cafe_sum_2000_min_price_avg',\n",
+       " 'cafe_sum_2000_max_price_avg',\n",
+       " 'cafe_avg_price_2000',\n",
+       " 'cafe_count_2000_na_price',\n",
+       " 'cafe_count_2000_price_500',\n",
+       " 'cafe_count_2000_price_1000',\n",
+       " 'cafe_count_2000_price_1500',\n",
+       " 'cafe_count_2000_price_2500',\n",
+       " 'cafe_count_2000_price_4000',\n",
+       " 'cafe_count_2000_price_high',\n",
+       " 'big_church_count_2000',\n",
+       " 'church_count_2000',\n",
+       " 'mosque_count_2000',\n",
+       " 'leisure_count_2000',\n",
+       " 'sport_count_2000',\n",
+       " 'market_count_2000',\n",
+       " 'green_part_3000',\n",
+       " 'prom_part_3000',\n",
+       " 'office_count_3000',\n",
+       " 'office_sqm_3000',\n",
+       " 'trc_count_3000',\n",
+       " 'trc_sqm_3000',\n",
+       " 'cafe_count_3000',\n",
+       " 'cafe_sum_3000_min_price_avg',\n",
+       " 'cafe_sum_3000_max_price_avg',\n",
+       " 'cafe_avg_price_3000',\n",
+       " 'cafe_count_3000_na_price',\n",
+       " 'cafe_count_3000_price_500',\n",
+       " 'cafe_count_3000_price_1000',\n",
+       " 'cafe_count_3000_price_1500',\n",
+       " 'cafe_count_3000_price_2500',\n",
+       " 'cafe_count_3000_price_4000',\n",
+       " 'cafe_count_3000_price_high',\n",
+       " 'big_church_count_3000',\n",
+       " 'church_count_3000',\n",
+       " 'mosque_count_3000',\n",
+       " 'leisure_count_3000',\n",
+       " 'sport_count_3000',\n",
+       " 'market_count_3000',\n",
+       " 'green_part_5000',\n",
+       " 'prom_part_5000',\n",
+       " 'office_count_5000',\n",
+       " 'office_sqm_5000',\n",
+       " 'trc_count_5000',\n",
+       " 'trc_sqm_5000',\n",
+       " 'cafe_count_5000',\n",
+       " 'cafe_sum_5000_min_price_avg',\n",
+       " 'cafe_sum_5000_max_price_avg',\n",
+       " 'cafe_avg_price_5000',\n",
+       " 'cafe_count_5000_na_price',\n",
+       " 'cafe_count_5000_price_500',\n",
+       " 'cafe_count_5000_price_1000',\n",
+       " 'cafe_count_5000_price_1500',\n",
+       " 'cafe_count_5000_price_2500',\n",
+       " 'cafe_count_5000_price_4000',\n",
+       " 'cafe_count_5000_price_high',\n",
+       " 'big_church_count_5000',\n",
+       " 'church_count_5000',\n",
+       " 'mosque_count_5000',\n",
+       " 'leisure_count_5000',\n",
+       " 'sport_count_5000',\n",
+       " 'market_count_5000']"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# To see the columns of our dataset lets use the function below\n",
+    "list(df_all)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style>\n",
+       "    .dataframe thead tr:only-child th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: left;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>timestamp</th>\n",
+       "      <th>full_sq</th>\n",
+       "      <th>life_sq</th>\n",
+       "      <th>floor</th>\n",
+       "      <th>max_floor</th>\n",
+       "      <th>material</th>\n",
+       "      <th>build_year</th>\n",
+       "      <th>num_room</th>\n",
+       "      <th>kitch_sq</th>\n",
+       "      <th>state</th>\n",
+       "      <th>...</th>\n",
+       "      <th>cafe_count_5000_price_1500</th>\n",
+       "      <th>cafe_count_5000_price_2500</th>\n",
+       "      <th>cafe_count_5000_price_4000</th>\n",
+       "      <th>cafe_count_5000_price_high</th>\n",
+       "      <th>big_church_count_5000</th>\n",
+       "      <th>church_count_5000</th>\n",
+       "      <th>mosque_count_5000</th>\n",
+       "      <th>leisure_count_5000</th>\n",
+       "      <th>sport_count_5000</th>\n",
+       "      <th>market_count_5000</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>2011-08-20</td>\n",
+       "      <td>43.0</td>\n",
+       "      <td>27.0</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>...</td>\n",
+       "      <td>40</td>\n",
+       "      <td>9</td>\n",
+       "      <td>4</td>\n",
+       "      <td>0</td>\n",
+       "      <td>13</td>\n",
+       "      <td>22</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>52</td>\n",
+       "      <td>4</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>2011-08-23</td>\n",
+       "      <td>34.0</td>\n",
+       "      <td>19.0</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>...</td>\n",
+       "      <td>36</td>\n",
+       "      <td>15</td>\n",
+       "      <td>3</td>\n",
+       "      <td>0</td>\n",
+       "      <td>15</td>\n",
+       "      <td>29</td>\n",
+       "      <td>1</td>\n",
+       "      <td>10</td>\n",
+       "      <td>66</td>\n",
+       "      <td>14</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>2011-08-27</td>\n",
+       "      <td>43.0</td>\n",
+       "      <td>29.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>...</td>\n",
+       "      <td>25</td>\n",
+       "      <td>10</td>\n",
+       "      <td>3</td>\n",
+       "      <td>0</td>\n",
+       "      <td>11</td>\n",
+       "      <td>27</td>\n",
+       "      <td>0</td>\n",
+       "      <td>4</td>\n",
+       "      <td>67</td>\n",
+       "      <td>10</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>2011-09-01</td>\n",
+       "      <td>89.0</td>\n",
+       "      <td>50.0</td>\n",
+       "      <td>9.0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>...</td>\n",
+       "      <td>15</td>\n",
+       "      <td>11</td>\n",
+       "      <td>2</td>\n",
+       "      <td>1</td>\n",
+       "      <td>4</td>\n",
+       "      <td>4</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>26</td>\n",
+       "      <td>3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>2011-09-05</td>\n",
+       "      <td>77.0</td>\n",
+       "      <td>77.0</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>...</td>\n",
+       "      <td>552</td>\n",
+       "      <td>319</td>\n",
+       "      <td>108</td>\n",
+       "      <td>17</td>\n",
+       "      <td>135</td>\n",
+       "      <td>236</td>\n",
+       "      <td>2</td>\n",
+       "      <td>91</td>\n",
+       "      <td>195</td>\n",
+       "      <td>14</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>5 rows × 290 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   timestamp  full_sq  life_sq  floor  max_floor  material  build_year  \\\n",
+       "0 2011-08-20     43.0     27.0    4.0        NaN       NaN         NaN   \n",
+       "1 2011-08-23     34.0     19.0    3.0        NaN       NaN         NaN   \n",
+       "2 2011-08-27     43.0     29.0    2.0        NaN       NaN         NaN   \n",
+       "3 2011-09-01     89.0     50.0    9.0        NaN       NaN         NaN   \n",
+       "4 2011-09-05     77.0     77.0    4.0        NaN       NaN         NaN   \n",
+       "\n",
+       "   num_room  kitch_sq  state        ...         cafe_count_5000_price_1500  \\\n",
+       "0       NaN       NaN    NaN        ...                                 40   \n",
+       "1       NaN       NaN    NaN        ...                                 36   \n",
+       "2       NaN       NaN    NaN        ...                                 25   \n",
+       "3       NaN       NaN    NaN        ...                                 15   \n",
+       "4       NaN       NaN    NaN        ...                                552   \n",
+       "\n",
+       "  cafe_count_5000_price_2500  cafe_count_5000_price_4000  \\\n",
+       "0                          9                           4   \n",
+       "1                         15                           3   \n",
+       "2                         10                           3   \n",
+       "3                         11                           2   \n",
+       "4                        319                         108   \n",
+       "\n",
+       "   cafe_count_5000_price_high  big_church_count_5000  church_count_5000  \\\n",
+       "0                           0                     13                 22   \n",
+       "1                           0                     15                 29   \n",
+       "2                           0                     11                 27   \n",
+       "3                           1                      4                  4   \n",
+       "4                          17                    135                236   \n",
+       "\n",
+       "   mosque_count_5000  leisure_count_5000  sport_count_5000  market_count_5000  \n",
+       "0                  1                   0                52                  4  \n",
+       "1                  1                  10                66                 14  \n",
+       "2                  0                   4                67                 10  \n",
+       "3                  0                   0                26                  3  \n",
+       "4                  2                  91               195                 14  \n",
+       "\n",
+       "[5 rows x 290 columns]"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Now, let's take a look over the dataset \n",
+    "df_all.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style>\n",
+       "    .dataframe thead tr:only-child th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: left;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>full_sq</th>\n",
+       "      <th>life_sq</th>\n",
+       "      <th>floor</th>\n",
+       "      <th>max_floor</th>\n",
+       "      <th>material</th>\n",
+       "      <th>build_year</th>\n",
+       "      <th>num_room</th>\n",
+       "      <th>kitch_sq</th>\n",
+       "      <th>state</th>\n",
+       "      <th>area_m</th>\n",
+       "      <th>...</th>\n",
+       "      <th>cafe_count_5000_price_1500</th>\n",
+       "      <th>cafe_count_5000_price_2500</th>\n",
+       "      <th>cafe_count_5000_price_4000</th>\n",
+       "      <th>cafe_count_5000_price_high</th>\n",
+       "      <th>big_church_count_5000</th>\n",
+       "      <th>church_count_5000</th>\n",
+       "      <th>mosque_count_5000</th>\n",
+       "      <th>leisure_count_5000</th>\n",
+       "      <th>sport_count_5000</th>\n",
+       "      <th>market_count_5000</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>count</th>\n",
+       "      <td>38133.000000</td>\n",
+       "      <td>30574.000000</td>\n",
+       "      <td>37966.000000</td>\n",
+       "      <td>28561.000000</td>\n",
+       "      <td>28561.000000</td>\n",
+       "      <td>2.347900e+04</td>\n",
+       "      <td>28561.000000</td>\n",
+       "      <td>28561.000000</td>\n",
+       "      <td>23880.000000</td>\n",
+       "      <td>3.813300e+04</td>\n",
+       "      <td>...</td>\n",
+       "      <td>38133.000000</td>\n",
+       "      <td>38133.000000</td>\n",
+       "      <td>38133.000000</td>\n",
+       "      <td>38133.000000</td>\n",
+       "      <td>38133.000000</td>\n",
+       "      <td>38133.000000</td>\n",
+       "      <td>38133.000000</td>\n",
+       "      <td>38133.000000</td>\n",
+       "      <td>38133.000000</td>\n",
+       "      <td>38133.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>mean</th>\n",
+       "      <td>54.111172</td>\n",
+       "      <td>34.033460</td>\n",
+       "      <td>7.667123</td>\n",
+       "      <td>12.567592</td>\n",
+       "      <td>1.834390</td>\n",
+       "      <td>2.716785e+03</td>\n",
+       "      <td>1.900844</td>\n",
+       "      <td>6.543995</td>\n",
+       "      <td>2.071650</td>\n",
+       "      <td>1.766282e+07</td>\n",
+       "      <td>...</td>\n",
+       "      <td>64.687934</td>\n",
+       "      <td>32.805680</td>\n",
+       "      <td>11.058820</td>\n",
+       "      <td>1.819133</td>\n",
+       "      <td>15.387853</td>\n",
+       "      <td>30.825741</td>\n",
+       "      <td>0.436394</td>\n",
+       "      <td>8.847901</td>\n",
+       "      <td>53.487635</td>\n",
+       "      <td>6.056119</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>std</th>\n",
+       "      <td>35.171162</td>\n",
+       "      <td>47.581529</td>\n",
+       "      <td>5.276156</td>\n",
+       "      <td>6.730496</td>\n",
+       "      <td>1.490923</td>\n",
+       "      <td>1.308521e+05</td>\n",
+       "      <td>0.847620</td>\n",
+       "      <td>27.571630</td>\n",
+       "      <td>0.864795</td>\n",
+       "      <td>2.095034e+07</td>\n",
+       "      <td>...</td>\n",
+       "      <td>125.214092</td>\n",
+       "      <td>74.104439</td>\n",
+       "      <td>28.636604</td>\n",
+       "      <td>5.469808</td>\n",
+       "      <td>29.452128</td>\n",
+       "      <td>47.850168</td>\n",
+       "      <td>0.609313</td>\n",
+       "      <td>20.772155</td>\n",
+       "      <td>46.584733</td>\n",
+       "      <td>4.904623</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>min</th>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>0.000000e+00</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>2.081628e+06</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>25%</th>\n",
+       "      <td>38.900000</td>\n",
+       "      <td>20.000000</td>\n",
+       "      <td>3.000000</td>\n",
+       "      <td>9.000000</td>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>1.966000e+03</td>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>7.307411e+06</td>\n",
+       "      <td>...</td>\n",
+       "      <td>6.000000</td>\n",
+       "      <td>2.000000</td>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>2.000000</td>\n",
+       "      <td>9.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>11.000000</td>\n",
+       "      <td>1.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>50%</th>\n",
+       "      <td>50.000000</td>\n",
+       "      <td>30.000000</td>\n",
+       "      <td>7.000000</td>\n",
+       "      <td>12.000000</td>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>1.980000e+03</td>\n",
+       "      <td>2.000000</td>\n",
+       "      <td>6.000000</td>\n",
+       "      <td>2.000000</td>\n",
+       "      <td>1.020722e+07</td>\n",
+       "      <td>...</td>\n",
+       "      <td>25.000000</td>\n",
+       "      <td>9.000000</td>\n",
+       "      <td>2.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>7.000000</td>\n",
+       "      <td>16.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>2.000000</td>\n",
+       "      <td>48.000000</td>\n",
+       "      <td>5.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>75%</th>\n",
+       "      <td>63.000000</td>\n",
+       "      <td>43.000000</td>\n",
+       "      <td>11.000000</td>\n",
+       "      <td>17.000000</td>\n",
+       "      <td>2.000000</td>\n",
+       "      <td>2.006000e+03</td>\n",
+       "      <td>2.000000</td>\n",
+       "      <td>9.000000</td>\n",
+       "      <td>3.000000</td>\n",
+       "      <td>1.803644e+07</td>\n",
+       "      <td>...</td>\n",
+       "      <td>51.000000</td>\n",
+       "      <td>22.000000</td>\n",
+       "      <td>5.000000</td>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>12.000000</td>\n",
+       "      <td>28.000000</td>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>7.000000</td>\n",
+       "      <td>76.000000</td>\n",
+       "      <td>11.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>max</th>\n",
+       "      <td>5326.000000</td>\n",
+       "      <td>7478.000000</td>\n",
+       "      <td>77.000000</td>\n",
+       "      <td>117.000000</td>\n",
+       "      <td>6.000000</td>\n",
+       "      <td>2.005201e+07</td>\n",
+       "      <td>19.000000</td>\n",
+       "      <td>2014.000000</td>\n",
+       "      <td>33.000000</td>\n",
+       "      <td>2.060718e+08</td>\n",
+       "      <td>...</td>\n",
+       "      <td>643.000000</td>\n",
+       "      <td>377.000000</td>\n",
+       "      <td>147.000000</td>\n",
+       "      <td>30.000000</td>\n",
+       "      <td>151.000000</td>\n",
+       "      <td>250.000000</td>\n",
+       "      <td>2.000000</td>\n",
+       "      <td>106.000000</td>\n",
+       "      <td>218.000000</td>\n",
+       "      <td>21.000000</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>8 rows × 274 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "            full_sq       life_sq         floor     max_floor      material  \\\n",
+       "count  38133.000000  30574.000000  37966.000000  28561.000000  28561.000000   \n",
+       "mean      54.111172     34.033460      7.667123     12.567592      1.834390   \n",
+       "std       35.171162     47.581529      5.276156      6.730496      1.490923   \n",
+       "min        0.000000      0.000000      0.000000      0.000000      1.000000   \n",
+       "25%       38.900000     20.000000      3.000000      9.000000      1.000000   \n",
+       "50%       50.000000     30.000000      7.000000     12.000000      1.000000   \n",
+       "75%       63.000000     43.000000     11.000000     17.000000      2.000000   \n",
+       "max     5326.000000   7478.000000     77.000000    117.000000      6.000000   \n",
+       "\n",
+       "         build_year      num_room      kitch_sq         state        area_m  \\\n",
+       "count  2.347900e+04  28561.000000  28561.000000  23880.000000  3.813300e+04   \n",
+       "mean   2.716785e+03      1.900844      6.543995      2.071650  1.766282e+07   \n",
+       "std    1.308521e+05      0.847620     27.571630      0.864795  2.095034e+07   \n",
+       "min    0.000000e+00      0.000000      0.000000      1.000000  2.081628e+06   \n",
+       "25%    1.966000e+03      1.000000      1.000000      1.000000  7.307411e+06   \n",
+       "50%    1.980000e+03      2.000000      6.000000      2.000000  1.020722e+07   \n",
+       "75%    2.006000e+03      2.000000      9.000000      3.000000  1.803644e+07   \n",
+       "max    2.005201e+07     19.000000   2014.000000     33.000000  2.060718e+08   \n",
+       "\n",
+       "             ...          cafe_count_5000_price_1500  \\\n",
+       "count        ...                        38133.000000   \n",
+       "mean         ...                           64.687934   \n",
+       "std          ...                          125.214092   \n",
+       "min          ...                            0.000000   \n",
+       "25%          ...                            6.000000   \n",
+       "50%          ...                           25.000000   \n",
+       "75%          ...                           51.000000   \n",
+       "max          ...                          643.000000   \n",
+       "\n",
+       "       cafe_count_5000_price_2500  cafe_count_5000_price_4000  \\\n",
+       "count                38133.000000                38133.000000   \n",
+       "mean                    32.805680                   11.058820   \n",
+       "std                     74.104439                   28.636604   \n",
+       "min                      0.000000                    0.000000   \n",
+       "25%                      2.000000                    1.000000   \n",
+       "50%                      9.000000                    2.000000   \n",
+       "75%                     22.000000                    5.000000   \n",
+       "max                    377.000000                  147.000000   \n",
+       "\n",
+       "       cafe_count_5000_price_high  big_church_count_5000  church_count_5000  \\\n",
+       "count                38133.000000           38133.000000       38133.000000   \n",
+       "mean                     1.819133              15.387853          30.825741   \n",
+       "std                      5.469808              29.452128          47.850168   \n",
+       "min                      0.000000               0.000000           0.000000   \n",
+       "25%                      0.000000               2.000000           9.000000   \n",
+       "50%                      0.000000               7.000000          16.000000   \n",
+       "75%                      1.000000              12.000000          28.000000   \n",
+       "max                     30.000000             151.000000         250.000000   \n",
+       "\n",
+       "       mosque_count_5000  leisure_count_5000  sport_count_5000  \\\n",
+       "count       38133.000000        38133.000000      38133.000000   \n",
+       "mean            0.436394            8.847901         53.487635   \n",
+       "std             0.609313           20.772155         46.584733   \n",
+       "min             0.000000            0.000000          0.000000   \n",
+       "25%             0.000000            0.000000         11.000000   \n",
+       "50%             0.000000            2.000000         48.000000   \n",
+       "75%             1.000000            7.000000         76.000000   \n",
+       "max             2.000000          106.000000        218.000000   \n",
+       "\n",
+       "       market_count_5000  \n",
+       "count       38133.000000  \n",
+       "mean            6.056119  \n",
+       "std             4.904623  \n",
+       "min             0.000000  \n",
+       "25%             1.000000  \n",
+       "50%             5.000000  \n",
+       "75%            11.000000  \n",
+       "max            21.000000  \n",
+       "\n",
+       "[8 rows x 274 columns]"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# To see some descriptive statistics lets use the function describe()\n",
+    "df_all.describe()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Plots\n",
+    "\n",
+    "We show you two basic plot. Plot the data is a very important step in Machine learning, you can get some really useful insights about the data.\n",
+    "\n",
+    "You can find a much more graphs examples here: \n",
+    "https://seaborn.pydata.org/examples/index.html\n",
+    "\n",
+    "References: \n",
+    "- https://matplotlib.org/gallery/index.html"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<matplotlib.axes._subplots.AxesSubplot at 0x1123cbb50>"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<matplotlib.figure.Figure at 0x1123cb550>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "# For plotting we'll use the library called Seaborn \n",
+    "plt.figure(figsize=(10, 5)) # The size of the plot\n",
+    "sns.distplot(Y, kde = False) # We'll use distribution plot and as first arg we use the column .price_doc"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<matplotlib.text.Text at 0x10c9db950>"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<matplotlib.figure.Figure at 0x10e58bf10>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "# As we can see there's a lot of outliers and to smooth this records, let's use np.log() function and see the distribution\n",
+    "plt.figure(figsize=(10, 5)) # The size of the plot\n",
+    "sns.distplot(np.log(Y), kde = False) # We'll use distribution plot and as first arg we use the column .price_doc\n",
+    "plt.xlabel('np.log(price_doc)', fontsize=12)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# One thing can help the convergence of ML algorithms it's to remove outliers or smooth or data, to do that\n",
+    "# Let's convert out Y dataset in .log\n",
+    "\n",
+    "Y = np.log(Y)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Data Manipulation\n",
+    "\n",
+    "As explained in the comments bellow, we need be carefull about NaN values. Also, for some problems, it is a good ideia combine some features to create new ones. Therefore, you should know do some basic data manipulations.Here are some examples:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# To put another variable inside the dataset. This variable will call price_sq\n",
+    "df_all[\"kitch_proportions\"] = df_all[\"kitch_sq\"]/df_all[\"full_sq\"]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "life_sq: 7559\n",
+      "floor: 167\n",
+      "max_floor: 9572\n",
+      "material: 9572\n",
+      "build_year: 14654\n",
+      "num_room: 9572\n",
+      "kitch_sq: 9572\n",
+      "state: 14253\n",
+      "product_type: 33\n",
+      "preschool_quota: 8284\n",
+      "school_quota: 8280\n",
+      "hospital_beds_raion: 17859\n",
+      "raion_build_count_with_material_info: 6209\n",
+      "build_count_block: 6209\n",
+      "build_count_wood: 6209\n",
+      "build_count_frame: 6209\n",
+      "build_count_brick: 6209\n",
+      "build_count_monolith: 6209\n",
+      "build_count_panel: 6209\n",
+      "build_count_foam: 6209\n",
+      "build_count_slag: 6209\n",
+      "build_count_mix: 6209\n",
+      "raion_build_count_with_builddate_info: 6209\n",
+      "build_count_before_1920: 6209\n",
+      "build_count_1921-1945: 6209\n",
+      "build_count_1946-1970: 6209\n",
+      "build_count_1971-1995: 6209\n",
+      "build_count_after_1995: 6209\n",
+      "metro_min_walk: 59\n",
+      "metro_km_walk: 59\n",
+      "railroad_station_walk_km: 59\n",
+      "railroad_station_walk_min: 59\n",
+      "ID_railroad_station_walk: 59\n",
+      "cafe_sum_500_min_price_avg: 16440\n",
+      "cafe_sum_500_max_price_avg: 16440\n",
+      "cafe_avg_price_500: 16440\n",
+      "cafe_sum_1000_min_price_avg: 7746\n",
+      "cafe_sum_1000_max_price_avg: 7746\n",
+      "cafe_avg_price_1000: 7746\n",
+      "cafe_sum_1500_min_price_avg: 5020\n",
+      "cafe_sum_1500_max_price_avg: 5020\n",
+      "cafe_avg_price_1500: 5020\n",
+      "green_part_2000: 19\n",
+      "cafe_sum_2000_min_price_avg: 2149\n",
+      "cafe_sum_2000_max_price_avg: 2149\n",
+      "cafe_avg_price_2000: 2149\n",
+      "cafe_sum_3000_min_price_avg: 1173\n",
+      "cafe_sum_3000_max_price_avg: 1173\n",
+      "cafe_avg_price_3000: 1173\n",
+      "prom_part_5000: 270\n",
+      "cafe_sum_5000_min_price_avg: 425\n",
+      "cafe_sum_5000_max_price_avg: 425\n",
+      "cafe_avg_price_5000: 425\n",
+      "kitch_proportions: 9575\n"
+     ]
+    }
+   ],
+   "source": [
+    "# When we deal with machine learning algorithms, Null values (or NaN) are trouble. You can choose \n",
+    "# 1) remove then from dataset, 2) replace their values.\n",
+    "# It's much better make replacemens of this values using the mean, or median or some spare value (e.g. -99999) to avoid\n",
+    "# lost some predictive power. Let's check the columns with null.\n",
+    "\n",
+    "for col in df_all.columns.values: # For each col the loop will take the value\n",
+    "    if len(df_all[df_all[col].isnull()][col]) > 0: # If the value are null, count each unit of the column\n",
+    "        print(\"{0}: {1}\".format(col, len(df_all[df_all[col].isnull()][col]))) # and print the name of the column and the number of null values"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# To delete some column, just use the del function\n",
+    "del df_all['timestamp']\n",
+    "del df_all['life_sq']\n",
+    "del df_all['floor']\n",
+    "del df_all['max_floor']\n",
+    "del df_all['material']\n",
+    "del df_all['build_year']\n",
+    "del df_all['num_room']\n",
+    "del df_all['kitch_sq']\n",
+    "del df_all['state']\n",
+    "del df_all['preschool_quota']\n",
+    "del df_all['school_quota']\n",
+    "del df_all['hospital_beds_raion']\n",
+    "del df_all['raion_build_count_with_material_info']\n",
+    "del df_all['build_count_block']\n",
+    "del df_all['build_count_wood']\n",
+    "del df_all['build_count_frame']\n",
+    "del df_all['build_count_brick']\n",
+    "del df_all['build_count_monolith']\n",
+    "del df_all['build_count_panel']\n",
+    "del df_all['build_count_foam']\n",
+    "del df_all['build_count_slag']\n",
+    "del df_all['build_count_mix']\n",
+    "del df_all['raion_build_count_with_builddate_info']\n",
+    "del df_all['build_count_before_1920']\n",
+    "del df_all['build_count_1921-1945']\n",
+    "del df_all['build_count_1946-1970']\n",
+    "del df_all['build_count_1971-1995']\n",
+    "del df_all['build_count_after_1995']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# To fill NaN values with a specific number apply the function .fillna\n",
+    "df_all['cafe_sum_500_min_price_avg'].fillna(-99, inplace=True)\n",
+    "df_all['cafe_sum_500_max_price_avg'].fillna(-99, inplace=True)\n",
+    "df_all['cafe_avg_price_500'].fillna(-99, inplace=True)\n",
+    "df_all['cafe_sum_1000_min_price_avg'].fillna(-99, inplace=True)\n",
+    "df_all['cafe_sum_1000_max_price_avg'].fillna(-99, inplace=True)\n",
+    "df_all['metro_min_walk'].fillna(-99, inplace=True)\n",
+    "df_all['metro_km_walk'].fillna(-99, inplace=True)\n",
+    "df_all['railroad_station_walk_km'].fillna(-99, inplace=True)\n",
+    "df_all['railroad_station_walk_min'].fillna(-99, inplace=True)\n",
+    "df_all['ID_railroad_station_walk'].fillna(-99, inplace=True)\n",
+    "df_all['prom_part_5000'].fillna(-99, inplace=True)\n",
+    "df_all['cafe_sum_5000_min_price_avg'].fillna(-99, inplace=True)\n",
+    "df_all['cafe_sum_5000_max_price_avg'].fillna(-99, inplace=True)\n",
+    "df_all['cafe_avg_price_5000'].fillna(-99, inplace=True)\n",
+    "df_all['product_type'].fillna(-99, inplace=True)\n",
+    "df_all['green_part_2000'].fillna(-99, inplace=True)\n",
+    "df_all['kitch_proportions'].fillna(-99, inplace=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# To fill the the mean use the .mean()\n",
+    "df_all['cafe_avg_price_1000'].fillna(train['cafe_avg_price_1000'].mean(), inplace=True)\n",
+    "df_all['cafe_sum_1500_min_price_avg'].fillna(train['cafe_sum_1500_min_price_avg'].mean(), inplace=True)\n",
+    "df_all['cafe_sum_1500_max_price_avg'].fillna(train['cafe_sum_1500_max_price_avg'].mean(), inplace=True)\n",
+    "df_all['cafe_avg_price_1500'].fillna(train['cafe_avg_price_1500'].mean(), inplace=True)\n",
+    "df_all['cafe_sum_2000_min_price_avg'].fillna(train['cafe_sum_2000_min_price_avg'].mean(), inplace=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# To fill the the median use the .median()\n",
+    "df_all['cafe_sum_2000_max_price_avg'].fillna(train['cafe_sum_2000_max_price_avg'].median(), inplace=True)\n",
+    "df_all['cafe_avg_price_2000'].fillna(train['cafe_avg_price_2000'].median(), inplace=True)\n",
+    "df_all['cafe_sum_3000_min_price_avg'].fillna(train['cafe_sum_3000_min_price_avg'].median(), inplace=True)\n",
+    "df_all['cafe_sum_3000_max_price_avg'].fillna(train['cafe_sum_3000_max_price_avg'].median(), inplace=True)\n",
+    "df_all['cafe_avg_price_3000'].fillna(train['cafe_avg_price_3000'].median(), inplace=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# Another big problem for ML Algorithms it's the representation of categorical variables.\n",
+    "# this is because, most of this algoritms deals only with numeric representations. \n",
+    "\n",
+    "# Deal with categorical values\n",
+    "df_numeric = df_all.select_dtypes(exclude=['object']) # Select columns with numerical variables\n",
+    "\n",
+    "df_obj = df_all.select_dtypes(include=['object']).copy() # Select columns with non numerical variables"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "for c in df_obj:\n",
+    "    df_obj[c] = pd.factorize(df_obj[c])[0]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style>\n",
+       "    .dataframe thead tr:only-child th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: left;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>product_type</th>\n",
+       "      <th>sub_area</th>\n",
+       "      <th>culture_objects_top_25</th>\n",
+       "      <th>thermal_power_plant_raion</th>\n",
+       "      <th>incineration_raion</th>\n",
+       "      <th>oil_chemistry_raion</th>\n",
+       "      <th>radiation_raion</th>\n",
+       "      <th>railroad_terminal_raion</th>\n",
+       "      <th>big_market_raion</th>\n",
+       "      <th>nuclear_reactor_raion</th>\n",
+       "      <th>detention_facility_raion</th>\n",
+       "      <th>water_1line</th>\n",
+       "      <th>big_road1_1line</th>\n",
+       "      <th>railroad_1line</th>\n",
+       "      <th>ecology</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>0</td>\n",
+       "      <td>2</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>2</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>0</td>\n",
+       "      <td>3</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>0</td>\n",
+       "      <td>4</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>1</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   product_type  sub_area  culture_objects_top_25  thermal_power_plant_raion  \\\n",
+       "0             0         0                       0                          0   \n",
+       "1             0         1                       1                          0   \n",
+       "2             0         2                       0                          0   \n",
+       "3             0         3                       0                          0   \n",
+       "4             0         4                       0                          0   \n",
+       "\n",
+       "   incineration_raion  oil_chemistry_raion  radiation_raion  \\\n",
+       "0                   0                    0                0   \n",
+       "1                   0                    0                0   \n",
+       "2                   0                    0                1   \n",
+       "3                   0                    0                0   \n",
+       "4                   0                    0                1   \n",
+       "\n",
+       "   railroad_terminal_raion  big_market_raion  nuclear_reactor_raion  \\\n",
+       "0                        0                 0                      0   \n",
+       "1                        0                 0                      0   \n",
+       "2                        0                 0                      0   \n",
+       "3                        0                 0                      0   \n",
+       "4                        1                 0                      0   \n",
+       "\n",
+       "   detention_facility_raion  water_1line  big_road1_1line  railroad_1line  \\\n",
+       "0                         0            0                0               0   \n",
+       "1                         0            0                0               0   \n",
+       "2                         0            0                0               0   \n",
+       "3                         0            0                0               0   \n",
+       "4                         0            0                0               1   \n",
+       "\n",
+       "   ecology  \n",
+       "0        0  \n",
+       "1        1  \n",
+       "2        2  \n",
+       "3        0  \n",
+       "4        1  "
+      ]
+     },
+     "execution_count": 21,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_obj.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# Now we can join this two data frames using the function concat() \n",
+    "df_all = pd.concat([df_numeric, df_obj], axis=1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# Create a validation set\n",
+    "#num_val = int(num_train * 0.2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# After we cleasing our data in pandas, we need to transform this data in a numpy array\n",
+    "# because the most popular machine learning packages only make the computation using this format\n",
+    "# To to that, let's convert our dataframe \n",
+    "X_all = df_all.values\n",
+    "X = X_all[:num_train]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "('X Train shape is', (24376, 263))\n",
+      "('Y Train shape is', (24376,))\n",
+      "('X Test shape is', (6095, 263))\n",
+      "('Y Test shape is', (6095,))\n"
+     ]
+    }
+   ],
+   "source": [
+    "# In this step we'll use the train dataset to split in training and test to ensure that our algorithm \n",
+    "# is learning and to perform some quality check over the rmse\n",
+    "\n",
+    "from sklearn.model_selection import train_test_split\n",
+    "X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2) # We'll use 20% of the data for test\n",
+    "\n",
+    "print('X Train shape is', X_train.shape)\n",
+    "print('Y Train shape is', y_train.shape)\n",
+    "print('X Test shape is', X_test.shape)\n",
+    "print('Y Test shape is', y_test.shape)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Linear Regression\n",
+    "\n",
+    "Linear Regression models are models which fits the data in linear equations. Linear Regression models are really useful in many cases and it is, almost always, the first choice when dealing with a ML problem.\n",
+    "\n",
+    "There are some variants from the basic Linear Regression model. The two most common are Ridge Regression and Lasso Regression. The ideia behind these two models is regularize the model, eliminating useless features.\n",
+    "\n",
+    "References: \n",
+    "\n",
+    "- https://en.wikipedia.org/wiki/Tikhonov_regularization\n",
+    "- https://en.wikipedia.org/wiki/Lasso_(statistics)\n",
+    "- https://en.wikipedia.org/wiki/Linear_regression\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# Now we'll use the a Linear model to fit this data\n",
+    "# First we use .LinearRegression() function of the linear_model library and make the object lm\n",
+    "lm = linear_model.LinearRegression()\n",
+    "\n",
+    "# After this, we make a object called model where we'll call the function .fit where we use as argument \n",
+    "# X_train and Y_train datasets to perform the fit\n",
+    "model = lm.fit(X_train, y_train)\n",
+    "\n",
+    "# In this step we'll make the predictions objects after we call the predict function using a \n",
+    "# X_test dataframe as parameter \n",
+    "predictions = lm.predict(X_test)\n",
+    "\n",
+    "# And now we perform a inverse transformation of the log using np.exp() function\n",
+    "y_pred = np.exp(predictions)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "rms error is: 6590782.58109\n"
+     ]
+    }
+   ],
+   "source": [
+    "# To make an assessment of the quality of the model, we'll use the RMSE as a main metric to assess the performance of\n",
+    "# the model\n",
+    "from sklearn.metrics import mean_squared_error\n",
+    "from math import sqrt\n",
+    "\n",
+    "rmse = sqrt(mean_squared_error(y_test, y_pred.astype('int64')))\n",
+    "print(\"rms error is: \" + str(rmse))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "rms error is: 6590782.58109\n"
+     ]
+    }
+   ],
+   "source": [
+    "# There's another way to do that\n",
+    "def rmse(predictions, targets):\n",
+    "    return np.sqrt(((predictions - targets) ** 2).mean())\n",
+    "\n",
+    "rmse_val = rmse(y_pred.astype('int64'),y_test)\n",
+    "print(\"rms error is: \" + str(rmse_val))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "('Test Sub shape is', (7662, 263))\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Now let's do some submission\n",
+    "# First we'll get the records of test database and store in some object\n",
+    "test_sub = X_all[:-num_train]\n",
+    "print('Test Sub shape is', test_sub.shape)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# We'll made the prediction using our test dataset and store inside y_pred object\n",
+    "predictions = lm.predict(test_sub)\n",
+    "\n",
+    "y_pred = np.exp(predictions)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Submision\n",
+    "\n",
+    "You need to create your submission when you want to test your model using the test data. These next cells creates a file with the submission format."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# We'll join the id and the predictions and store in an object called df_submission\n",
+    "df_submission = pd.DataFrame({'id': id_test, 'price_doc': y_pred.astype('int64')})"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style>\n",
+       "    .dataframe thead tr:only-child th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: left;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>id</th>\n",
+       "      <th>price_doc</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>30474</td>\n",
+       "      <td>5483799</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>30475</td>\n",
+       "      <td>6441868</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>30476</td>\n",
+       "      <td>5433498</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>30477</td>\n",
+       "      <td>6981448</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>30478</td>\n",
+       "      <td>9728970</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>5</th>\n",
+       "      <td>30479</td>\n",
+       "      <td>5539864</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>6</th>\n",
+       "      <td>30480</td>\n",
+       "      <td>6462102</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>7</th>\n",
+       "      <td>30481</td>\n",
+       "      <td>6528096</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8</th>\n",
+       "      <td>30482</td>\n",
+       "      <td>5750421</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9</th>\n",
+       "      <td>30483</td>\n",
+       "      <td>5229801</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "      id  price_doc\n",
+       "0  30474    5483799\n",
+       "1  30475    6441868\n",
+       "2  30476    5433498\n",
+       "3  30477    6981448\n",
+       "4  30478    9728970\n",
+       "5  30479    5539864\n",
+       "6  30480    6462102\n",
+       "7  30481    6528096\n",
+       "8  30482    5750421\n",
+       "9  30483    5229801"
+      ]
+     },
+     "execution_count": 32,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Let's see what we got\n",
+    "df_submission.head(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# To generate the file, we'll use to_csv function and we'll use the submission.csv ans the name of the file\n",
+    "df_submission.to_csv('submission.csv', index=False)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "id,price_doc\r\n",
+      "30474,5483799\r\n",
+      "30475,6441868\r\n",
+      "30476,5433498\r\n",
+      "30477,6981448\r\n",
+      "30478,9728970\r\n",
+      "30479,5539864\r\n",
+      "30480,6462102\r\n",
+      "30481,6528096\r\n",
+      "30482,5750421\r\n",
+      "30483,5229801\r\n",
+      "30484,4725018\r\n",
+      "30485,4054000\r\n",
+      "30486,5464960\r\n",
+      "30487,4641812\r\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Check the submission format\n",
+    "! head -n15 submission.csv"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "rms error is: 6588663.29143\n"
+     ]
+    }
+   ],
+   "source": [
+    "from sklearn import linear_model\n",
+    "reg = linear_model.Ridge (alpha = .5)\n",
+    "reg.fit(X_train, y_train)\n",
+    "\n",
+    "predictions = reg.predict(X_test)\n",
+    "y_pred = np.exp(predictions)\n",
+    "\n",
+    "rmse = sqrt(mean_squared_error(y_test, y_pred.astype('int64')))\n",
+    "print(\"rms error is: \" + str(rmse))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "rms error is: 6325898.69787\n"
+     ]
+    }
+   ],
+   "source": [
+    "from sklearn import linear_model\n",
+    "reg = linear_model.Lasso(alpha = 0.1)\n",
+    "reg.fit(X_train, y_train)\n",
+    "reg.predict(X_test)\n",
+    "\n",
+    "predictions = reg.predict(X_test)\n",
+    "y_pred = np.exp(predictions)\n",
+    "\n",
+    "rmse = sqrt(mean_squared_error(y_test, y_pred.astype('int64')))\n",
+    "print(\"rms error is: \" + str(rmse))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Decision Tree Model\n",
+    "\n",
+    "This type of model creates a decision tree based on the parameters. Each node will have some specific constant for each one of the parameters. It is a very powerful model, combining the versatile of linear models with a more flexible from decision trees.\n",
+    "\n",
+    "References:\n",
+    "- http://scikit-learn.org/stable/modules/tree.html#tree\n",
+    "- https://en.wikipedia.org/wiki/Decision_tree_learning#Decision_tree_types"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 37,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "rms error is: 8537604.49169\n"
+     ]
+    }
+   ],
+   "source": [
+    "from sklearn import tree\n",
+    "clf = tree.DecisionTreeRegressor()\n",
+    "clf = clf.fit(X_train, y_train)\n",
+    "clf.predict(X_test)\n",
+    "\n",
+    "predictions = clf.predict(X_test)\n",
+    "y_pred = np.exp(predictions)\n",
+    "\n",
+    "rmse = sqrt(mean_squared_error(y_test, y_pred.astype('int64')))\n",
+    "print(\"rms error is: \" + str(rmse))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Gradient Boosting\n",
+    "\n",
+    "Gradient boosting is a technique which combines several weak models to predict the result. This kind of approach is named as ensamble. XGBoost is a library which implements the gradient boosting method. XGBoost is being used with very good results for Kaggle problems.\n",
+    "\n",
+    "\n",
+    "References: \n",
+    "- https://en.wikipedia.org/wiki/Gradient_boosting\n",
+    "- https://en.wikipedia.org/wiki/Xgboost\n",
+    "- https://github.com/dmlc/xgboost"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/usr/local/lib/python2.7/site-packages/sklearn/cross_validation.py:41: DeprecationWarning: This module was deprecated in version 0.18 in favor of the model_selection module into which all the refactored classes and functions are moved. Also note that the interface of the new CV iterators are different from that of this module. This module will be removed in 0.20.\n",
+      "  \"This module will be removed in 0.20.\", DeprecationWarning)\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[0]\ttrain-rmse:14.8164\tvalid-rmse:14.8324\n",
+      "Multiple eval metrics have been passed: 'valid-rmse' will be used for early stopping.\n",
+      "\n",
+      "Will train until valid-rmse hasn't improved in 100 rounds.\n",
+      "[1]\ttrain-rmse:14.5206\tvalid-rmse:14.5366\n",
+      "[2]\ttrain-rmse:14.2306\tvalid-rmse:14.2466\n",
+      "[3]\ttrain-rmse:13.9464\tvalid-rmse:13.9625\n",
+      "[4]\ttrain-rmse:13.6679\tvalid-rmse:13.6841\n",
+      "[5]\ttrain-rmse:13.395\tvalid-rmse:13.4112\n",
+      "[6]\ttrain-rmse:13.1276\tvalid-rmse:13.1438\n",
+      "[7]\ttrain-rmse:12.8655\tvalid-rmse:12.8817\n",
+      "[8]\ttrain-rmse:12.6087\tvalid-rmse:12.625\n",
+      "[9]\ttrain-rmse:12.357\tvalid-rmse:12.3733\n",
+      "[10]\ttrain-rmse:12.1103\tvalid-rmse:12.1266\n",
+      "[11]\ttrain-rmse:11.8686\tvalid-rmse:11.8849\n",
+      "[12]\ttrain-rmse:11.6318\tvalid-rmse:11.6481\n",
+      "[13]\ttrain-rmse:11.3996\tvalid-rmse:11.416\n",
+      "[14]\ttrain-rmse:11.1722\tvalid-rmse:11.1886\n",
+      "[15]\ttrain-rmse:10.9493\tvalid-rmse:10.9657\n",
+      "[16]\ttrain-rmse:10.7308\tvalid-rmse:10.7473\n",
+      "[17]\ttrain-rmse:10.5167\tvalid-rmse:10.5332\n",
+      "[18]\ttrain-rmse:10.3069\tvalid-rmse:10.3234\n",
+      "[19]\ttrain-rmse:10.1014\tvalid-rmse:10.1178\n",
+      "[20]\ttrain-rmse:9.89991\tvalid-rmse:9.91639\n",
+      "[21]\ttrain-rmse:9.70249\tvalid-rmse:9.71898\n",
+      "[22]\ttrain-rmse:9.50903\tvalid-rmse:9.52555\n",
+      "[23]\ttrain-rmse:9.31944\tvalid-rmse:9.33593\n",
+      "[24]\ttrain-rmse:9.13366\tvalid-rmse:9.15016\n",
+      "[25]\ttrain-rmse:8.9516\tvalid-rmse:8.96811\n",
+      "[26]\ttrain-rmse:8.77319\tvalid-rmse:8.78967\n",
+      "[27]\ttrain-rmse:8.59836\tvalid-rmse:8.61484\n",
+      "[28]\ttrain-rmse:8.42704\tvalid-rmse:8.44351\n",
+      "[29]\ttrain-rmse:8.25915\tvalid-rmse:8.27562\n",
+      "[30]\ttrain-rmse:8.09464\tvalid-rmse:8.11117\n",
+      "[31]\ttrain-rmse:7.93342\tvalid-rmse:7.94993\n",
+      "[32]\ttrain-rmse:7.77544\tvalid-rmse:7.79196\n",
+      "[33]\ttrain-rmse:7.62063\tvalid-rmse:7.63713\n",
+      "[34]\ttrain-rmse:7.46893\tvalid-rmse:7.48545\n",
+      "[35]\ttrain-rmse:7.32027\tvalid-rmse:7.3368\n",
+      "[36]\ttrain-rmse:7.1746\tvalid-rmse:7.19119\n",
+      "[37]\ttrain-rmse:7.03186\tvalid-rmse:7.04846\n",
+      "[38]\ttrain-rmse:6.89198\tvalid-rmse:6.90857\n",
+      "[39]\ttrain-rmse:6.75491\tvalid-rmse:6.77148\n",
+      "[40]\ttrain-rmse:6.6206\tvalid-rmse:6.63717\n",
+      "[41]\ttrain-rmse:6.48899\tvalid-rmse:6.50559\n",
+      "[42]\ttrain-rmse:6.36002\tvalid-rmse:6.37662\n",
+      "[43]\ttrain-rmse:6.23365\tvalid-rmse:6.25027\n",
+      "[44]\ttrain-rmse:6.10981\tvalid-rmse:6.12645\n",
+      "[45]\ttrain-rmse:5.98847\tvalid-rmse:6.00507\n",
+      "[46]\ttrain-rmse:5.86957\tvalid-rmse:5.88617\n",
+      "[47]\ttrain-rmse:5.75306\tvalid-rmse:5.76964\n",
+      "[48]\ttrain-rmse:5.6389\tvalid-rmse:5.65547\n",
+      "[49]\ttrain-rmse:5.52703\tvalid-rmse:5.5436\n",
+      "rms error is: 25467.814114\n"
+     ]
+    }
+   ],
+   "source": [
+    "import xgboost as xgb\n",
+    "\n",
+    "d_train = xgb.DMatrix(X_train, label=y_train)\n",
+    "d_valid = xgb.DMatrix(X_test, label=y_test)\n",
+    "\n",
+    "params = {}\n",
+    "params['objective'] = 'reg:linear'\n",
+    "params['eta'] = 0.02\n",
+    "params['silent'] = 1\n",
+    "\n",
+    "watchlist = [(d_train, 'train'), (d_valid, 'valid')]\n",
+    "\n",
+    "clf = xgb.train(params, d_train, 50, watchlist, early_stopping_rounds=100)\n",
+    "\n",
+    "predictions = clf.predict(xgb.DMatrix(X_test))\n",
+    "\n",
+    "y_pred = np.exp(predictions)\n",
+    "\n",
+    "rmse = sqrt(mean_squared_error(y_test, y_pred.astype('int64')))\n",
+    "print(\"rms error is: \" + str(rmse))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 42,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "rms error is: 12778870.6031\n"
+     ]
+    }
+   ],
+   "source": [
+    "from sklearn.ensemble import GradientBoostingRegressor\n",
+    "    \n",
+    "alpha = 0.95\n",
+    "\n",
+    "clf = GradientBoostingRegressor(loss='quantile', alpha=alpha,\n",
+    "                                n_estimators=10, max_depth=3,\n",
+    "                                learning_rate=.1, min_samples_leaf=9,\n",
+    "                                min_samples_split=9)    \n",
+    "\n",
+    "clf.fit(X_train, y_train)\n",
+    "predictions = clf.predict(X_test)\n",
+    "y_pred = np.exp(predictions)\n",
+    "\n",
+    "rmse = sqrt(mean_squared_error(y_test, y_pred.astype('int64')))\n",
+    "print(\"rms error is: \" + str(rmse))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Scalers\n",
+    "\n",
+    "It is very common to have very different scales for the features. This is, in general, very bad for almost all machine learning algorithms, it might cause, for example, numerical stability problems. In order to avoid these problems, SciKit Learn implements some scalaers.\n",
+    "\n",
+    "Refereces: \n",
+    "- http://scikit-learn.org/stable/modules/preprocessing.html\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 40,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "from sklearn.preprocessing import StandardScaler  \n",
+    "scaler = StandardScaler()  \n",
+    "scaler.fit(X_train)  \n",
+    "X_train = scaler.transform(X_train) \n",
+    "X_test = scaler.transform(X_test)  "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Neural Networks\n",
+    "\n",
+    "Today's hottest topic in ML world is Deep Learning. The basic idea of DL is use deep Neural Networks to learn a the data's pattern. The next cell shows how to create a very simple(not deep) in SciKitLearn. \n",
+    "\n",
+    "References: \n",
+    " - http://scikit-learn.org/stable/modules/neural_networks_supervised.html"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 41,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "rms error is: 6846707.02397\n"
+     ]
+    }
+   ],
+   "source": [
+    "from sklearn.neural_network import MLPRegressor\n",
+    "clf = MLPRegressor(solver='lbfgs', alpha=1e-5,\n",
+    "                    hidden_layer_sizes=(7, ), random_state=1)\n",
+    "\n",
+    "clf.fit(X_train, y_train)\n",
+    "predictions = clf.predict(X_test)\n",
+    "y_pred = np.exp(predictions)\n",
+    "\n",
+    "rmse = sqrt(mean_squared_error(y_test, y_pred.astype('int64')))\n",
+    "print(\"rms error is: \" + str(rmse))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Clustering Algorithms\n",
+    "\n",
+    "Clustering algorithms cannot be used to solve this kind of problem, but they are very useful to discover more informations about the features and data. Here is a example on how to create some clustes for some points.\n",
+    "\n",
+    "References: \n",
+    " - https://en.wikipedia.org/wiki/K-means_clustering\n",
+    " - http://scikit-learn.org/stable/modules/clustering.html#k-means"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 43,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([0, 3, 3, ..., 3, 7, 7], dtype=int32)"
+      ]
+     },
+     "execution_count": 43,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from sklearn.cluster import KMeans\n",
+    "kmeans = KMeans(n_clusters=10, random_state=0).fit(X_train)\n",
+    "kmeans.predict(X_test)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 44,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([1, 0, 1, ..., 3, 7, 4], dtype=int32)"
+      ]
+     },
+     "execution_count": 44,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "kmeans.labels_"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 45,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([[ 0.07270668, -0.37032846,  0.7693542 , ...,  0.03340506,\n",
+       "        -0.03125792, -0.13485907],\n",
+       "       [ 0.16370134, -0.50624687, -0.16232737, ..., -0.161818  ,\n",
+       "        -0.17308184, -0.68907097],\n",
+       "       [ 0.00449375,  1.58130596, -1.26168349, ..., -0.15495479,\n",
+       "        -0.17308184,  1.33789532],\n",
+       "       ..., \n",
+       "       [-0.06055566, -0.45718753,  0.24869457, ...,  0.05275176,\n",
+       "         0.07252469, -0.28958602],\n",
+       "       [-0.00884478, -0.02271096,  1.59833822, ...,  0.00861252,\n",
+       "        -0.02617405, -0.70976292],\n",
+       "       [ 0.08804819, -0.47867875, -0.05771808, ...,  0.34836266,\n",
+       "         0.24902631, -0.3424761 ]])"
+      ]
+     },
+     "execution_count": 45,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "kmeans.cluster_centers_"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## General References:\n",
+    "\n",
+    "- http://scikit-learn.org/stable/user_guide.html\n",
+    "- https://www.kaggle.com/ (You can find a lot of cool kernels here)\n",
+    "- https://unsupervisedmethods.com/my-curated-list-of-ai-and-machine-learning-resources-from-around-the-web-9a97823b8524"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 2",
+   "language": "python",
+   "name": "python2"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 2
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython2",
+   "version": "2.7.10"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
