@@ -1,0 +1,89 @@
+******************
+**** Arquivos **** 
+******************
+
+Os arquivos estão dispostos em arquivos da seguinte maneira:
+
+Arquivos para TREINAMENTO E TESTE dos algoritmos: Estes arquivos serão disponibilizados para os alunos realizarem os treinamentos ao longo do desafio. 
+
+	- desafio_movile_unicamp_2018_test_5000.csv
+	- desafio_movile_unicamp_2018_train_500000.csv
+
+Arquivos para a parte ARENA do desafio: A arena consiste em um ranking não oficial em que cada grupo pode realizar submissões sem nenhum limite de vezes. É um ranking que servirá de acompanhamento do desempenho ao longo do desafio. Não vale como submissão final. A métrica de vai indicar o melhor grupo será o RMSE (Root Mean Squared Error) que estará na fórmula abaixo em linguagem Python.  
+
+	- desafio_movile_unicamp_2018_arena_5000_database.csv
+	- desafio_movile_unicamp_2018_arena_5000_totaltime.csv (Esta base não estará disponível para os participantes do desafio)
+
+Arquivos para a parte VALIDAÇÃO do desafio: Esses arquivos contém a base de validação e serão as bases que irão compor o resultado do desafio. A métrica de vai indicar o melhor grupo será o RMSE (Root Mean Squared Error) que estará na fórmula abaixo em linguagem Python. 
+
+	- desafio_movile_unicamp_2018_validation_5000_database.csv
+	- desafio_movile_unicamp_2018_validation_5000_total_time.csv (Esta base não estará disponível para os participantes do desafio)
+
+
+*****************************************
+ **** Funções para o cálculo do RMSE **** 
+*****************************************
+
+Função 1:
+import numpy as np
+
+def rmse(predictions, targets):
+    return np.sqrt(((predictions - targets) ** 2).mean())
+
+
+Função 2:
+from sklearn.metrics import mean_squared_error
+from math import sqrt
+
+rmse = sqrt(mean_squared_error(targets, predictions))
+
+
+
+
+*****************************
+**** Dicionário de Dados **** 
+*****************************
+
+nrum: Line number (useless information)
+id: delivery's id
+user_id: customer id 
+company_id: restaurant's secondary id 
+restaurant_id: restaurant's primary id
+restaurant_geo_cluster: restaurant location cluster
+aquario_id: restaurant's subregion's id
+grid_1000: Closest subregion at most 1000m
+grid_500: Closest subregion at most 500m
+grid_200: Closest subregion at most 200m
+grid_100: Closest subregion at most 100m
+city: City
+grid_city: city's id
+creation_date: order's date
+creation_year: orders's year
+creation_month: order's month  
+creation_week: order's week
+creation_day: Order's day 
+week_day: Order's week day 
+job_start_hour: order's start hour  
+assign_hour: time which the order was assigned to be delivered 
+allocation: Time in minutes which the assignment took
+restaurant_wait: Time in minutes which the restaurant took to prepare the meating
+qtd_convite: How many invited deliveryman were invited to this delivery 
+worker_id: deliveryman's id
+worker_cluster: deliveryman's current subregion
+automatic_assign: This field indicates whether the order was assign automatically to a deliveryman or not
+is_almoco: Indicates whether the delivery was made on lunch
+is_jantar: Indicates whether the delivery was made on dining
+payment_period: Indicates whether the order was made until payment's day (each 10th of each month)
+dow: Informs the week day (1-Sunday; 7-Monday)
+week_of_month: Week of month
+trimestre: Which quarter the order was made 
+is_outono: Indicates whether the order was made in Autumn
+is_primavera: Indicates whether the order was made in Spring
+is_verao: Indicates whether the order was made in Summer
+hora_pedido: Order's time
+time_binning_payment: Indicates which the specific day's period the order was made (0 - dawn; 6 - late night)
+expected_distance_km: Estimated delivery distance (in KM)
+expected_time: Expected time in minutes to order's delivery
+tag_id: restaurant's tag
+cluster_geral: Restaurant's subregion according to some characteristics
+total_time: Total time in minutes which the order took to be made
