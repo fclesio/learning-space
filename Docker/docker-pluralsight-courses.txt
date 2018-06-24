@@ -192,3 +192,118 @@ $ docker pull couchdb
 
 Docker Advanced
 Overview
+Course Introduction
+  - Focus on core Docker engine and images
+What We'll learn
+  - Linux Containers
+    - Containers x Virtual Machines
+    - kernel namespaces, cgropus, Capabilities
+  - Docker Engine
+    - Execution Driver: libcontainer vs LXC
+    - AUFS, OverlayFS, Device Mapper
+  - Docker Images
+    - $ docker build
+    - $ docker images
+    - $ docker inspect
+    - Union monts, Layering, Dockerfile
+  - Docker Containers
+    - $ docker start
+    - $ docker stop
+    - $ docker restart
+  - Registries, Volumes, Networking
+
+Prerequisites
+ - Basic computer knowledge
+ - 1 or 2 linux machines
+
+Introducing Containers
+- The rise of virtual machines 
+  - It's all about applications
+  - Build services and applications in server-application 1:1 manner in some dedicated way
+  - Avoid massive waste of resources with computation capabilities
+  - Avoid to waste computation in the physical resources
+  - Less CAPEX or OPEX
+  - Virtualization: KVM, vmware, Xen
+  - Old days: Physical Machine > OS > Application
+  - Virtual Machine Days: Physical Machine > Hypervisor > VM > OS > App
+- The ogly virtual machine
+  - The OS exists only to make the applications easier to run
+  - We'll need only to replicate the number of the OS's
+  - More licencing for OSs
+  - OS <> Business Value
+  - Patching, Maintaining, overhead
+
+What are Containers
+- The container are lightweight in comparison with OS and provide the isolation of the VM
+- User space in linux
+- Create multiples isolates name spaces (User space)
+- In the old VM world we need an OS for any application in 1:1 approach
+- The container it's a lightweight OS with a Kernel that consumes less resources than the VM 
+
+Containers under the hood
+- Contrainers fix the problem of isolation keeping different userspaces for each application
+- Problems that containers solve Root file routines > Processes over the OS > Network processess
+- Each application with your vision of the process tree, root directory and network routing 
+- Kernel Namespaces partition the resources and makes the isolation
+- The "pid" namespace, "net", "mnt", "user"
+- Control Groups (cgroups): Group resources and set limits for each namespace/containers 
+- The cgroups are far more flexible than Hypervisors
+- cgroup-x = container-a 
+- Capabilities: Fine control of the resources and assign small privileges (AUDIT_CONTROL, CHOWN, DAC_OVERRIDE, NET_BIND_SERVICE, SETUPID)
+- Linux Kernel = Namespaces | groups | capabilities
+
+Docker
+- Container run-time
+- Uniform standard engine runtime
+- Portability in the deamon
+- Application portability
+- LXC as execution driver in the middle in the past
+- libcontainer is the replacement for the LXC
+- libcontainer allows Docker to be cross platform
+
+
+The future of Docker
+- Suport Docker in Windows
+- Write-one and run in everywere
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
