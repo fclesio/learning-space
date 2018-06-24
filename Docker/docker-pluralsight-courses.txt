@@ -1,0 +1,194 @@
+Docker and cointainers: The big Picture
+URL: https://app.pluralsight.com/player?course=docker-containers-big-picture&author=nigel-poulton&name=docker-containers-big-picture-m1&clip=0
+
+Author: Nigel Poulton
+
+1) What are containers?
+- The bad old days
+- Applications run business
+- If the applications break, the business breaks
+- Procurement lead times
+- Up-front CAPEX
+- Ongoing OPEX
+- Hello VMWare / Hypervisor
+- Hypervisors allow multiple apps per server
+- Xen servers
+- Slices of the physical hardware for apps in Virtual Machines
+- Licences for OS
+- OS as necessary evil
+
+
+Containers
+- Instead of OS and hypervisor, the container have only a OS, with one service for container
+- OS: Driver, patching, licences, consume resources, hungry OS
+- Inside the container have only the application
+
+
+$ docker images
+
+$ docker run -d --name web -p 8080:8080 nigelpoulton/pluralsight-docker-ci
+
+$ docker stop web
+
+$ docker start web
+
+
+
+
+Docker Fundamentals
+
+Introduction
+- Operating System-Level Virtualization
+- Access in Kernel with isolation
+- Soft memory
+	Kill a single process and relaunch imnmediately
+	Do not leave idle o instances
+- Security
+	Limit attack space
+	klil compromised
+	Snap-shot replace
+- Crash management
+- Resiliency
+- Docker Tech
+	Ixc underneath
+
+
+
+-- Instantiate a new image
+$ docker run -i -t ubuntu /bin/bash
+
+
+AWS
+- Secure use VPC
+- Docker Deployments
+- EC2 > AMI
+
+
+
+
+Using Docker
+
+
+
+# Sse the port that docker are using
+$ sudo docker -d &
+
+# Download the image of ubuntu (in Docker repository)
+$ sudo docker pull ubuntu
+
+# Start services
+$ sudo docker run -i -t ubuntu/bin/bash
+
+# Exit without termination
+Ctrl + p + Crtl + q 
+
+
+Deamon run as root
+Docker binds to a Unix Socket
+
+Docker Group 
+read/writable by docker
+exclude 'sudo' on client commands
+
+
+
+# Hello World Docker
+$ docker run hello-world
+
+# Run some ubuntu container
+$ docker run -it ubuntu bash
+
+# Get out of docker
+$ exit
+
+
+# See whats docker its running
+$ docker ps
+
+# See the version
+$ docker versionx
+
+# Search some version
+$ docker search ubuntu
+
+# Pull some specific image
+$ docker pull learn/tutorial
+
+# Test the image
+$ docker run learn/tutorial echo "Hello World"
+
+
+
+
+
+Docker Repositories
+Hosted collection of tagged images
+- Tag shows who and where
+- One to many repos per registry
+
+index.docker.io
+- Top leval repositories
+- Primary central index
+- Implicit registry @ index.docker.io
+
+
+Docker repositories
+- Sharing repositories
+- Docker act as client in:
+	- Search
+	- Pull
+	- Login
+	- Push
+
+
+Docker Repositories
+- Top Level (Docker Team)
+- User repositories
+- Search online: http://index.docker.io
+
+# Search some image of CentOS
+$ docker search centos
+
+
+
+
+Working Examples
+
+Node.js application
+
+# Environment
+$ git clone git@github.com:hackndoes/bearded-tribble.git
+
+# Build the image / RPM Process
+$ docker build -t adron/bearded-tribble .
+
+# See the messages
+$ docker images
+
+# Check
+$ docker ps
+
+# kill some docker image
+$ docker kill <<name in ps>>
+
+$ docker run -p 49169:8080 -d adron/bearded-tribble
+
+# Run image as a container
+$ docker run -i -t c2d4f2672765 /bin/bash
+
+$ docker ps
+
+$ docker logs 786cc3b686c6
+
+
+
+
+
+# CouchDB
+$ docker pull couchdb
+
+
+
+
+Docker Advanced
+Overview
