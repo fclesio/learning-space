@@ -1,3 +1,14 @@
+Docker Get Started - https://docs.docker.com/get-started/
+
+Docker Digital Ocean - https://www.digitalocean.com/community/tutorials/como-instalar-e-utilizar-o-docker-primeiros-passos-pt
+
+Tutorials Point - https://www.tutorialspoint.com/docker/index.htm
+
+Docker Curriculum - https://docker-curriculum.com/
+
+Docker Free Camp - https://medium.freecodecamp.org/docker-quick-start-video-tutorials-1dfc575522a0
+
+
 Docker and cointainers: The big Picture
 URL: https://app.pluralsight.com/player?course=docker-containers-big-picture&author=nigel-poulton&name=docker-containers-big-picture-m1&clip=0
 
@@ -191,8 +202,8 @@ $ docker pull couchdb
 
 
 Docker Advanced
-Overview
-Course Introduction
+1) Overview
+2) Course Introduction
   - Focus on core Docker engine and images
 What We'll learn
   - Linux Containers
@@ -216,7 +227,7 @@ Prerequisites
  - Basic computer knowledge
  - 1 or 2 linux machines
 
-Introducing Containers
+3) Introducing Containers
 - The rise of virtual machines 
   - It's all about applications
   - Build services and applications in server-application 1:1 manner in some dedicated way
@@ -261,21 +272,84 @@ Docker
 - libcontainer is the replacement for the LXC
 - libcontainer allows Docker to be cross platform
 
-
 The future of Docker
 - Suport Docker in Windows
 - Write-one and run in everywere
+- Chip-level assists for containers
+- GPUs using the same concept of container
+- Support new archtectures like microservices
 
+4) Installing Ubuntu Linux and CentOS Linux
+  - Download and install Ubuntu and CentOS
 
+5) Installing and Updating Docker
+- Module Intro
 
+- Run an image of CentOS
+$ docker run -it centos /bin/bash
 
+- Test in Shell
+$ ping 8.8.8.8
 
+- See processes
+$ ps -elf
 
+- See the host name
+$ cat etc/hosts
 
+- See the IP
+$ ip a
 
+- Look the kernel
+$ uname -a
 
+- See the release
+$ cat etc/redhat-release
 
+- See if the apt-get fails (it expected that fails)
+$ apt-get update
 
+- See the yum (the Redhat package manager)
+$ yum check-update
+
+- What's happen with some data that are stored in the Docker Container?
+
+- Let's install Vim
+$ yum install vim
+
+- Open Vim
+$ vim /tmp/testfile
+
+$ cat /tmp/testfile
+
+- Let's stop de container
+$ exit
+
+- Let's check with Docker ps
+$ docker ps
+
+- See all containers
+$ docker ps -a
+
+- Check our container
+$ ls -l /var/lib/docker/aufs/diff
+
+- With our number, we can see all the files
+$ ls -l /var/lib/docker/aufs/diff/ff7eri786qwf674fq6wef4765ef98q78f5ewq
+
+- Let's check the file in tmp directory 
+$ ls -l /var/lib/docker/aufs/diff/ff7eri786qwf674fq6wef4765ef98q78f5ewq/tmp
+
+- Let's check our data
+$ cat /var/lib/docker/aufs/diff/ff7eri786qwf674fq6wef4765ef98q78f5ewq/tmp/testfile
+
+- Starting the container again
+$ docker start ff7iu87e6w
+
+- Attach the container
+$ docker attach ff7iu87e6w
+
+$ cat tmp/testfile
 
 
 
