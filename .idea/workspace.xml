@@ -2,18 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4d6359d7-d392-46be-9179-182995fab5d9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/Clustering with H2O.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/clustering-h2o.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/CompetingRisks.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/competing-risks.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/Correlation Test.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/correlation-test.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/CrimesRulez.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/crimes-rulez.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/Forecasting Murders in Rio de Janeiro.Rmd" beforeDir="false" afterPath="$PROJECT_DIR$/R/tutorial-predicting-murders.Rmd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/MARS - Post.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/mars-post.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/MARS Regression - Study Draft.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/mars-regression-study-draft.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/Oil prediction.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/oil-prediction.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/Package God Installation.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/monster-god-installing.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/Predictiing Deliquency in Brazil.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/predicting-delinquency-brazil.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/R/Projected Customer Life Time.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/projected-customer-lifetime.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/Untitled.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/Untitled1.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/test2png.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/test3png.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/xor.f" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/xor.net" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -67,7 +61,17 @@
             <path>
               <item name="learning-space" type="b2602c69:ProjectViewProjectNode" />
               <item name="learning-space" type="462c0819:PsiDirectoryNode" />
-              <item name="R" type="462c0819:PsiDirectoryNode" />
+              <item name="Marketing Analytics Talk" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="learning-space" type="b2602c69:ProjectViewProjectNode" />
+              <item name="learning-space" type="462c0819:PsiDirectoryNode" />
+              <item name="Misc" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="learning-space" type="b2602c69:ProjectViewProjectNode" />
+              <item name="learning-space" type="462c0819:PsiDirectoryNode" />
+              <item name="Python" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -158,7 +162,28 @@
       <option name="project" value="LOCAL" />
       <updated>1533842129988</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Renaming R files">
+      <created>1533842472391</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1533842472391</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Renaming R files">
+      <created>1533842573015</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1533842573015</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Renaming notebooks">
+      <created>1533842639002</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1533842639002</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -203,7 +228,9 @@
     <MESSAGE value="Remove old CVs" />
     <MESSAGE value="Rename sql files" />
     <MESSAGE value="Refactor deep dive gbm" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor deep dive gbm" />
+    <MESSAGE value="Renaming R files" />
+    <MESSAGE value="Renaming notebooks" />
+    <option name="LAST_COMMIT_MESSAGE" value="Renaming notebooks" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/R/clustering-h2o.R">
@@ -252,6 +279,23 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/R/clustering-h2o.R">
       <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Python/Untitled.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Python/test2png.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Python/Untitled1.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="0" />
+        </state>
+      </provider>
     </entry>
   </component>
 </project>
