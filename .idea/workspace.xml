@@ -2,25 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4d6359d7-d392-46be-9179-182995fab5d9" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/learning-space.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/learning-space.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T-SQL/Backup-and-Index- Maintenance" beforeDir="false" afterPath="$PROJECT_DIR$/database-administration/sql-server/Backup-and-Index- Maintenance.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T-SQL/Determine-CPU" beforeDir="false" afterPath="$PROJECT_DIR$/database-administration/sql-server/Determine-CPU.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T-SQL/Long-Waiting-Chains" beforeDir="false" afterPath="$PROJECT_DIR$/database-administration/sql-server/Long-Waiting-Chains" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T-SQL/Most-Cost-Queries" beforeDir="false" afterPath="$PROJECT_DIR$/database-administration/sql-server/Most-Cost-Queries" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T-SQL/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/database-administration/sql-server/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T-SQL/Restore-Databases" beforeDir="false" afterPath="$PROJECT_DIR$/database-administration/sql-server/Restore-Databases" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T-SQL/Shrink" beforeDir="false" afterPath="$PROJECT_DIR$/database-administration/sql-server/Shrink" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T-SQL/Shrink-and-TruncateLog-2008" beforeDir="false" afterPath="$PROJECT_DIR$/database-administration/sql-server/Shrink-and-TruncateLog-2008" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T-SQL/TempDB-Cleanup" beforeDir="false" afterPath="$PROJECT_DIR$/database-administration/sql-server/TempDB-Cleanup" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T-SQL/Transaction-Log-Impact" beforeDir="false" afterPath="$PROJECT_DIR$/database-administration/sql-server/Transaction-Log-Impact" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T-SQL/Wait-Stats" beforeDir="false" afterPath="$PROJECT_DIR$/database-administration/sql-server/Wait-Stats" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T-SQL/sp_AskBrent" beforeDir="false" afterPath="$PROJECT_DIR$/database-administration/sql-server/sp_AskBrent" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T-SQL/sp_Blitz" beforeDir="false" afterPath="$PROJECT_DIR$/database-administration/sql-server/sp_Blitz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T-SQL/sp_BlitzCache" beforeDir="false" afterPath="$PROJECT_DIR$/database-administration/sql-server/sp_BlitzCache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T-SQL/sp_who4" beforeDir="false" afterPath="$PROJECT_DIR$/database-administration/sql-server/sp_who4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T-SQL/track_waitstats_2005" beforeDir="false" afterPath="$PROJECT_DIR$/database-administration/sql-server/track_waitstats_2005" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/Clustering with H2O.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/clustering-h2o.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/CompetingRisks.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/competing-risks.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/Correlation Test.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/correlation-test.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/CrimesRulez.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/crimes-rulez.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/Forecasting Murders in Rio de Janeiro.Rmd" beforeDir="false" afterPath="$PROJECT_DIR$/R/tutorial-predicting-murders.Rmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/MARS - Post.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/mars-post.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/MARS Regression - Study Draft.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/mars-regression-study-draft.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/Oil prediction.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/oil-prediction.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/Package God Installation.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/monster-god-installing.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/Predictiing Deliquency in Brazil.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/predicting-delinquency-brazil.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/Projected Customer Life Time.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/projected-customer-lifetime.R" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -30,7 +23,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -63,6 +56,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -73,19 +67,12 @@
             <path>
               <item name="learning-space" type="b2602c69:ProjectViewProjectNode" />
               <item name="learning-space" type="462c0819:PsiDirectoryNode" />
-              <item name="database-administration" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="learning-space" type="b2602c69:ProjectViewProjectNode" />
-              <item name="learning-space" type="462c0819:PsiDirectoryNode" />
-              <item name="database-administration" type="462c0819:PsiDirectoryNode" />
-              <item name="sql-server" type="462c0819:PsiDirectoryNode" />
+              <item name="R" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -157,36 +144,52 @@
       <option name="project" value="LOCAL" />
       <updated>1533841213163</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Rename sql files">
+      <created>1533841843860</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1533841843860</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Refactor deep dive gbm">
+      <created>1533842129988</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1533842129988</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info id="DB Browser" />
-      <window_info anchor="bottom" id="DB Execution Console" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
-      <window_info anchor="right" x="0" y="0" width="310" height="700" id="Documentation" side_tool="true" weight="0.3297568" />
-      <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
+      <window_info id="DB Browser" order="2" />
+      <window_info anchor="bottom" id="DB Execution Console" order="7" />
+      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
+      <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Python Console" order="7" weight="0.32969698" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Python Console" visible="true" weight="0.32969698" />
-      <window_info anchor="bottom" id="Terminal" weight="0.32969698" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24964234" />
-      <window_info anchor="bottom" id="Docker" />
-      <window_info anchor="right" id="Database" />
-      <window_info anchor="right" id="SciView" />
+      <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.32969698" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.29542202" />
+      <window_info anchor="right" id="R Packages" order="0" />
+      <window_info anchor="bottom" id="Docker" order="7" />
+      <window_info anchor="right" id="R Graphics" order="1" />
+      <window_info anchor="right" id="Database" order="5" />
+      <window_info anchor="right" id="SciView" order="6" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info id="Favorites" side_tool="true" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="2" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="3" weight="0.25" />
+      <window_info anchor="right" x="0" y="0" width="310" height="700" id="Documentation" order="7" side_tool="true" weight="0.3297568" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -198,9 +201,14 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Rename projects h2o" />
     <MESSAGE value="Remove old CVs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Remove old CVs" />
+    <MESSAGE value="Rename sql files" />
+    <MESSAGE value="Refactor deep dive gbm" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor deep dive gbm" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/R/clustering-h2o.R">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/Docker/docker-pluralsight-courses.txt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -238,6 +246,12 @@
           <caret line="499" column="16" lean-forward="true" selection-start-line="499" selection-start-column="16" selection-end-line="499" selection-end-column="16" />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/R/tutorial-predicting-murders.Rmd">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/R/clustering-h2o.R">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
   </component>
 </project>
