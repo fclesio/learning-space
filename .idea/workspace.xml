@@ -2,12 +2,40 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4d6359d7-d392-46be-9179-182995fab5d9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/Python/Untitled.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/Untitled1.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/test2png.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/test3png.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/xor.f" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/xor.net" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/Python/machine-learning/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Python/mano-bot/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/1st Experiment with NPL.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/machine-learning/1st Experiment with NPL.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/Análise de Sobrevivência em Telecom.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/survival-analysis/Análise de Sobrevivência em Telecom.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/Audio Signals Analysis.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/exporatory-data-analysis/Audio Signals Analysis.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/Backpropagation with Tensor Flow.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/deep-learning/Backpropagation with Tensor Flow.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/Bank &quot;Layman&quot; Brothers Loans.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/machine-learning/Bank &quot;Layman&quot; Brothers Loans.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/Basic Serialization.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/machine-learning/Basic Serialization.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/Blitz Classifiers - &quot;Leyman&quot; Brothers Credit.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/machine-learning/Blitz Classifiers - &quot;Leyman&quot; Brothers Credit.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/Esquerda e Direita Project.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/Experimentation with Lifetimes.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/survival-analysis/Experimentation with Lifetimes.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/Exploring Optimizers.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/machine-learning/Exploring Optimizers.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/FFNet.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/machine-learning/FFNet.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/First Test with Facebook Prophet.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/time-series/First Test with Facebook Prophet.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/Hello World Tensor Flow.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/deep-learning/Hello World Tensor Flow.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/Hello World Theano.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/deep-learning/Hello World Theano.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/Keras 1st Model and Serialization.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/deep-learning/Keras 1st Model and Serialization.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/LSTM in Keras.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/deep-learning/LSTM in Keras.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/Language Detection.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/machine-learning/Language Detection.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/Layman Brothers with Keras.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/deep-learning/Layman Brothers with Keras.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/MARS Simple Tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/machine-learning/MARS Simple Tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/ManoBot" beforeDir="false" afterPath="$PROJECT_DIR$/Python/mano-bot/ManoBot" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/ManoBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/mano-bot/ManoBot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/PoC LSTM.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/deep-learning/PoC LSTM.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/aphorisms/BotAphorism.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/aphorism-bot/BotAphorism.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/aphorisms/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/aphorism-bot/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/aphorisms/aforismos.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Python/aphorism-bot/aforismos.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/apriori.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/machine-learning/apriori.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/h2o - Python - 01.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/machine-learning/h2o - Python - 01.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/iris.mlmodel" beforeDir="false" afterPath="$PROJECT_DIR$/Python/machine-learning/iris.mlmodel" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/logreg_coefs.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/meeting-13-12-2017.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Python/machine-learning/meeting-13-12-2017.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python/procusto.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/aphorism-bot/procusto.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,6 +46,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -87,7 +122,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/database-administration/sql-server" />
+      <recent name="$PROJECT_DIR$/Python/aphorism-bot" />
+      <recent name="$PROJECT_DIR$/Python/deep-learning" />
+      <recent name="$PROJECT_DIR$/Python/machine-learning" />
+      <recent name="$PROJECT_DIR$/Python/time-series" />
+      <recent name="$PROJECT_DIR$/Python/survival-analysis" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -183,7 +222,14 @@
       <option name="project" value="LOCAL" />
       <updated>1533842639002</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Bot aphorisms">
+      <created>1533842945570</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1533842945570</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -230,7 +276,8 @@
     <MESSAGE value="Refactor deep dive gbm" />
     <MESSAGE value="Renaming R files" />
     <MESSAGE value="Renaming notebooks" />
-    <option name="LAST_COMMIT_MESSAGE" value="Renaming notebooks" />
+    <MESSAGE value="Bot aphorisms" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bot aphorisms" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/R/clustering-h2o.R">
@@ -295,6 +342,72 @@
         <state>
           <selected id="0" />
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Python/machine-learning/1st Experiment with NPL.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Python/machine-learning/apriori.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Python/Esquerda e Direita Project.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Python/aphorism-bot/procusto.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#50#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Python/machine-learning/h2o - Python - 01.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Python/machine-learning/Exploring Optimizers.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Python/machine-learning/Basic Serialization.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Python/machine-learning/Bank &quot;Layman&quot; Brothers Loans.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Python/exporatory-data-analysis/Audio Signals Analysis.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Python/aphorism-bot/aforismos.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-6300" />
       </provider>
     </entry>
   </component>
