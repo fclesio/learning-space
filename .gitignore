@@ -8,3 +8,9 @@
 out
 gen
 .idea/workspace.xml
+
+Python/.ipynb_checkpoints/Layman Brothers ML Flow-checkpoint.ipynb
+Python/deep-learning/.ipynb_checkpoints/*
+Python/machine-learning/.ipynb_checkpoints/*
+Python/mlruns/*
+Python/survival-analysis/.ipynb_checkpoints/*
