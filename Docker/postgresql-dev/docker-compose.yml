@@ -1,0 +1,16 @@
+version: '3.5'
+
+networks:
+  aircraft:
+    name: aircraft
+
+services:
+    postgres:
+        image: nova6/postgresql:9.6
+        container_name: aircraft-postgres
+        ports:
+          - "${POSTGRES_PORT:-5432:5432}"
+        volumes:
+            - ./pgdata:/var/lib/postgresql/data/pgdata:cached
+        networks:
+            - aircraft
