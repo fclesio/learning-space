@@ -1,0 +1,27 @@
+<slave_config>
+
+  <masters>
+
+    <slaveserver>
+      <name>CARTE_MASTER_NAME</name>
+      <hostname>CARTE_MASTER_HOSTNAME</hostname>
+      <port>CARTE_MASTER_PORT</port>
+      <username>CARTE_MASTER_USER</username>
+      <password>CARTE_MASTER_PASSWORD</password>
+      <master>CARTE_MASTER_IS_MASTER</master>
+    </slaveserver>
+
+  </masters>
+
+  <report_to_masters>CARTE_REPORT_TO_MASTERS</report_to_masters>
+
+  <slaveserver>
+    <name>CARTE_NAME</name>
+    <network_interface>CARTE_NETWORK_INTERFACE</network_interface>
+    <port>CARTE_PORT</port>
+    <username>CARTE_USER</username>
+    <password>CARTE_PASSWORD</password>
+    <master>CARTE_IS_MASTER</master>
+  </slaveserver>
+
+</slave_config>
