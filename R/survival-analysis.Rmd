@@ -1137,6 +1137,68 @@ summary(fit2)
 
 
 
+*Códigos em R apresentados no Capítulo 9*
+
+  
+```{r}
+leucc<-read.table("/Users/f.clesio/Downloads/leucc.txt",h=T)  #Obs: leucc.txt = dados leucemia dicotomizados
+attach(leucc)
+require(survival)
+id<-1:103
+fit3a<-coxph(Surv(tempos,cens)~leuinic+idadec+zpesoc+pasc+vacc+frailty(id,dist="gamma"),
+             data=leucc,x = T,method="breslow")
+summary(fit3a)
+```
+
+```{r}
+wi<-fit3a$frail
+zi<-exp(wi)
+plot(id,zi, xlab="Crianças (1 a 103)", ylab="zi estimados", pch=16)
+abline(h=1,lty=2)
+```
+
+
+```{r}
+cattle<-read.table("/Users/f.clesio/Downloads/cattle.txt",h=T)  # cattle.txt no Apêndice A8
+attach(cattle)
+require(survival)
+fit1<-coxph(Surv(tempo,censura)~factor(sex)+ agedam + frailty(sire,dist="gamma"),data=cattle)
+summary(fit1)
+```
+
+```{r}
+fit2<-coxph(Surv(tempo,censura)~factor(sex)+  frailty(sire,dist="gamma"),data=cattle)
+summary(fit2)
+```
+
+
+```{r}
+H0<-basehaz(fit2,centered=F)
+S0<-exp(-H0$hazard)
+S3m<-S0^(1.798*exp(0.797))    # machos touro 3
+S3f<-S0^(1.798)               # fêmeas touro 3
+S1m<-S0^(0.767*exp(0.797))    # machos touro 1
+S1f<-S0^(0.767)               # fêmeas touro 1
+par(mfrow=c(1,2))
+t<-H0$time
+plot(t,S1m, type="s", ylim=range(c(0,1)),xlab="Tempo (dias)",ylab="Sobrevivência Estimada")
+lines(t,S1f,type="s",lty=4)
+legend(142,0.25, lty=c(1,4),c("Machos", "Fêmeas"), bty="n", cex=0.8)
+title("Touro 1")
+plot(t,S3m, type="s",ylim=range(c(0,1)),xlab="Tempo (dias)",ylab="Sobrevivência Estimada")
+lines(t,S3f,type="s",lty=4)
+legend(142,0.25, lty=c(1,4),c("Machos", "Fêmeas"), bty="n", cex=0.8)
+title("Touro 3")
+```
+
+
+
+
+
+
+
+
+
 
 
 
