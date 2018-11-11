@@ -5,7 +5,9 @@ output: html_notebook
 
 This is a study notebook with contents of the book called "Analise de Sobrevivencia Aplicada			" authored by Enrico Antonio Colosimo and Suely Ruiz Giolo. All matherials of the book can be found in the [Mr. Colosimo website](http://www.est.ufmg.br/~enricoc/).
 
-*Códigos em R apresentados no Capítulo 2*
+*Non-Parametric Techniques*
+
+
 
 ```{r}
 #  Exemplo Hepatite
