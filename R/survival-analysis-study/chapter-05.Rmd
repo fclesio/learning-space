@@ -1,0 +1,257 @@
+---
+title: "Survival Analysis in R - Study Notebook"
+output: html_notebook
+---
+
+This is a study notebook with contents of the book called "Analise de Sobrevivencia Aplicada			" authored by Enrico Antonio Colosimo and Suely Ruiz Giolo. All matherials of the book can be found in the [Mr. Colosimo website](http://www.est.ufmg.br/~enricoc/).
+
+*Códigos em R apresentados no Capítulo 5*
+
+```{r}
+#   Câncer de Laringe
+laringe<-read.table("/Users/f.clesio/Downloads/laringe.txt", h=T)     #Obs: laringe.txt no Apêndice A6
+```
+
+```{r}
+head(laringe)
+```
+
+```{r}
+names(laringe)
+```
+
+```{r}
+dim(laringe)
+```
+
+```{r}
+laringe$estagio<-factor(laringe$estagio) 
+```
+
+```{r}
+laringe$idade<-as.numeric(laringe$idade)
+```
+
+
+```{r}
+round(table(laringe$estagio)/90,2)
+```
+
+
+```{r}
+boxplot(laringe$idade)
+```
+
+```{r}
+hist(laringe$idade)
+```
+
+```{r}
+summary(laringe$idade)
+```
+
+```{r}
+# attach(laringe)
+if (!require("survival")) install.packages("survival")
+sum(laringe$cens)
+```
+
+
+```{r}
+# Avaliar o comportamento individual de estadio e idade
+ekm<- survfit(Surv(tempos,cens)~estagio, data=laringe)
+summary(ekm)
+```
+
+```{r}
+plot(ekm, lty=c(2,1,3,4), xlab="Tempo (anos)",ylab="S(t) estimada")
+legend(8,0.9,lty=c(2,1,3,4),c("Estadio 1","Estadio 2","Estadio 3","Estadio 4"),lwd=1, bty="n")
+```
+
+
+```{r}
+survdiff(Surv(tempos,cens)~estagio, data=laringe)
+```
+
+```{r}
+# Avaliar o comportamento de idade
+if (!require("rms")) install.packages("rms")
+fit1<-cph(Surv(tempos,cens)~rcs(idade,4), data=laringe, x=T,y=T) # pag. 490 Harrell
+fit1
+```
+
+
+```{r}
+#  Estudando colinearidade Estadio e Idade
+boxplot(laringe$idade~laringe$estagio)
+```
+
+```{r}
+summary(aov(idade ~ factor(estagio), data = laringe))
+```
+
+
+```{r}
+fit2<-coxph(Surv(tempos,cens)~factor(estagio), data=laringe,
+            x = T, method="breslow")
+summary(fit2)
+```
+
+```{r}
+fit2$loglik
+```
+
+
+```{r}
+# Utilizando idade com duas inclinações em idade=70
+idade1<-ifelse(laringe$idade>70,0,laringe$idade)
+idade1
+idade<- laringe$idade
+#
+fit3<- coxph(Surv(tempos,cens)~idade+idade1, data=laringe,
+             x = T, method="breslow")
+summary(fit3)
+```
+
+```{r}
+# Não é necessário incluir idade em uma escala diferente da linear
+fit4<- coxph(Surv(tempos,cens)~factor(estagio)+ idade, data=laringe,
+             x = T, method="breslow")
+summary(fit4)
+```
+
+```{r}
+fit4$loglik
+```
+
+```{r}
+fit5<-coxph(Surv(tempos,cens) ~ factor(estagio) + idade + factor(estagio):idade,
+            data=laringe, x = T, method="breslow")
+summary(fit5)
+```
+
+```{r}
+fit5$loglik
+```
+
+```{r}
+anova(fit5,fit4)
+```
+```{r}
+anova(fit4,fit2)
+```
+
+```{r}
+resid(fit5,type="scaledsch") # com o termo de interação
+```
+
+```{r}
+cox.zph(fit5, transform="identity")        ### g(t) = t
+```
+
+```{r}
+par(mfrow=c(2,4))
+plot(cox.zph(fit5))
+#
+resid(fit4,type="scaledsch")
+cox.zph(fit4, transform="identity")    # g(t) = t
+par(mfrow=c(1,4))
+plot(cox.zph(fit4))
+```
+
+```{r}
+Ht<-basehaz(fit5,centered=F)
+Ht1<-survfit(fit5)
+tempos<-Ht$time
+H0<-Ht$hazard
+S0<- exp(-H0)
+round(cbind(tempos, S0,H0),digits=5)
+```
+
+
+```{r}
+#  Ajuste final com somente o termo de interação envolvendo Estadio II e idade
+laringe$estagio2<-ifelse(laringe$estagio==2,1,0)
+fit6<- coxph(Surv(tempos,cens)~factor(estagio)+ idade + estagio2:idade, data=laringe,
+             x = T, method="breslow")
+summary(fit6)
+```
+
+
+```{r}
+#  Banco de Desmame
+if (!require("survival")) install.packages("survival")
+desmame<-read.table("/Users/f.clesio/Downloads/desmame.txt",h=T)    #Obs: desmame.txt no Apêndice A3
+attach(desmame)
+fit<-coxph(Surv(tempo,cens)~V1+V3+V4+V6,data=desmame,x = T,method="breslow")
+summary(fit)
+```
+
+
+```{r}
+fit$loglik
+```
+
+```{r}
+resid(fit,type="scaledsch")
+```
+
+```{r}
+cox.zph(fit, transform="identity")     ## g(t) = t
+```
+
+```{r}
+par(mfrow=c(2,2))
+plot(cox.zph(fit))
+```
+
+
+```{r}
+leuc<-read.table("/Users/f.clesio/Downloads/leucemia.txt", h=T)        #Obs: leucemia.txt no Apêndice A1
+attach(leuc)
+idadec<-ifelse(idade>96,1,0)
+leuinic<-ifelse(leuini>75,1,0)
+zpesoc<-ifelse(zpeso>-2,1,0)
+zestc<-ifelse(zest>-2,1,0)
+pasc<-ifelse(pas>0.05,1,0)
+vacc<-ifelse(vac>15,1,0)
+pasc<-ifelse(pas>5,1,0)
+riskc<-ifelse(risk>1.7,1,0)
+r6c<-r6
+leucc<-as.data.frame(cbind(leuinic,tempos,cens,idadec,zpesoc,zestc,pasc,vacc,riskc,r6c))
+detach(leuc)
+attach(leucc)
+if (!require("survival")) install.packages("survival")
+fit<-coxph(Surv(tempos,cens)~leuinic+idadec+zpesoc+zestc+pasc+vacc+riskc+r6c,
+           data=leucc, x = T, method="breslow")
+summary(fit)
+```
+
+
+
+```{r}
+fit3<-coxph(Surv(tempos,cens)~leuinic+idadec+zpesoc+pasc+vacc,data=leucc,x = T,method="breslow")
+summary(fit3)
+```
+
+```{r}
+-2*fit3$loglik[2]
+```
+
+```{r}
+resid(fit3,type="scaledsch")
+```
+
+```{r}
+cox.zph(fit3, transform="identity")   ## g(t) = t
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+rd<-resid(fit3,type="deviance")       # resíduos deviance
+rm<-resid(fit3,type="martingale")     # resíduos martingal
+pl<-fit3$linear.predictors
+plot(pl,rm, xlab="Preditor linear", ylab="Resíduo martingal", pch=16)
+plot(pl,rd,  xlab="Preditor linear", ylab="Resíduo deviance" , pch=16)
+```

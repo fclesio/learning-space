@@ -1,0 +1,79 @@
+---
+title: "Survival Analysis in R - Study Notebook"
+output: html_notebook
+---
+
+This is a study notebook with contents of the book called "Analise de Sobrevivencia Aplicada			" authored by Enrico Antonio Colosimo and Suely Ruiz Giolo. All matherials of the book can be found in the [Mr. Colosimo website](http://www.est.ufmg.br/~enricoc/).
+
+
+
+*Códigos em R apresentados no Capítulo 7*
+
+```{r}
+laringe<-read.table("/Users/f.clesio/Downloads/laringe.txt", h=T)            #Obs: laringe.txt no Apêndice A6
+attach(laringe)
+if (!require("survival")) install.packages("survival")
+source("/Users/f.clesio/Downloads/Addreg.r")  ## obter função em http://www.med.uio.no/imb/stat/addreg/
+idadec<-idade-mean(idade)
+
+fit1<- addreg(Surv(tempos,cens)~factor(estagio)+idadec,laringe)
+summary(fit1)
+```
+
+```{r}
+fit2<- addreg(Surv(tempos,cens)~factor(estagio),laringe)
+summary(fit2)
+```
+
+```{r}
+source("/Users/f.clesio/Downloads/Addreg.r")                               # lendo no R a função Addreg.r
+aids<-read.table("/Users/f.clesio/Downloads/aids.txt",h=T)                 # lendo aids.txt (Apêndice A2)
+attach(aids)
+if (!require("survival")) install.packages("survival")
+idade<-id - mean(id[!is.na(id)])
+fit1<-addreg( Surv(ti[ti<tf],tf[ti<tf],cens[ti<tf])~idade[ti<tf]+sex[ti<tf]+factor(grp)[ti<tf],
+              data=aids)
+summary(fit1)
+```
+
+
+
+```{r}
+fit2<-addreg( Surv(ti[ti<tf],tf[ti<tf],cens[ti<tf])~idade[ti<tf]+factor(grp)[ti<tf], data=aids)
+summary(fit2)
+```
+
+
+
+```{r}
+aids<-read.table("/Users/f.clesio/Downloads/aids.txt",h=T)                # lendo aids.txt (Apêndice A2)
+attach(aids)
+aids1<-as.data.frame(cbind(tf,id,grp))
+aids1<-na.omit(aids1)    # eliminando valores missing = NA
+attach(aids1)
+i<-order(aids1$tf)
+aids1<-aids1[i,]         # banco de dados ordenados por tf e sem NA nas covariaveis
+aids2<-aids1[10:121,]    # tau = 617 e então foram mantidas as linhas em que 0 < tf <= 617
+n<-nrow(aids2)
+xo<-rep(1,n)
+x1<-(aids2$id) - mean(aids2$id)
+x2<-ifelse(aids2$grp==2,1,0)
+x3<-ifelse(aids2$grp==3,1,0)
+x4<-ifelse(aids2$grp==4,1,0)
+x <-as.matrix(cbind(xo,x1,x2,x3,x4))
+t<-fit2$times
+coef<-fit2$increments
+xt<-t(x)
+Bt<-coef%*%xt
+riscoacum<-diag(Bt)
+for(i in 1:(n-1)){
+  riscoacum[i+1]<-riscoacum[i+1]+riscoacum[i]}
+riscoacum
+```
+
+```{r}
+plot(fit2,xlab="Tempo",ylab="FRA",label=c("(a) Constante","(b) Idade", "(c) Assintomático em relação HIV-",
+                                          "(d) ARC em  relação HIV-", "(e) AIDS em relação HIV-"))
+```
+
+

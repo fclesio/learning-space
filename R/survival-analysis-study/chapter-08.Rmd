@@ -1,0 +1,166 @@
+---
+title: "Survival Analysis in R - Study Notebook"
+output: html_notebook
+---
+
+This is a study notebook with contents of the book called "Analise de Sobrevivencia Aplicada			" authored by Enrico Antonio Colosimo and Suely Ruiz Giolo. All matherials of the book can be found in the [Mr. Colosimo website](http://www.est.ufmg.br/~enricoc/).
+
+
+
+*Códigos em R apresentados no Capítulo 8*
+  
+```{r}
+require(survival)
+source("/Users/f.clesio/Downloads/Turnbull.R")        # lendo no R a função Turnbull.R (Apêndice E)
+left<-c(0,1,4,5,5)
+right<-c(5,8,9,8,9)
+dat<-as.data.frame(cbind(left,right))
+attach(dat)
+right[is.na(right)] <- Inf
+tau <- cria.tau(dat)
+p <- S.ini(tau=tau)
+A <- cria.A(data=dat,tau=tau)
+tb <- Turnbull(p,A,dat)
+```
+
+
+```{r}
+tb
+```
+
+
+```{r}
+require(survival)
+source("/Users/f.clesio/Downloads/Turnbull.R")                     # Turnbull.R no Apêndice E
+dat <- read.table('/Users/f.clesio/Downloads/breast.txt',header=T)    # breast.txt no Apêndice A9
+dat1 <- dat[dat$ther==1,]
+dat1$right[is.na(dat1$right)] <- Inf
+tau <- cria.tau(dat1)
+p <- S.ini(tau=tau)
+A <- cria.A(data=dat1,tau=tau)
+tb1 <- Turnbull(p,A,dat1)
+```
+
+```{r}
+tb1
+```
+
+```{r}
+dat1 <- dat[dat$ther==0,]
+dat1$right[is.na(dat1$right)] <- Inf
+tau <- cria.tau(dat1)
+p <- S.ini(tau=tau)
+A <- cria.A(data=dat1,tau=tau)
+tb2 <- Turnbull(p,A,dat1)
+```
+
+```{r}
+tb2
+```
+
+```{r}
+plot(tb1$time,tb1$surv, lty=1, type = "s", ylim=c(0,1), xlim=c(0,50),
+     xlab="Tempos (meses)",ylab="S(t)")
+lines(tb2$time,tb2$surv,lty=4,type="s")
+legend(1,0.3,lty=c(1,4),c("Radioterapia","Radioterapia + Quimioterapia"),
+       bty="n",cex=0.8)
+```
+
+
+```{r}
+p <-dat$left+((dat$right-dat$left)/2)
+pm <-ifelse(is.finite(p),p,dat$left)
+cens <- ifelse(is.finite(p),1,0)
+ekm<-survfit(Surv(pm,cens)~ther,type=c("kaplan-meier"),data=dat)
+plot(tb1$time,tb1$surv,lty=1,type="s",ylim=c(0,1), xlim=c(0,50),
+     xlab="Tempos (meses)",ylab="S(t)")
+lines(tb2$time,tb2$surv,lty=2,type="s")
+lines(ekm[1]$time,ekm[1]$surv,type="s",lty=3)
+lines(ekm[2]$time,ekm[2]$surv,type="s",lty=3)
+legend(1,0.3,lty=c(1,2), c("Radioterapia","Radioterapia + Quimioterapia"),
+       bty="n",cex=0.8)
+legend(1,0.21,lty=3, "Usando Ponto Médio dos Intervalos", bty="n",cex=0.8)
+```
+
+
+
+
+```{r}
+breast<-read.table("/Users/f.clesio/Downloads/breast.txt", h=T)   #Obs: breast.txt no Apêndice A9
+attach(breast)
+cens1<-ifelse(cens==1,3,0)
+require(survival)
+fit1<-survreg(Surv(left,right,type="interval2")~ther,breast,dist="logistic")
+summary(fit1)
+```
+
+```{r}
+fit2<-survreg(Surv(left,right,type="interval2")~ther,breast,dist="gaussian")
+summary(fit2)
+```
+
+
+```{r}
+t1<-0:45
+b0<-fit1$coefficients[1]
+b1<-fit1$coefficients[2]
+s<- fit1$scale
+a1<- t1-(b0+b1)
+e1<- exp(a1/s)
+st1<-1/(1+e1)
+t2<-1:60
+a2<- t2-(b0)
+e2<- exp(a2/s)
+st2<-1/(1+e2)
+plot(t1,st1,type="l",lty=3,ylim=range(c(0,1)),xlab="Tempos",ylab="Sobrevivencia estimada")
+lines(t2,st2,type="l",lty=3)
+
+
+t1<-0:45
+b0<-fit2$coefficients[1]
+b1<-fit2$coefficients[2]
+s<- fit2$scale
+a1<- t1-(b0+b1)
+st11<- 1-pnorm(a1/s)
+t2<-0:60
+a2<-t2-(b0)
+st22<- 1 -pnorm(a2/s)
+lines(t2,st22,type="l",lty=2)
+lines(t1,st11,type="l",lty=2)
+legend(1,0.2,lty=c(3,2),c("Logística","Gaussiana"),lwd=1,bty="n",cex=0.8) 
+```
+
+
+```{r}
+mang1<-read.table("/Users/f.clesio/Downloads/dadmang.txt",h=T)  #Obs: ver como obter dadmang.txt no Apêndice A5
+attach(mang1)
+require(survival)
+fit1<-glm(y~-1+int1+int2+int3+int4+int5+int6+int7+int8+int9+int10+int11+int12+
+            factor(bloco,levels=5:1)+ factor(copa)+ factor(cavalo)+
+            factor(copa)*factor(cavalo),family=binomial(link="cloglog"))
+anova(fit1)
+```
+
+
+```{r}
+fit2 <-glm(y~-1+int1+int2+int3+int4+int5+int6+int7+int8+int9+int10+int11+int12+
+             factor(bloco,levels=5:1)+ factor(copa)+ factor(cavalo)+
+             factor(copa)*factor(cavalo),family=binomial(link="logit"))
+anova(fit2)
+```
+
+
+```{r}
+fit1<-glm(y~-1+int1+int2+int3+int4+int5+int6+int7+int8+int9+int10+
+            int11+int12+factor(bloco,levels=5:1)+factor(copa),
+          family=binomial(link="cloglog"))
+summary(fit1)
+```
+
+
+```{r}
+fit2<-glm(y~-1+int1+int2+int3+int4+int5+int6+int7+int8+int9+int10+
+            int11+int12+factor(bloco,levels=5:1)+factor(copa),
+          family=binomial(link="logit"))
+summary(fit2)
+```

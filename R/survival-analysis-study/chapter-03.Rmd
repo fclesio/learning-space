@@ -1,0 +1,265 @@
+---
+title: "Survival Analysis in R - Study Notebook"
+output: html_notebook
+---
+
+This is a study notebook with contents of the book called "Analise de Sobrevivencia Aplicada			" authored by Enrico Antonio Colosimo and Suely Ruiz Giolo. All matherials of the book can be found in the [Mr. Colosimo website](http://www.est.ufmg.br/~enricoc/).
+
+*Códigos em R apresentados no Capítulo 3*
+```{r}
+#  Exemplo Câncer de Bexiga - Sem covariáveis
+require(survival)
+tempos<-c(3,5,6,7,8,9,10,10,12,15,15,18,19,20,22,25,28,30,40,45)
+cens<-c(1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0)
+ekm<-survfit(Surv(tempos,cens)~1)
+summary(ekm)
+plot(ekm, xlab="Tempo (meses)",ylab="S(t) estimada",conf.int=T,mark.time=T)
+````
+
+
+
+```{r}
+#   Estimativa do tempo mediano
+my.surv <- Surv(tempos, cens) 
+survfit(my.surv ~ 1)
+#  sem interpolar 18 (10;28)
+#  com interpolação 17,1 (9,5;27,8)
+#     Estimativa do tempo médio de vida (tau é 45 meses, maior observado) 
+```
+
+
+```{r}
+print(survfit(my.surv ~ 1), print.rmean=TRUE)
+#   18,7 (18.73 +/- 1.96*2.73) (13.4;24.1)
+```
+
+```{r}
+#   Ajuste dos modelos paramétricos
+#  Modelo Exponencial
+ajust1<-survreg(Surv(tempos,cens)~1,dist='exponential')
+summary(ajust1)
+```
+
+```{r}
+alpha<-exp(ajust1$coefficients[1])
+alpha
+```
+
+```{r}
+#    Modelo Weibull
+ajust2<-survreg(Surv(tempos,cens)~1,dist='weibull')
+summary(ajust2)
+```
+
+```{r}
+alpha<-exp(ajust2$coefficients[1])
+gama<-1/ajust2$scale
+cbind(gama, alpha)
+```
+
+```{r}
+#     Modelo Log-normal
+ajust3<-survreg(Surv(tempos,cens)~1,dist='lognorm')
+summary(ajust3)
+```
+
+```{r}
+sigma<-exp(ajust3$icoef[2])
+ajust3$scale
+```
+
+```{r}
+#  Gráficos de adequação dos modelos
+time<-ekm$time   # tempos de evento + último tempo
+st<-ekm$surv
+ste<- exp(-time/20.41)
+stw<- exp(-(time/21.34)^1.54)
+stln<- pnorm((-log(time)+ 2.72)/0.76)
+cbind(time,st,ste,stw,stln)
+```
+
+```{r}
+#  Gráfico de Kaplan-Meier vs Modelo Proposto
+par(mfrow=c(1,3))
+plot(st,ste,pch=16,ylim=range(c(0.0,1)), xlim=range(c(0,1)), xlab = "S(t): Kaplan-Meier",
+     ylab="S(t): exponencial")
+lines(c(0,1), c(0,1), type="l", lty=1)
+plot(st,stw,pch=16,ylim=range(c(0.0,1)), xlim=range(c(0,1)), xlab = "S(t): Kaplan-Meier",
+     ylab="S(t): Weibull")
+lines(c(0,1), c(0,1), type="l", lty=1)
+plot(st,stln,pch=16,ylim=range(c(0.0,1)), xlim=range(c(0,1)), xlab = "S(t): Kaplan-Meier",
+     ylab="S(t): log-normal")
+lines(c(0,1), c(0,1), type="l", lty=1)
+```
+
+
+```{r}
+#  Gráfico de Linearização
+par(mfrow=c(1,3))
+invst<-qnorm(st)
+plot(time, -log(st),pch=16,xlab="tempos",ylab="-log(S(t))")
+plot(log(time),log(-log(st)),pch=16,xlab="log(tempos)",ylab="log(-log(S(t)))")
+plot(log(time),invst, pch=16,xlab="log(tempos)", ylab=expression(Phi^-1 * (S(t))))
+```
+
+```{r}
+#   Teste da Razão de Verossimilhanças
+ajust1$loglik[2]
+ajust2$loglik[2]
+ajust3$loglik[2]
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+plot(ekm, conf.int=F, xlab="Tempos", ylab="S(t)")
+lines(c(0,time),c(1,stw), lty=2)
+legend(25,0.8,lty=c(1,2),c("Kaplan-Meier", "Weibull"),bty="n",cex=0.8)
+plot(ekm, conf.int=F, xlab="Tempos", ylab="S(t)")
+lines(c(0,time),c(1,stln), lty=2)
+legend(25,0.8,lty=c(1,2),c("Kaplan-Meier", "Log-normal"),bty="n",cex=0.8)
+```
+
+
+```{r}
+#  Gama generalizada: ajuste usando pacote "flexsurv" do software R
+if (!require("flexsurv")) install.packages("flexsurv")
+require(flexsurv)
+ajust4<-flexsurvreg(Surv(tempos,cens)~1,dist='gengamma')
+ajust4
+```
+
+```{r}
+ajust4$loglik
+#  -65.69074
+```
+
+```{r}
+# =============================================================================
+# Além do método delta para obtenção de var(tm) no caso do modelo Lognormal ou
+# outros modelos paramétricos, esta também pode ser obtida por meio do procedi-
+# mento conhecido por reamostragem bootstrap como segue.  
+# =============================================================================
+#
+# [A] Obtenção de var(tm) usando reamostragem bootstrap - Modelo lognormal  
+# =============================================================================
+tempos<-c(3,5,6,7,8,9,10,10,12,15,15,18,19,20,22,25,28,30,40,45)
+cens<-c(1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0)
+data<-as.data.frame(cbind(tempos,cens))
+# 
+d<-5000                             # numero de reamostragens bootstrap
+n<-length(tempos)                   # n = tamanho amostral 
+tmb<-matrix(0,d,1)                 # tempos médios das reamostragens 
+for(j in 1:d){
+  row<-sample(n, replace=T)        # reamostragem com reposição      
+  dados<-data[row,]
+  mod<-survreg(Surv(tempos,cens)~1,dist='lognorm', data=dados)
+  tmb[j]<-exp(mod$coef[1]+ (mod$scale^2/2))
+}
+```
+
+```{r}
+mean(tmb)
+```
+
+```{r}
+var(tmb)			     # var(tm) bootstrap	
+```
+
+```{r}
+hist(tmb, breaks=20)
+```
+
+```{r}
+### I.C.(tm)_95% utilizando a variância bootstrap ### 
+mod1<-survreg(Surv(tempos,cens)~1,dist='lognorm', data=data)
+mu<-mod1$coef[1]; sigma<-mod1$scale
+tm<-as.numeric(exp(mu+(sigma^2/2)))
+li<-tm-1.96*sqrt(var(tmb)); ls<-tm+1.96*sqrt(var(tmb))
+cbind(tm, li, ls) 
+```
+
+```{r}
+### I.C.(tm)_95% Percentil ### 
+#
+tmb_ord<-sort(tmb)
+inf<-tmb_ord[0.025*5000]
+sup<-tmb_ord[0.975*5000]
+cbind(tm, inf, sup)
+```
+
+```{r}
+# =============================================================================
+#[B] Obtenção de var(tm) usando reamostragem bootstrap - Modelo Weibull 
+# =============================================================================
+#
+tempos<-c(3,5,6,7,8,9,10,10,12,15,15,18,19,20,22,25,28,30,40,45)
+cens<-c(1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0)
+data<-as.data.frame(cbind(tempos,cens))
+# 
+d<-5000                             # numero de reamostragens bootstrap
+n<-length(tempos)                   # n = tamanho amostral 
+tmb<-matrix(0,d,1)                 # tempos médios das d reamostragens 
+for(j in 1:d){
+  row<-sample(n, replace=T)        # reamostragem com reposição      
+  dados<-data[row,]
+  mod<-survreg(Surv(tempos,cens)~1,dist='weibull', data=dados)
+  a<-exp(mod$coef[1]) 
+  g<-1/mod$scale 
+  tmb[j]<-a*gamma(1+1/g)
+}
+var(tmb)                           # variância bootstrap
+hist(tmb, breaks=20)
+```
+
+
+```{r}
+### I.C.(tm)_95% utilizando a variância bootstrap ### 
+mod1<-survreg(Surv(tempos,cens)~1,dist='weibull', data=data)
+a<-exp(mod$coef[1]); g<-1/mod$scale 
+tm<-as.numeric(a*gamma(1+1/g))
+li<-tm-1.96*sqrt(var(tmb)); ls<-tm+1.96*sqrt(var(tmb))
+cbind(tm, li, ls) 
+```
+
+```{r}
+# =============================================================================
+# Analogamente, a variância do tempo mediano também pode ser obtida por meio de 
+# reamostragem bootstrap como segue.  
+# =============================================================================  
+#
+# [A] Obtenção de var(tmed) usando reamostragem bootstrap - Modelo lognormal  
+# =============================================================================  
+tempos<-c(3,5,6,7,8,9,10,10,12,15,15,18,19,20,22,25,28,30,40,45)
+cens<-c(1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0)
+data<-as.data.frame(cbind(tempos,cens)) 
+d<-5000                        # numero de reamostragens bootstrap
+n<-length(tempos)              # n = tamanho amostral 
+tmd<-matrix(0,d,1)            # tempos medianos das reamostragens 
+for(j in 1:d){
+  row<-sample(n, replace=T)   # reamostragem com reposição      
+  dados<-data[row,]
+  mod<-survreg(Surv(tempos,cens)~1,dist='lognorm', data=dados)
+  tmd[j]<-exp(mod$coef[1])
+}
+v<-var(tmd); v		# variância bootstrap
+hist(tmd, breaks=20)          
+```
+
+```{r}
+#  ### I.C.(tmed)_95% utilizando a variância bootstrap ### 
+mod1<-survreg(Surv(tempos,cens)~1,dist='lognorm', data=data)
+tmed<-as.numeric(exp(mod1$coef[1]))
+li<-tmed-1.96*sqrt(v); ls<-tmed+1.96*sqrt(v)
+cbind(tmed, li, ls) 
+```
+
+```{r}
+### I.C.(tm)_95% Percentil ### 
+#
+tmd_ord<-sort(tmd)
+infd<-tmd_ord[0.025*5000]
+supd<-tmd_ord[0.975*5000]
+cbind(tmed, infd, supd)
+```
+

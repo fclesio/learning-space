@@ -1,0 +1,132 @@
+---
+title: "Survival Analysis in R - Study Notebook"
+output: html_notebook
+---
+
+This is a study notebook with contents of the book called "Analise de Sobrevivencia Aplicada			" authored by Enrico Antonio Colosimo and Suely Ruiz Giolo. All matherials of the book can be found in the [Mr. Colosimo website](http://www.est.ufmg.br/~enricoc/).
+
+
+*Códigos em R apresentados no Capítulo 6*
+
+```{r}
+aids<-read.table("/Users/f.clesio/Downloads/aids.txt",h=T)             ## Obs: arquivo aids.txt no Apêndice A2
+attach(aids)
+if (!require("survival")) install.packages("survival")
+fit1<-coxph(Surv(ti[ti<tf], tf[ti<tf], cens[ti<tf])~id[ti<tf]+factor(grp)[ti<tf],method="breslow")
+summary(fit1)
+```
+
+```{r}
+leuc<-read.table("/Users/f.clesio/Downloads/leucemia.txt", h=T)        #Obs: leucemia.txt no Apêndice A1
+attach(leuc)
+idadec<-ifelse(idade>96,1,0)
+leuinic<-ifelse(leuini>75,1,0)
+zpesoc<-ifelse(zpeso>-2,1,0)
+zestc<-ifelse(zest>-2,1,0)
+pasc<-ifelse(pas>0.05,1,0)
+vacc<-ifelse(vac>15,1,0)
+pasc<-ifelse(pas>5,1,0)
+riskc<-ifelse(risk>1.7,1,0)
+r6c<-r6
+leucc<-as.data.frame(cbind(leuinic,tempos,cens,idadec,zpesoc,zestc,pasc,vacc,riskc,r6c))
+detach(leuc)
+attach(leucc)
+if (!require("survival")) install.packages("survival")
+fit1<-coxph(Surv(tempos,cens)~idadec+zpesoc+pasc+vacc+strata(leuinic),data=leucc,
+            x = T,method="breslow")
+summary(fit1)
+```
+
+
+
+
+```{r}
+leucc1<-as.data.frame(cbind(tempos[leuinic==0],cens[leuinic==0],idadec[leuinic==0],
+                            zpesoc[leuinic==0],pasc[leuinic==0],vacc[leuinic==0]))
+leucc2<-as.data.frame(cbind(tempos[leuinic==1],cens[leuinic==1],idadec[leuinic==1],
+                            zpesoc[leuinic==1],pasc[leuinic==1],vacc[leuinic==1]))
+```
+
+```{r}
+fit2<-coxph(Surv(V1,V2)~V3+V4+V5+V6,data=leucc1,x = T,method="breslow")
+summary(fit2)
+```
+
+
+```{r}
+fit3<-coxph(Surv(V1,V2)~V3+V4+V5+V6,data=leucc2,x = T,method="breslow")
+summary(fit3)
+```
+
+
+```{r}
+trv<-2*(-fit1$loglik[2]+fit2$loglik[2]+fit3$loglik[2])
+trv
+```
+
+```{r}
+1-pchisq(trv,4)
+```
+
+```{r}
+cox.zph(fit1, transform="identity")   # g(t) = t
+```
+
+
+
+```{r}
+H0<-basehaz(fit1,centered=F)                    # risco acumulado de base
+H0
+```
+
+```{r}
+H01<-as.matrix(H0[1:27,1])                      # risco acumulado de base do estrato 1 (leuinic=0)
+H02<-as.matrix(H0[28:39,1])                     # risco acumulado de base do estrato 2 (leuinic=1)
+tempo1<- H0$time[1:27]                          # tempos do estrato 1
+S01<-exp(-H01)                                  # sobrevivência de base estrato 1
+round(cbind(tempo1,S01,H01),digits=5)           # funções de base estrato 1
+```
+
+```{r}
+tempo2<- H0$time[28:39]                         # tempos do estrato 2
+S02<-exp(-H02)                                  # sobrevivência de base estrato 2
+round(cbind(tempo2,S02,H02),digits=5)           # funções de base estrato 2
+```
+
+
+```{r}
+plot(tempo2,H02,lty=4,type="s",xlab="Tempos",xlim=range(c(0,4)),ylab=expression(Lambda[0]* (t)))
+lines(tempo1,H01,type="s",lty=1)
+legend(0.0,9,lty=c(1,4),c("Leuini < 75000","Leuini > 75000"),lwd=1,bty="n",cex=0.8)
+plot(c(0,tempo1),c(1,S01),lty=1,type="s",xlab="Tempos",xlim=range(c(0,4)),ylab="So(t)")
+lines(c(0,tempo2),c(1,S02),lty=4,type="s")
+legend(2.2,0.9,lty=c(1,4),c("Leuini < 75000","Leuini > 75000"),lwd=1,bty="n",cex=0.8)
+```
+
+
+```{r}
+hg2<-read.table("/Users/f.clesio/Downloads/hg2.txt",h=T)    # arquivo hg2.txt no Apêndice A7
+attach(hg2)
+if (!require("survival")) install.packages("survival")
+fit1<-coxph(Surv(tempos,cens)~factor(raca)+factor(trauma)+factor(recemnas)+
+              factor(renda)+ialtura+factor(trauma)*factor(recemnas),data=hg2,method="breslow")
+summary(fit1)
+```
+
+
+```{r}
+rendac<-ifelse(renda<4,1,2)
+fit2<-coxph(Surv(tempos,cens)~factor(raca)+factor(trauma)+factor(recemnas)+factor(rendac)+
+              ialtura + factor(trauma)*factor(recemnas),data=hg2,method="breslow")
+summary(fit2)
+```
+
+```{r}
+cox.zph(fit2, transform="identity")
+```
+
+```{r}
+par(mfrow=c(2,3))
+plot(cox.zph(fit2))
+```
+

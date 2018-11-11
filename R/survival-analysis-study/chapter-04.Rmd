@@ -1,0 +1,179 @@
+---
+title: "Survival Analysis in R - Study Notebook"
+output: html_notebook
+---
+
+This is a study notebook with contents of the book called "Analise de Sobrevivencia Aplicada			" authored by Enrico Antonio Colosimo and Suely Ruiz Giolo. All matherials of the book can be found in the [Mr. Colosimo website](http://www.est.ufmg.br/~enricoc/).
+
+
+*Códigos em R apresentados no Capítulo 4*
+
+
+```{r}
+# ##############################################
+# Dados sem Censura
+# Leucemia (Feigl e Zelen, 1965)
+# Livro: Cox e Snell (1981), p. 148
+# Y:tempo do diagnóstico até a morte (em semanas)
+# X: log10(contagem de células brancas no diagnóstico)
+# n=17
+# Objetivo: descrever a relação entre Y e X
+#
+temp<-c(65,156,100,134,16,108,121,4,39,143,56,26,22,1,1,5,65)
+cens<-rep(1,17)
+lwbc<-c(3.36,2.88,3.63,3.41,3.78,4.02,4.00,4.23,3.73,3.85,3.97,
+        4.51,4.54,5.00,5.00,4.72,5.00)
+dados<-cbind(temp,cens,lwbc)
+plot(lwbc,temp,xlab="log10 leucócitos", ylab="tempo até a morte")
+```
+
+```{r}
+if (!require("survival")) install.packages("survival")
+dados<-as.data.frame(dados)
+i<-order(dados$temp)
+dados<-dados[i,]
+ekm<- survfit(Surv(dados$temp,dados$cens)~1)
+summary(ekm)
+```
+
+
+```{r}
+st<-ekm$surv
+temp<-ekm$time
+invst<-qnorm(st)
+par(mfrow=c(1,3))
+plot(temp, -log(st),pch=16,xlab="Tempos",ylab="-log(S(t))")
+plot(log(temp),log(-log(st)),pch=16,xlab="log(tempos)",ylab="log(-log(S(t))")
+plot(log(temp),invst,pch=16,xlab="log(tempos)",ylab=expression(Phi^-1*(S(t))))
+```
+
+```{r}
+ajust1<-survreg(Surv(dados$temp, dados$cens)~dados$lwbc, dist='exponential')
+ajust1
+```
+
+```{r}
+ajust1$loglik
+```
+
+```{r}
+ajust2<-survreg(Surv(dados$temp, dados$cens)~dados$lwbc, dist='weibull')
+ajust2
+```
+
+```{r}
+ajust2$loglik
+```
+
+```{r}
+gama<-1/ajust2$scale
+gama
+```
+
+```{r}
+ajust3<-survreg(Surv(dados$temp, dados$cens)~dados$lwbc, dist='lognorm')
+ajust3
+```
+```{r}
+ajust3$loglik
+```
+
+```{r}
+# =============================================================================
+#  Gama generalizada: ajuste usando pacote "flexsurv" do software R
+#  Obs: necessário instalar o pacote flexsurv
+# =============================================================================
+if (!require("flexsurv")) install.packages("flexsurv")
+ajust4<-flexsurvreg(Surv(dados$temp, dados$cens)~dados$lwbc,dist='gengamma')
+ajust4
+```
+
+```{r}
+ajust4$loglik
+```
+
+
+```{r}
+#  Resíduos Padronizados
+#
+res_ev<-log(dados$temp)-ajust1$linear.predictors
+res<-exp(res_ev)
+ekm <- survfit(Surv(res,dados$cens)~1,type=c("kaplan-meier"))
+par(mfrow=c(1,2))
+plot(ekm, conf.int=F,lty=c(1,1),xlab="resíduos",ylab="S(e) estimada")
+res<-sort(res)
+exp1<-exp(-res)
+lines(res,exp1,lty=3)
+legend(2,0.8,lty=c(1,3),c("Kaplan-Meier","Exponencial(1)"),lwd=1,bty="n",cex=0.7)
+#
+st<-ekm$surv
+t<-ekm$time
+sexp1<-exp(-t)
+plot(st,sexp1,xlab="S(e) - Kaplan-Meier", ylab= "S(e) - Exponencial(1)",pch=16)
+```
+
+
+```{r}
+#===================================================================================
+# Banco do Desmame (Eugênio e Cláudia)
+#
+desmame<-read.table("/Users/f.clesio/Downloads/desmame.txt",h=T)  # desmame.txt no Apêndice A3
+attach(desmame)
+dim(desmame)
+if (!require("survival")) install.packages("survival")
+ekm<- survfit(Surv(tempo,cens)~V4,data=desmame)
+summary(ekm)
+```
+
+
+```{r}
+survdiff(Surv(tempo,cens)~V4,rho=0,data=desmame)
+```
+
+```{r}
+plot(ekm,lty=c(1,4),mark.time=F,xlab="Tempo até o desmame (meses)",ylab="S(t)")
+text(18.5,0.93,c("Dificuldades para Amamentar"),bty="n", cex=0.85)
+legend(15.5,0.9,lty=c(4),c("Sim"),bty="n",cex=0.8)
+legend(18.5,0.9,lty=c(1),c("Não"),bty="n",cex=0.8)
+```
+
+
+```{r}
+ajust1<-survreg(Surv(tempo,cens)~V1+V3+V4+V6, dist='lognorm',data=desmame)
+ajust1
+```
+
+```{r}
+summary(ajust1)
+```
+
+```{r}
+xb<-ajust1$coefficients[1]+ajust1$coefficients[2]*V1+ajust1$coefficients[3]*V3+
+  ajust1$coefficients[4]*V4+ ajust1$coefficients[5]*V6
+sigma<-ajust1$scale
+res<-(log(tempo)-(xb))/sigma                   # resíduos padronizados
+resid<-exp(res)                                # exponencial dos resíduos padronizados
+ekm<- survfit(Surv(resid,cens)~1,data=desmame)
+resid<-ekm$time
+sln<-pnorm(-log(resid))
+par(mfrow=c(1,2))
+plot(ekm$surv,sln, xlab="S(ei*): Kaplan-Meier",ylab="S(ei*): Log-normal padrão",pch=16)
+plot(ekm,conf.int=F,mark.time=F,xlab="Resíduos (ei*)",ylab="Sobrevivência estimada",pch=16)
+lines(resid,sln,lty=2)
+legend(1.3,0.8,lty=c(1,2),c("Kaplan-Meier","Log-normal padrão"),cex=0.8,bty="n")
+```
+
+
+```{r}
+ei<- -log(1-pnorm(res))                          # resíduos de Cox-Snell
+ekm1<-survfit(Surv(ei,cens)~1,data=desmame)
+t<-ekm1$time
+st<-ekm1$surv
+sexp<-exp(-t)
+par(mfrow=c(1,2))
+plot(st,sexp,xlab="S(ei): Kaplan-Meier",ylab="S(ei): Exponencial padrão",pch=16)
+plot(ekm1,conf.int=F,mark.time=F, xlab="Resíduos de Cox-Snell", ylab="Sobrevivência estimada")
+lines(t,sexp,lty=4)
+legend(1.0,0.8,lty=c(1,4),c("Kaplan-Meier","Exponencial padrão"),cex=0.8,bty="n")
+```
+
