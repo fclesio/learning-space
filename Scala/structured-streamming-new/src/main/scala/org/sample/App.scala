@@ -29,7 +29,7 @@ object App {
     val words = lines.as[String].flatMap(_.split(" "))
 
     // Generate running word count
-    val wordCounts = words.groupBy("value").count()
+    val wordCounts = words.groupBy("value").count().sort()
 
     // Start running the query that prints the running counts to the console
     val query = wordCounts.writeStream
