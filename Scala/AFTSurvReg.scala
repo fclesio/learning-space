@@ -1,7 +1,3 @@
-// val test = spark.createDataFrame(Seq(
-//   (1.019, 1.0, Vectors.dense(1.934, -0.721))
-// )).toDF("label", "censor", "features")
-
 // Faulure Datasets: http://fta.scem.uws.edu.au/index.php?n=Main.DataSets
 // Data source: https://www.backblaze.com/b2/hard-drive-test-data.html
 import org.apache.spark.ml.feature.VectorAssembler
@@ -9,6 +5,7 @@ import org.apache.spark.ml.linalg.Vectors
 import org.apache.spark.ml.regression.AFTSurvivalRegression
 import org.apache.spark.sql.types._
 
+// Define schema for the CSV file (must be put inside some Class)
 def csvSchema = StructType {
 	StructType(Array(
 		StructField("date", DateType, true),
@@ -99,16 +96,19 @@ def csvSchema = StructType {
 	))
 }
 
+// File storage
+val rootDir = "/Users/flavioclesio/Downloads/2013/2013-04-10.csv"
+
+// Load CSV file according the schema
 var data = spark.read.format("csv")
 .option("header", "true")
 .schema(csvSchema)
-.load("/Users/flavioclesio/Downloads/2013/2013-04-10.csv")
+.load(rootDir)
 
+// We'll use the view to query using Spark SQL sintax
 data.createOrReplaceTempView("harddrives")
 
-// Check function
-spark.sql("select datediff(current_timestamp(), date) AS label FROM harddrives").show(3)
-
+// Get only meaningful columns
 val sqlDF = spark.sql("""
 	SELECT 
 	  datediff(current_timestamp(), date) AS label
@@ -121,32 +121,40 @@ val sqlDF = spark.sql("""
 	FROM 
 	  harddrives""")
 
+//Remove NULL and apply 0
 val sqlDF_norm = sqlDF.na.fill(0)
 sqlDF_norm.show(3)
 
+//Convert all columns to Double to pass for our VectorAssembler
 val newDf = sqlDF_norm.select(sqlDF_norm.columns.map(c => col(c).cast(DoubleType)) : _*)
 newDf.show(3)
+
+// Small check in the schema
 newDf.printSchema()
 
-val assembler = new VectorAssembler()
-  .setInputCols(Array(
-    "smart_1_raw", "smart_5_raw",
-    "smart_9_raw", "smart_194_raw",
-    "smart_197_raw"
-    ))
+// Split the datasets to do a little hack because VectorAssembler it is not working
+val dfTimeCensor = newDf.select("label", "censor")
+val dfFeatures = newDf.select("smart_1_raw", "smart_5_raw","smart_9_raw", "smart_194_raw","smart_197_raw")
+
+// A Vector column with the features
+val vecAssembler = new VectorAssembler()
+val features = vecAssembler
+  .setInputCols(Array("smart_1_raw", "smart_5_raw","smart_9_raw", "smart_194_raw","smart_197_raw"))
   .setOutputCol("features")
+  .transform(newDf)
 
-
+// Get the output to pass to AFT model
 val output = assembler.transform(newDf)
 output.show(3)
 
 val aftDF = output.select("label", "censor", "features")
-
 aftDF.show(3)
 
+// Prepare the model
 val quantileProbabilities = Array(0.3, 0.6)
 val aft = new AFTSurvivalRegression()
   .setQuantileProbabilities(quantileProbabilities)
   .setQuantilesCol("quantiles")
 
+// Train model (TODO: Adjust the VectorAssembler and discovery why it is returning the label = 0)
 val model = aft.fit(aftDF)
