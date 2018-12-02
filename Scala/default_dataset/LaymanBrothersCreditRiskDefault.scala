@@ -13,7 +13,7 @@ import org.apache.spark.sql.types._
 import spark.implicits._
 
 // Main Directory
-val ROOT_DIR = "/Users/flavioclesio/Downloads/default_dataset/"
+val ROOT_DIR = "/default_dataset/"
 
 // Load CSV file with Schema inference
 var data = spark.read.format("csv")
@@ -178,7 +178,7 @@ def getFinalScorelending(loanCandidate:String, rootDirectory:String) : String = 
 
 
 // Get info of the model and the candidate
-val ROOT_DIR = "/Users/flavioclesio/Downloads/default_dataset/"
+val ROOT_DIR = "/default_dataset/"
 val loanCandidateInfo = ROOT_DIR + "candidates_raw_data/loan_candidate_18.csv"
 
 // Get prediction using function
