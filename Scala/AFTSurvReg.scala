@@ -2,6 +2,8 @@
 //   (1.019, 1.0, Vectors.dense(1.934, -0.721))
 // )).toDF("label", "censor", "features")
 
+// Faulure Datasets: http://fta.scem.uws.edu.au/index.php?n=Main.DataSets
+// Data source: https://www.backblaze.com/b2/hard-drive-test-data.html
 import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.linalg.Vectors
 import org.apache.spark.ml.regression.AFTSurvivalRegression
@@ -105,147 +107,42 @@ var data = spark.read.format("csv")
 data.createOrReplaceTempView("harddrives")
 
 // Check function
-spark.sql("select datediff(current_timestamp(), date) FROM harddrives").show(3)
-
-
+spark.sql("select datediff(current_timestamp(), date) AS label FROM harddrives").show(3)
 
 val sqlDF = spark.sql("""
 	SELECT 
-	  , datediff(current_timestamp(), date) AS label
+	  datediff(current_timestamp(), date) AS label
 	  , failure AS censor
-	  , capacity_bytes
-      , smart_1_normalized
       , smart_1_raw
-      , smart_2_normalized
-      , smart_2_raw
-      , smart_3_normalized
-      , smart_3_raw
-      , smart_4_normalized
-      , smart_4_raw
-	FROM 
-	  harddrives""")
-
-
-
-val sqlDF = spark.sql("""
-	SELECT 
-	  capacity_bytes AS label
-	  , failure AS censor
-      , smart_1_normalized
-      , smart_1_raw
-      , smart_2_normalized
-      , smart_2_raw
-      , smart_3_normalized
-      , smart_3_raw
-      , smart_4_normalized
-      , smart_4_raw
-      , smart_5_normalized
       , smart_5_raw
-      , smart_7_normalized
-      , smart_7_raw
-      , smart_8_normalized
-      , smart_8_raw
-      , smart_9_normalized
       , smart_9_raw
-      , smart_10_normalized
-      , smart_10_raw
-      , smart_11_normalized
-      , smart_11_raw
-      , smart_12_normalized
-      , smart_12_raw
-      , smart_13_normalized
-      , smart_13_raw
-      , smart_15_normalized
-      , smart_15_raw
-      , smart_183_normalized
-      , smart_183_raw
-      , smart_184_normalized
-      , smart_184_raw
-      , smart_187_normalized
-      , smart_187_raw
-      , smart_188_normalized
-      , smart_188_raw
-      , smart_189_normalized
-      , smart_189_raw
-      , smart_190_normalized
-      , smart_190_raw
-      , smart_191_normalized
-      , smart_191_raw
-      , smart_192_normalized
-      , smart_192_raw
-      , smart_193_normalized
-      , smart_193_raw
-      , smart_194_normalized
       , smart_194_raw
-      , smart_195_normalized
-      , smart_195_raw
-      , smart_196_normalized
-      , smart_196_raw
-      , smart_197_normalized
       , smart_197_raw
-      , smart_198_normalized
-      , smart_198_raw
-      , smart_199_normalized
-      , smart_199_raw
-      , smart_200_normalized
-      , smart_200_raw
-      , smart_201_normalized
-      , smart_201_raw
-      , smart_223_normalized
-      , smart_223_raw
-      , smart_225_normalized
-      , smart_225_raw
-      , smart_240_normalized
-      , smart_240_raw
-      , smart_241_normalized
-      , smart_241_raw
-      , smart_242_normalized
-      , smart_242_raw
-      , smart_250_normalized
-      , smart_250_raw
-      , smart_251_normalized
-      , smart_251_raw
-      , smart_252_normalized
-      , smart_252_raw
-      , smart_254_normalized
-      , smart_254_raw
-      , smart_255_normalized
-      , smart_255_raw 
 	FROM 
 	  harddrives""")
 
+val sqlDF_norm = sqlDF.na.fill(0)
+sqlDF_norm.show(3)
+
+val newDf = sqlDF_norm.select(sqlDF_norm.columns.map(c => col(c).cast(DoubleType)) : _*)
+newDf.show(3)
+newDf.printSchema()
 
 val assembler = new VectorAssembler()
   .setInputCols(Array(
-    "smart_1_normalized","smart_1_raw","smart_2_normalized","smart_2_raw",
-    "smart_3_normalized","smart_3_raw","smart_4_normalized","smart_4_raw",
-    "smart_5_normalized","smart_5_raw","smart_7_normalized","smart_7_raw",
-    "smart_8_normalized","smart_8_raw","smart_9_normalized","smart_9_raw",
-    "smart_10_normalized","smart_10_raw","smart_11_normalized","smart_11_raw",
-    "smart_12_normalized","smart_12_raw","smart_13_normalized","smart_13_raw",
-    "smart_15_normalized","smart_15_raw","smart_183_normalized","smart_183_raw",
-    "smart_184_normalized","smart_184_raw","smart_187_normalized","smart_187_raw",
-    "smart_188_normalized","smart_188_raw","smart_189_normalized","smart_189_raw",
-    "smart_190_normalized","smart_190_raw","smart_191_normalized","smart_191_raw",
-    "smart_192_normalized","smart_192_raw","smart_193_normalized","smart_193_raw",
-    "smart_194_normalized","smart_194_raw","smart_195_normalized","smart_195_raw",
-    "smart_196_normalized","smart_196_raw","smart_197_normalized","smart_197_raw",
-    "smart_198_normalized","smart_198_raw","smart_199_normalized","smart_199_raw",
-    "smart_200_normalized","smart_200_raw","smart_201_normalized","smart_201_raw",
-    "smart_223_normalized","smart_223_raw","smart_225_normalized","smart_225_raw",
-    "smart_240_normalized","smart_240_raw","smart_241_normalized","smart_241_raw",
-    "smart_242_normalized","smart_242_raw","smart_250_normalized","smart_250_raw",
-    "smart_251_normalized","smart_251_raw","smart_252_normalized","smart_252_raw",
-    "smart_254_normalized","smart_254_raw","smart_255_normalized","smart_255_raw"
+    "smart_1_raw", "smart_5_raw",
+    "smart_9_raw", "smart_194_raw",
+    "smart_197_raw"
     ))
   .setOutputCol("features")
 
-val sqlDF_norm = sqlDF.na.fill(0)
 
-val output = assembler.transform(sqlDF_norm)
+val output = assembler.transform(newDf)
+output.show(3)
 
 val aftDF = output.select("label", "censor", "features")
 
+aftDF.show(3)
 
 val quantileProbabilities = Array(0.3, 0.6)
 val aft = new AFTSurvivalRegression()
