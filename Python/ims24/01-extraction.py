@@ -3,6 +3,10 @@ import csv
 import os
 from grab.spider import Spider, Task
 from grab import Grab
+import pandas as pd
+import psycopg2
+from sqlalchemy import create_engine
+
 
 g = Grab()
 
@@ -10,7 +14,8 @@ path = os.path.dirname(os.path.abspath(__file__))
 
 MAIN_LINK = 'http://www.immobilienscout24.de/Suche/S-T/P-{}/Wohnung-Miete/Berlin/Berlin'
 
-THREADS = 2
+THREADS = 10
+
 '''
 Data Extraction
 - flat size: OK
@@ -48,11 +53,12 @@ class Immospider(Spider):
         self.result_file = csv.writer(open('result.csv', 'w'))
         self.result_file.writerow(['Title', 'Address', 'Wohnungstyp', 'Etage', 'Wohnflaeche', 'Bezugsfrei_ab',
                                   'Zimmer', 'Schlafzimmer', 'Badezimmer', 'District','Haustiere', 'Kaltmiete',
-                                   'Nebenkosten', 'Heizkosten', 'Gesamtmiete', 'Kaution_o_genossenschaftsanteile', 'URL'])
+                                   'Nebenkosten', 'Heizkosten', 'Gesamtmiete', 'Kaution_o_genossenschaftsanteile',
+                                   'Agency','URL'])
 
 
-    def task_generator(self):
-
+    @staticmethod
+    def task_generator():
         # Get number of pages
         g.go('http://www.immobilienscout24.de/Suche/S-T/Wohnung-Miete/Berlin/Berlin')
         a = g.xpath_list('//select[@class="select font-standard"]')[0]
@@ -62,6 +68,7 @@ class Immospider(Spider):
         # for number in xrange(pages+1):
             url = MAIN_LINK.format(number)
             yield Task('initial', url=url)
+
 
     def task_initial(self, grab, task):
         items = grab.xpath_list('//h5[@class]')
@@ -138,12 +145,52 @@ class Immospider(Spider):
         except IndexError:
              kaution_o_genossenschaftsanteile = ' '
 
+        # Adjust Agency
+        try:
+            agency = grab.doc.select(
+            '//span[@class="inline-block line-height-xs"]')[0].text()
+        except IndexError:
+            agency = ' '
+
+
         self.result_file.writerow([title.encode('utf-8'), address.encode('utf-8'), wohnungstyp.encode('utf-8'),
                                    etage.encode('utf-8'), wohnflaeche.encode('utf-8'), bezugsfrei_ab.encode('utf-8'),
                                    zimmer.encode('utf-8'), schlafzimmer.encode('utf-8'), badezimmer.encode('utf-8'),
                                    district.encode('utf-8'),haustiere.encode('utf-8'), kaltmiete.encode('utf-8'),
                                    nebenkosten.encode('utf-8'), heizkosten.encode('utf-8'), gesamtmiete.encode('utf-8'),
-                                   kaution_o_genossenschaftsanteile.encode('utf-8'), task.url])
+                                   kaution_o_genossenschaftsanteile.encode('utf-8'), agency.encode('utf-8'), task.url])
+
+    @staticmethod
+    def data_cleasing():
+        import pandas as pd
+
+        df = pd.read_csv('result.csv', engine='python', encoding='utf-8')
+        df[['street', 'row']] = pd.DataFrame(df['Address'].str.split(',', 1).tolist(), columns=['street', 'row'])
+        df[['space', 'postal_code', 'city', 'District']] = pd.DataFrame(df['row'].str.split(' ', n=3, expand=True))
+        df[['street_clean', 'house_number']] = pd.DataFrame(df['street'].str.split(' ', 1).tolist(),
+                                                            columns=['street', 'row'])
+
+        # Adjustments in Flat size
+        df['Wohnflaeche'] = df['Wohnflaeche'].str.replace('m²', '')
+        df['Wohnflaeche'] = df['Wohnflaeche'].str.replace(' ', '')
+        df['Wohnflaeche'] = df['Wohnflaeche'].str.replace(',', '.')
+        df['Wohnflaeche'] = pd.to_numeric(df['Wohnflaeche'])
+
+        # Adjustments in Floor
+        df['Etage'] = df['Etage'].astype(str).str[0]
+
+        df.columns = ['title', 'address', 'apartment_type', 'floor', 'square_meters',
+                      'availability', 'room', 'sleep_room', 'bathroom', 'district',
+                      'animals_allowed', 'base_rent', 'aditional_costs', 'heater_tax',
+                      'total_amount', 'initial_deposit', 'agency', 'url', 'street',
+                      'raw_row', 'space', 'postal_code', 'city', 'street_clean', 'house_number']
+
+        df.drop(['space'], axis=1)
+
+        engine = create_engine('postgresql://postgres:@0.0.0.0:5432/analytics_ims24')
+
+        df.to_sql('extracted_raw_table', engine, schema='ods', if_exists='replace')
+
 
 
 def main():
@@ -151,8 +198,11 @@ def main():
 
     try:
         bot.run()
+        bot.data_cleasing()
     except KeyboardInterrupt:
         pass
+
+    data_cleasing()
 
     print bot.render_stats()
     print 'All done'
