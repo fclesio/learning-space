@@ -14,3 +14,6 @@ Python/deep-learning/.ipynb_checkpoints/*
 Python/machine-learning/.ipynb_checkpoints/*
 Python/mlruns/*
 Python/survival-analysis/.ipynb_checkpoints/*
+
+.DS_Store
+Python/.DS_Store
