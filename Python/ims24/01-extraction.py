@@ -160,45 +160,12 @@ class Immospider(Spider):
                                    nebenkosten.encode('utf-8'), heizkosten.encode('utf-8'), gesamtmiete.encode('utf-8'),
                                    kaution_o_genossenschaftsanteile.encode('utf-8'), agency.encode('utf-8'), task.url])
 
-    # @staticmethod
-    # def data_cleasing():
-    #     import pandas as pd
-    #
-    #     df = pd.read_csv('result.csv', engine='python', encoding='utf-8')
-    #     df[['street', 'row']] = pd.DataFrame(df['Address'].str.split(',', 1).tolist(), columns=['street', 'row'])
-    #     df[['space', 'postal_code', 'city', 'District']] = pd.DataFrame(df['row'].str.split(' ', n=3, expand=True))
-    #     df[['street_clean', 'house_number']] = pd.DataFrame(df['street'].str.split(' ', 1).tolist(),
-    #                                                         columns=['street', 'row'])
-    #
-    #     # Adjustments in Flat size
-    #     df['Wohnflaeche'] = df['Wohnflaeche'].str.replace('m²', '')
-    #     df['Wohnflaeche'] = df['Wohnflaeche'].str.replace(' ', '')
-    #     df['Wohnflaeche'] = df['Wohnflaeche'].str.replace(',', '.')
-    #     df['Wohnflaeche'] = pd.to_numeric(df['Wohnflaeche'])
-    #
-    #     # Adjustments in Floor
-    #     df['Etage'] = df['Etage'].astype(str).str[0]
-    #
-    #     df.columns = ['title', 'address', 'apartment_type', 'floor', 'square_meters',
-    #                   'availability', 'room', 'sleep_room', 'bathroom', 'district',
-    #                   'animals_allowed', 'base_rent', 'aditional_costs', 'heater_tax',
-    #                   'total_amount', 'initial_deposit', 'agency', 'url', 'street',
-    #                   'raw_row', 'space', 'postal_code', 'city', 'street_clean', 'house_number']
-    #
-    #     df.drop(['space'], axis=1)
-    #
-    #     engine = create_engine('postgresql://postgres:@0.0.0.0:5432/analytics_ims24')
-    #
-    #     df.to_sql('extracted_raw_table', engine, schema='ods', if_exists='replace')
-
-
 
 def main():
     bot = Immospider()
 
     try:
         bot.run()
-        # bot.data_cleasing()
     except KeyboardInterrupt:
         pass
 
