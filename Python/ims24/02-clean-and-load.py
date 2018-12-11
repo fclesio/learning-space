@@ -90,5 +90,5 @@ df['animals_allowed'] = df['animals_allowed'].str.replace(' ', '')
 
 import psycopg2
 from sqlalchemy import create_engine
-engine = create_engine('postgresql://postgres:@0.0.0.0:5432/analytics_ims24')
+engine = create_engine('postgresql://postgres:@0.0.0.0:5432/analytics_ims')
 df.to_sql('extracted_raw_table', engine, schema='ods', if_exists='append',index=False)
