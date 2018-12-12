@@ -53,5 +53,6 @@ def main():
     load.run_load()
 
 if __name__ == '__main__':
-    print 'Start working'
+    print 'Start Load Phase...'
     main()
+    print 'End Load Phase'

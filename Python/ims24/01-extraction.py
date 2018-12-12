@@ -176,5 +176,6 @@ def main():
 
 
 if __name__ == '__main__':
-    print 'Start working'
+    print 'Start Extraction phase...'
     main()
+    print 'End Extraction phase'

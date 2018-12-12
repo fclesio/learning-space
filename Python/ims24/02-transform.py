@@ -172,5 +172,6 @@ def main():
     transform.remove_raw_extracted_data()
 
 if __name__ == '__main__':
-    print 'Start working'
+    print 'Start Transform phase...'
     main()
+    print 'End Transform phase'
