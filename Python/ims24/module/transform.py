@@ -5,6 +5,7 @@ import pandas as pd
 import psycopg2
 import os
 import logging
+import time
 from sqlalchemy import text
 from sqlalchemy import create_engine
 
@@ -173,6 +174,12 @@ def main():
     transform.remove_raw_extracted_data()
 
 if __name__ == '__main__':
-    print 'Start Transform phase...'
+    logging.basicConfig(level=logging.INFO)
+    logging.info('Transformations Started ...')
+    start_time = time.time()
+
     main()
-    print 'End Transform phase'
+
+    logging.info('Transformations finished ...')
+    elapsed_time = time.time() - start_time
+    logging.info('Elapsed Time: %s', elapsed_time)

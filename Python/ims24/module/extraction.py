@@ -4,12 +4,12 @@
 import csv
 import os
 import logging
+import time
 import pandas as pd
 import psycopg2
 from grab.spider import Spider, Task
 from grab import Grab
 from sqlalchemy import create_engine
-
 
 g = Grab()
 
@@ -177,6 +177,12 @@ def main():
 
 
 if __name__ == '__main__':
-    print 'Start Extraction phase...'
+    logging.basicConfig(level=logging.INFO)
+    logging.info('Extraction Started ...')
+    start_time = time.time()
+
     main()
-    print 'End Extraction phase'
+
+    logging.info('Extraction finished ...')
+    elapsed_time = time.time() - start_time
+    logging.info('Elapsed Time: %s', elapsed_time)

@@ -4,6 +4,7 @@
 import psycopg2
 import os
 import logging
+import time
 
 # Get Connections
 try:
@@ -54,6 +55,12 @@ def main():
     load.run_load()
 
 if __name__ == '__main__':
-    print 'Start Load Phase...'
+    logging.basicConfig(level=logging.INFO)
+    logging.info('Loading Started ...')
+    start_time = time.time()
+
     main()
-    print 'End Load Phase'
+
+    logging.info('Loading finished ...')
+    elapsed_time = time.time() - start_time
+    logging.info('Elapsed Time: %s', elapsed_time)
