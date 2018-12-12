@@ -101,4 +101,4 @@ engine.execute(text("update ods.extracted_raw_table set deleted = true where del
 
 df.to_sql('extracted_raw_table', engine, schema='ods', if_exists='append',index=False)
 
-# os.remove('result.csv')
+os.remove('result.csv')
