@@ -1,30 +1,8 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-import psycopg2
-import os
-from sqlalchemy import text
-from sqlalchemy import create_engine
-
-engine = create_engine('postgresql://postgres:@0.0.0.0:5432/analytics_ims', client_encoding='utf8')
-
-# Globals
-conn = psycopg2.connect(
-    host=os.environ['IMS_HOSTNAME'],
-    user=os.environ['IMS_USERNAME'],
-    password=os.environ['IMS_PASSWORD'],
-    dbname=os.environ['IMS_DB_NAME'],
-    port=os.environ['IMS_PORT'],
-    connect_timeout=5
-)
-conn.autocommit = True
-
-
-sql_text = """
 drop table if exists staging.temp_raw_address;
 create table staging.temp_raw_address
 AS
-SELECT 
+SELECT
 	 title
 	, address as complete_address
 	, street
@@ -33,11 +11,11 @@ SELECT
 	, city
 	, street_clean
 	, house_number
-FROM 
+FROM
 	ods.extracted_raw_table
-where 
+where
 	deleted = false;
-	
+
 
 
 
@@ -112,9 +90,3 @@ where city is NULL;
 update  staging.temp_raw_address
 set postal_code = left(street, 5)
 where postal_code is NULL;
-
-"""
-
-cursor = conn.cursor()
-cursor.execute(sql_text)
-cursor.close()

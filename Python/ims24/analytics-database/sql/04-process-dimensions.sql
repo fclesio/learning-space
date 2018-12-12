@@ -1,25 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-import psycopg2
-import os
-from sqlalchemy import text
-from sqlalchemy import create_engine
-
-engine = create_engine('postgresql://postgres:@0.0.0.0:5432/analytics_ims', client_encoding='utf8')
-
-# Globals
-conn = psycopg2.connect(
-    host=os.environ['IMS_HOSTNAME'],
-    user=os.environ['IMS_USERNAME'],
-    password=os.environ['IMS_PASSWORD'],
-    dbname=os.environ['IMS_DB_NAME'],
-    port=os.environ['IMS_PORT'],
-    connect_timeout=5
-)
-conn.autocommit = True
-
-sql_text = """
 -- dim_address
 drop table if exists dw.dim_address;
 select
@@ -30,9 +9,9 @@ select
 	,postal_code
 	,district
 	,house_number
-into 
+into
 	dw.dim_address
-from 
+from
 	staging.temp_raw_address;
 
 
@@ -43,9 +22,9 @@ select
 	,complete_address as address_key
 	,city as city_key
 	,city
-into 
+into
 	dw.dim_city
-from 
+from
 	staging.temp_raw_address;
 
 
@@ -56,25 +35,20 @@ select
 	,complete_address as address_key
 	,district as district_key
 	,district
-into 
+into
 	dw.dim_district
-from 
+from
 	staging.temp_raw_address;
-	
+
 
 -- dim_agency
 drop table if exists dw.dim_agency;
-SELECT 
+SELECT
 	 title
 	, address as complete_address
 	, agency as agency_key
 	, agency
-into 
-	dw.dim_agency	
-FROM 
+into
+	dw.dim_agency
+FROM
 	ods.extracted_raw_table;
-"""
-
-cursor = conn.cursor()
-cursor.execute(sql_text)
-cursor.close()
