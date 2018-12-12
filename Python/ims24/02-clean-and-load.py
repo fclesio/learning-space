@@ -89,6 +89,14 @@ df['animals_allowed'] = df['animals_allowed'].str.replace(' ', '')
 
 
 import psycopg2
+import os
+from sqlalchemy import text
 from sqlalchemy import create_engine
+
 engine = create_engine('postgresql://postgres:@0.0.0.0:5432/analytics_ims')
+
+engine.execute(text("update ods.extracted_raw_table set deleted = true where deleted = false;").execution_options(autocommit=True))
+
 df.to_sql('extracted_raw_table', engine, schema='ods', if_exists='append',index=False)
+
+os.remove('result.csv')
