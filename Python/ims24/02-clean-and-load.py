@@ -1,4 +1,6 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 import pandas as pd
 
 df = pd.read_csv('result.csv')
@@ -99,4 +101,4 @@ engine.execute(text("update ods.extracted_raw_table set deleted = true where del
 
 df.to_sql('extracted_raw_table', engine, schema='ods', if_exists='append',index=False)
 
-os.remove('result.csv')
+# os.remove('result.csv')
