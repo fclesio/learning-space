@@ -10,11 +10,11 @@ engine = create_engine('postgresql://postgres:@0.0.0.0:5432/analytics_ims', clie
 
 # Globals
 conn = psycopg2.connect(
-    # host=os.environ['RDS_HOSTNAME'],
-    # user=os.environ['RDS_USERNAME'],
-    # password=os.environ['RDS_PASSWORD'],
-    # dbname=os.environ['RDS_DB_NAME'],
-    # port=os.environ['RDS_PORT'],
+    # host=os.environ['IMS_HOSTNAME'],
+    # user=os.environ['IMS_USERNAME'],
+    # password=os.environ['IMS_PASSWORD'],
+    # dbname=os.environ['IMS_DB_NAME'],
+    # port=os.environ['IMS_PORT'],
     # connect_timeout=5
 
     host='0.0.0.0',
