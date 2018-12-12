@@ -3,10 +3,11 @@
 
 import csv
 import os
-from grab.spider import Spider, Task
-from grab import Grab
+import logging
 import pandas as pd
 import psycopg2
+from grab.spider import Spider, Task
+from grab import Grab
 from sqlalchemy import create_engine
 
 

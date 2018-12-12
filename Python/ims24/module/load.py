@@ -3,6 +3,7 @@
 
 import psycopg2
 import os
+import logging
 
 # Get Connections
 try:

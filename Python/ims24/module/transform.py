@@ -4,6 +4,7 @@
 import pandas as pd
 import psycopg2
 import os
+import logging
 from sqlalchemy import text
 from sqlalchemy import create_engine
 
