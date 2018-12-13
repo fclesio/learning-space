@@ -14,6 +14,7 @@ Requirements
 - `time`
 - `logging`
 - `jupyter`
+- `apscheduler`
 
 Folders
 --------------------
