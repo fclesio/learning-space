@@ -24,8 +24,6 @@ What's inside the project:
 
 * `Analytics Database`: `docker-compose` file and database hosting folder. 
 
-
-
 Environment Variables
 --------------------
 - `export IMS_HOSTNAME='0.0.0.0';`
@@ -33,9 +31,6 @@ Environment Variables
 - `export IMS_PASSWORD='';`
 - `export IMS_DB_NAME='analytics_ims';`
 - `export IMS_PORT='5432'`
-
-
-
 
 Instructions
 --------------------
@@ -55,3 +50,4 @@ Instructions
  - g) Create the raw table: `sql: $ psql -h 0.0.0.0 -d analytics_ims -U postgres -f 00-raw-table-creation.sql`
  
  - h) Run the script: `ims24: $ python main.py`
+ 
