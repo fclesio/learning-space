@@ -11,7 +11,9 @@ Requirements
 - `sqlalchemy`
 - `pandas`
 - `psycopg2`
-
+- `time`
+- `logging`
+- `jupyter`
 
 Folders
 --------------------
