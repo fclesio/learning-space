@@ -31,6 +31,7 @@ class Load(object):
         etls = [ 'analytics-database/sql/03-process-staging.sql',
                 'analytics-database/sql/04-process-dimensions.sql',
                 'analytics-database/sql/05-process-fact.sql',
+                 'analytics-database/sql/06-data-conversions.sql',
                 ]
 
         for etl_task in etls:
