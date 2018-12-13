@@ -49,5 +49,10 @@ Instructions
  
  - g) Create the raw table: `sql: $ psql -h 0.0.0.0 -d analytics_ims -U postgres -f 00-raw-table-creation.sql`
  
- - h) Run the script: `ims24: $ python main.py`
+ - h) Start Airflow: `airflow: $ docker-compose up`
+ 
+ - i) Go the URL [`http://localhost:8080/admin/`](http://localhost:8080/admin/)
+
+ 
+ 
  
