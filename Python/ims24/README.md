@@ -24,6 +24,19 @@ What's inside the project:
 
 * `Analytics Database`: `docker-compose` file and database hosting folder. 
 
+
+
+Environment Variables
+--------------------
+- `export IMS_HOSTNAME='0.0.0.0';`
+- `export IMS_USERNAME='postgres';`
+- `export IMS_PASSWORD='';`
+- `export IMS_DB_NAME='analytics_ims';`
+- `export IMS_PORT='5432'`
+
+
+
+
 Instructions
 --------------------
  - a) Start the database in the docker: `analytics-database: $ docker-compose up` 
