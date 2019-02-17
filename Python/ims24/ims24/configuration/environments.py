@@ -9,11 +9,14 @@ import os
 
 # for local tests https://github.com/localstack/localstack
 
+# elastic search variables
 ES_SERVER = os.getenv("ES_SERVER") or "localhost"
 ES_SERVER_PORT = int(os.getenv("ES_SERVER_PORT") or 4571)
+
+# environment name
 ENVIRONMENT = os.getenv("ENVIRONMENT") or "DEVELOPMENT"
 
-
+# database variables
 IMS_HOSTNAME = os.getenv("IMS_HOSTNAME")
 IMS_USERNAME = os.getenv("IMS_USERNAME")
 IMS_PASSWORD = os.getenv("IMS_PASSWORD")

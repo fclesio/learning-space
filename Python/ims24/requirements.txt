@@ -1,12 +1,18 @@
-python-dateutil==2.7.3
+# generate package module
 setuptools >= 21.0.0
-psycopg2==2.7.5
-boto3
-tox
 
-black
+# testing
+tox
+pytest
+pytest-cov
+
 # load .env files automatically using python
 python-dotenv
+black
 
 # log server
 CMRESHandler==1.0.0
+
+# database
+sqlalchemy>=1.2.18
+psycopg2==2.7.5
