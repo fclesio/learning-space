@@ -9,12 +9,14 @@ import time
 # Get Connections
 try:
     print("Opening Connection")
-    conn = psycopg2.connect(host=os.environ['IMS_HOSTNAME'],
-                            user=os.environ['IMS_USERNAME'],
-                            password=os.environ['IMS_PASSWORD'],
-                            dbname=os.environ['IMS_DB_NAME'],
-                            port=os.environ['IMS_PORT'],
-                            connect_timeout=5)
+    conn = psycopg2.connect(
+        host=os.environ["IMS_HOSTNAME"],
+        user=os.environ["IMS_USERNAME"],
+        password=os.environ["IMS_PASSWORD"],
+        dbname=os.environ["IMS_DB_NAME"],
+        port=os.environ["IMS_PORT"],
+        connect_timeout=5,
+    )
     conn.autocommit = True
 except Exception as e:
     print(e)
@@ -28,18 +30,19 @@ class Load(object):
 
     @staticmethod
     def run_load():
-        etls = [ 'analytics-database/sql/03-process-staging.sql',
-                'analytics-database/sql/04-process-dimensions.sql',
-                'analytics-database/sql/05-process-fact.sql',
-                 'analytics-database/sql/06-data-conversions.sql',
-                ]
+        etls = [
+            "analytics-database/sql/03-process-staging.sql",
+            "analytics-database/sql/04-process-dimensions.sql",
+            "analytics-database/sql/05-process-fact.sql",
+            "analytics-database/sql/06-data-conversions.sql",
+        ]
 
         for etl_task in etls:
-            print ('########################################')
-            print ('Start of ETL stage: ', etl_task)
+            print("########################################")
+            print("Start of ETL stage: ", etl_task)
 
-            print('Reading .sql file')
-            file_read = open(etl_task, 'r')
+            print("Reading .sql file")
+            file_read = open(etl_task, "r")
             sql_file = file_read.read()
             file_read.close()
             cursor = conn.cursor()
@@ -48,20 +51,22 @@ class Load(object):
             cursor.execute(sql_file)
             cursor.close()
 
-            print ('End of ETL stage: ', etl_task)
-            print ('########################################')
+            print("End of ETL stage: ", etl_task)
+            print("########################################")
+
 
 def main():
     load = Load()
     load.run_load()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    logging.info('Loading Started ...')
+    logging.info("Loading Started ...")
     start_time = time.time()
 
     main()
 
-    logging.info('Loading finished ...')
+    logging.info("Loading finished ...")
     elapsed_time = time.time() - start_time
-    logging.info('Elapsed Time: %s', elapsed_time)
+    logging.info("Elapsed Time: %s", elapsed_time)
