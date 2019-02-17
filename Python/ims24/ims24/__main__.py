@@ -9,10 +9,7 @@
 
 import time
 
-# import module.extraction as extraction
-# import module.transform as transform
-# import module.load as load
-# import module.visualize as visualize
+from ims24.services.extractor import Extractor
 from ims24 import logger
 
 
@@ -25,10 +22,8 @@ def main():
     """
     logger.info("Start ETL ...")
     start_time = time.time()
-    # extraction.main()
-    # transform.main()
-    # load.main()
-    # visualize()
+    extractor = Extractor()
+    result = extractor.return_data()
     logger.info("End ETL ...")
     elapsed_time = time.time() - start_time
     logger.info("Elapsed Time: %s", elapsed_time)

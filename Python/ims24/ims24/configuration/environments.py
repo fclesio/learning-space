@@ -23,3 +23,5 @@ IMS_PASSWORD = os.getenv("IMS_PASSWORD")
 IMS_DB_NAME = os.getenv("IMS_DB_NAME")
 IMS_PORT = int(os.getenv("IMS_PORT") or 5432)
 
+BASE_URL_CRAWLER = "http://www.immobilienscout24.de/Suche/S-T/P-{pagination}/Wohnung-Miete/Berlin/Berlin"
+
