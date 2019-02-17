@@ -14,7 +14,6 @@ from cmreslogging.handlers import CMRESHandler
 from pathlib import Path
 from ims24.configuration.environments import ES_SERVER, ENVIRONMENT, ES_SERVER_PORT
 from ims24.contrators.database import getconn
-import sqlalchemy.pool as pool
 
 
 if not os.path.exists("./logs"):
