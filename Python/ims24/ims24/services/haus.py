@@ -1,18 +1,17 @@
 #!/usr/bin/env python3.6
 # -*- coding: utf-8 -*-
 #
-# extractor.py
+# haus.py
 # @Author : Gustavo F (gustavo@gmf-tech.com)
 # @Link   : https://github.com/sharkguto
-# @Date   : 17/02/2019 11:38:47
-
+# @Date   : 17/02/2019 12:32:47
 
 from ims24.contrators.requester import RequesterCrawler
 import html5lib
 import re
 
 
-class Extractor(RequesterCrawler):
+class ExtractorHaus(RequesterCrawler):
     """
     implement RequesterCrawler class to do multiple requests async 
     using Future 
@@ -21,26 +20,14 @@ class Extractor(RequesterCrawler):
 
     _endpoints = {}
 
-    _endpoints_dive = {}
-
-    def __init__(self, base_url: str = ""):
+    def __init__(self, list_haus: dict):
         """
         pass base_url or get from env variable
             :param self: itself
             :param base_url:str="": base_url
         """
         super().__init__(base_url)
-        self.load_endpoints()
-        self.regex_link = re.compile('data-go-to-expose-id="([0-9]+)"')
-
-    def load_endpoints(self):
-        """
-        load endpoints dict 
-            :param self: itself
-        """
-        for i in range(4000):
-
-            self._endpoints[f"{i}"] = self._requester_url.format(pagination=i)
+        self._endpoints = list_haus
 
     def return_data(self):
         """
@@ -49,8 +36,6 @@ class Extractor(RequesterCrawler):
         """
 
         self.get_list(tuple(self._endpoints.keys()))
-
-        return self._endpoints_dive
 
     def html_parser(self, text: str):
         """
@@ -69,8 +54,3 @@ class Extractor(RequesterCrawler):
         }
 
         print(self._endpoints_dive)
-
-
-# /html/body/div[1]/div/div[2]/div/div[3]/div[1]/div[1]/div/div/ul/li[1]/div/article/div/div[2]/div/div[3]/div/div[1]
-# result-109925272 > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(4) > div:nth-child(1) > div:nth-child(1)
-

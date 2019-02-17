@@ -75,7 +75,7 @@ class RequesterCrawler(object):
                     if "application/json" in response.headers["content-type"].lower():
                         result[i] = response.json()
                     else:  # needs to implement parser on your service
-                        result[i] = response.text
+                        result[i] = self.html_parser(response.text)
                     logger.info(
                         f"finish request {dict_responses[i]['url']} {response.status_code}"
                     )
